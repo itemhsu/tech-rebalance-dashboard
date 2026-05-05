@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>科技股自動再平衡 Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body { background: #0f172a; }
+    .card { background: #1e293b; border-radius: 0.75rem; padding: 1.25rem; }
+  </style>
+</head>
+<body class="text-slate-200 min-h-screen p-4 md:p-8">
+
+  <!-- Header -->
+  <div class="mb-6">
+    <h1 class="text-2xl font-bold text-white">🤖 科技股自動再平衡 Dashboard</h1>
+    <p class="text-slate-400 text-sm mt-1">最後更新：2026-05-05 17:12 台灣時間</p>
+  </div>
+
+  <!-- KPI Cards -->
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+    <div class="card">
+      <div class="text-xs text-slate-400 uppercase tracking-wide mb-1">總 NAV</div>
+      <div class="text-2xl font-bold text-white">$100,000.00</div>
+      <div class="text-xs text-slate-500 mt-1">期初 $100,000.00</div>
+    </div>
+    <div class="card">
+      <div class="text-xs text-slate-400 uppercase tracking-wide mb-1">今日變動</div>
+      <div class="text-2xl font-bold text-emerald-400">$0.00</div>
+      <div class="text-xs text-emerald-400 mt-1">+0.00%</div>
+    </div>
+    <div class="card">
+      <div class="text-xs text-slate-400 uppercase tracking-wide mb-1">累計報酬</div>
+      <div class="text-2xl font-bold text-emerald-400">+0.00%</div>
+      <div class="text-xs text-slate-500 mt-1">自 2026-05-05</div>
+    </div>
+    <div class="card">
+      <div class="text-xs text-slate-400 uppercase tracking-wide mb-1">最後再平衡</div>
+      <div class="text-xl font-bold text-white">2026-05-05</div>
+      <div class="text-xs text-slate-500 mt-1">現金 $100,000.00</div>
+    </div>
+  </div>
+
+  <!-- NAV Chart -->
+  <div class="card mb-6">
+    <h2 class="text-sm font-semibold text-slate-400 uppercase tracking-wide mb-4">NAV 歷史走勢</h2>
+    <div style="height:240px">
+      <canvas id="navChart"></canvas>
+    </div>
+  </div>
+
+  <!-- Holdings Table -->
+  <div class="card mb-6">
+    <h2 class="text-sm font-semibold text-slate-400 uppercase tracking-wide mb-4">
+      當前持倉（0 檔）
+    </h2>
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="text-xs text-slate-500 uppercase border-b border-slate-700">
+            <th class="py-2 px-3 text-left">股票</th>
+            <th class="py-2 px-3 text-right">股數</th>
+            <th class="py-2 px-3 text-right">均價</th>
+            <th class="py-2 px-3 text-right">現價</th>
+            <th class="py-2 px-3 text-right">市值</th>
+            <th class="py-2 px-3 text-right">損益</th>
+            <th class="py-2 px-3 text-right">損益%</th>
+            <th class="py-2 px-3 text-right">權重</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Market Cap Ranking -->
+  <div class="card mb-6">
+    <h2 class="text-sm font-semibold text-slate-400 uppercase tracking-wide mb-4">
+      今日市值排名（前 15 名，<span class="text-emerald-400">綠底</span>為持有）
+    </h2>
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="text-xs text-slate-500 uppercase border-b border-slate-700">
+            <th class="py-2 px-3 text-center">排名</th>
+            <th class="py-2 px-3 text-left">股票</th>
+            <th class="py-2 px-3 text-right">收盤價</th>
+            <th class="py-2 px-3 text-right">流通股數</th>
+            <th class="py-2 px-3 text-right">市值（兆）</th>
+          </tr>
+        </thead>
+        <tbody>
+        <tr class="border-b border-slate-700 bg-emerald-900/30">
+          <td class="py-2 px-3 text-slate-400 text-center">1</td>
+          <td class="py-2 px-3 font-mono font-bold text-sky-300">NVDA<span class="text-xs bg-emerald-600 text-white px-1.5 py-0.5 rounded ml-1">持有</span></td>
+          <td class="py-2 px-3 text-right">$197.86</td>
+          <td class="py-2 px-3 text-right text-slate-300">24.44B</td>
+          <td class="py-2 px-3 text-right font-semibold">$4.84T</td>
+        </tr>
+        <tr class="border-b border-slate-700 bg-emerald-900/30">
+          <td class="py-2 px-3 text-slate-400 text-center">2</td>
+          <td class="py-2 px-3 font-mono font-bold text-sky-300">AAPL<span class="text-xs bg-emerald-600 text-white px-1.5 py-0.5 rounded ml-1">持有</span></td>
+          <td class="py-2 px-3 text-right">$276.69</td>
+          <td class="py-2 px-3 text-right text-slate-300">15.20B</td>
+          <td class="py-2 px-3 text-right font-semibold">$4.21T</td>
+        </tr>
+        <tr class="border-b border-slate-700 bg-emerald-900/30">
+          <td class="py-2 px-3 text-slate-400 text-center">3</td>
+          <td class="py-2 px-3 font-mono font-bold text-sky-300">MSFT<span class="text-xs bg-emerald-600 text-white px-1.5 py-0.5 rounded ml-1">持有</span></td>
+          <td class="py-2 px-3 text-right">$412.94</td>
+          <td class="py-2 px-3 text-right text-slate-300">7.43B</td>
+          <td class="py-2 px-3 text-right font-semibold">$3.07T</td>
+        </tr>
+        <tr class="border-b border-slate-700 bg-emerald-900/30">
+          <td class="py-2 px-3 text-slate-400 text-center">4</td>
+          <td class="py-2 px-3 font-mono font-bold text-sky-300">AMZN<span class="text-xs bg-emerald-600 text-white px-1.5 py-0.5 rounded ml-1">持有</span></td>
+          <td class="py-2 px-3 text-right">$272.10</td>
+          <td class="py-2 px-3 text-right text-slate-300">10.53B</td>
+          <td class="py-2 px-3 text-right font-semibold">$2.86T</td>
+        </tr>
+        <tr class="border-b border-slate-700 bg-emerald-900/30">
+          <td class="py-2 px-3 text-slate-400 text-center">5</td>
+          <td class="py-2 px-3 font-mono font-bold text-sky-300">GOOGL<span class="text-xs bg-emerald-600 text-white px-1.5 py-0.5 rounded ml-1">持有</span></td>
+          <td class="py-2 px-3 text-right">$383.21</td>
+          <td class="py-2 px-3 text-right text-slate-300">5.95B</td>
+          <td class="py-2 px-3 text-right font-semibold">$2.28T</td>
+        </tr>
+        <tr class="border-b border-slate-700 bg-emerald-900/30">
+          <td class="py-2 px-3 text-slate-400 text-center">6</td>
+          <td class="py-2 px-3 font-mono font-bold text-sky-300">TSM<span class="text-xs bg-emerald-600 text-white px-1.5 py-0.5 rounded ml-1">持有</span></td>
+          <td class="py-2 px-3 text-right">$401.59</td>
+          <td class="py-2 px-3 text-right text-slate-300">5.18B</td>
+          <td class="py-2 px-3 text-right font-semibold">$2.08T</td>
+        </tr>
+        <tr class="border-b border-slate-700 bg-emerald-900/30">
+          <td class="py-2 px-3 text-slate-400 text-center">7</td>
+          <td class="py-2 px-3 font-mono font-bold text-sky-300">AVGO<span class="text-xs bg-emerald-600 text-white px-1.5 py-0.5 rounded ml-1">持有</span></td>
+          <td class="py-2 px-3 text-right">$416.51</td>
+          <td class="py-2 px-3 text-right text-slate-300">4.68B</td>
+          <td class="py-2 px-3 text-right font-semibold">$1.95T</td>
+        </tr>
+        <tr class="border-b border-slate-700 bg-emerald-900/30">
+          <td class="py-2 px-3 text-slate-400 text-center">8</td>
+          <td class="py-2 px-3 font-mono font-bold text-sky-300">META<span class="text-xs bg-emerald-600 text-white px-1.5 py-0.5 rounded ml-1">持有</span></td>
+          <td class="py-2 px-3 text-right">$609.52</td>
+          <td class="py-2 px-3 text-right text-slate-300">2.56B</td>
+          <td class="py-2 px-3 text-right font-semibold">$1.56T</td>
+        </tr>
+        <tr class="border-b border-slate-700 bg-emerald-900/30">
+          <td class="py-2 px-3 text-slate-400 text-center">9</td>
+          <td class="py-2 px-3 font-mono font-bold text-sky-300">V<span class="text-xs bg-emerald-600 text-white px-1.5 py-0.5 rounded ml-1">持有</span></td>
+          <td class="py-2 px-3 text-right">$326.91</td>
+          <td class="py-2 px-3 text-right text-slate-300">2.06B</td>
+          <td class="py-2 px-3 text-right font-semibold">$0.67T</td>
+        </tr>
+        <tr class="border-b border-slate-700 bg-emerald-900/30">
+          <td class="py-2 px-3 text-slate-400 text-center">10</td>
+          <td class="py-2 px-3 font-mono font-bold text-sky-300">AMD<span class="text-xs bg-emerald-600 text-white px-1.5 py-0.5 rounded ml-1">持有</span></td>
+          <td class="py-2 px-3 text-right">$341.52</td>
+          <td class="py-2 px-3 text-right text-slate-300">1.62B</td>
+          <td class="py-2 px-3 text-right font-semibold">$0.55T</td>
+        </tr>
+        <tr class="border-b border-slate-700 ">
+          <td class="py-2 px-3 text-slate-400 text-center">11</td>
+          <td class="py-2 px-3 font-mono font-bold text-sky-300">ASML</td>
+          <td class="py-2 px-3 text-right">$1,386.21</td>
+          <td class="py-2 px-3 text-right text-slate-300">0.39B</td>
+          <td class="py-2 px-3 text-right font-semibold">$0.55T</td>
+        </tr>
+        <tr class="border-b border-slate-700 ">
+          <td class="py-2 px-3 text-slate-400 text-center">12</td>
+          <td class="py-2 px-3 font-mono font-bold text-sky-300">ORCL</td>
+          <td class="py-2 px-3 text-right">$180.28</td>
+          <td class="py-2 px-3 text-right text-slate-300">2.75B</td>
+          <td class="py-2 px-3 text-right font-semibold">$0.50T</td>
+        </tr>
+        <tr class="border-b border-slate-700 ">
+          <td class="py-2 px-3 text-slate-400 text-center">13</td>
+          <td class="py-2 px-3 font-mono font-bold text-sky-300">MA</td>
+          <td class="py-2 px-3 text-right">$504.84</td>
+          <td class="py-2 px-3 text-right text-slate-300">0.92B</td>
+          <td class="py-2 px-3 text-right font-semibold">$0.47T</td>
+        </tr>
+        <tr class="border-b border-slate-700 ">
+          <td class="py-2 px-3 text-slate-400 text-center">14</td>
+          <td class="py-2 px-3 font-mono font-bold text-sky-300">INTC</td>
+          <td class="py-2 px-3 text-right">$95.54</td>
+          <td class="py-2 px-3 text-right text-slate-300">4.26B</td>
+          <td class="py-2 px-3 text-right font-semibold">$0.41T</td>
+        </tr>
+        <tr class="border-b border-slate-700 ">
+          <td class="py-2 px-3 text-slate-400 text-center">15</td>
+          <td class="py-2 px-3 font-mono font-bold text-sky-300">CSCO</td>
+          <td class="py-2 px-3 text-right">$92.66</td>
+          <td class="py-2 px-3 text-right text-slate-300">4.04B</td>
+          <td class="py-2 px-3 text-right font-semibold">$0.37T</td>
+        </tr></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Trade Log -->
+  <div class="card">
+    <h2 class="text-sm font-semibold text-slate-400 uppercase tracking-wide mb-4">
+      最近交易日誌
+    </h2>
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="text-xs text-slate-500 uppercase border-b border-slate-700">
+            <th class="py-2 px-3 text-left">日期</th>
+            <th class="py-2 px-3 text-right">NAV</th>
+            <th class="py-2 px-3 text-center">交易</th>
+            <th class="py-2 px-3 text-left">前10名持股</th>
+          </tr>
+        </thead>
+        <tbody>
+        <tr class="border-b border-slate-700">
+          <td class="py-2 px-3 font-mono text-slate-300">2026-05-05</td>
+          <td class="py-2 px-3 text-right font-semibold">$100,000.00</td>
+          <td class="py-2 px-3 text-center">10 筆</td>
+          <td class="py-2 px-3 text-slate-400 text-xs">NVDA, AAPL, MSFT, AMZN, GOOGL, TSM, AVGO, META, V, AMD</td>
+        </tr></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Chart Script -->
+  <script>
+    const ctx = document.getElementById('navChart').getContext('2d');
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: ["2026-05-05"],
+        datasets: [
+          {
+            label: '帳戶 NAV',
+            data: [100000.0],
+            borderColor: '#38bdf8',
+            backgroundColor: 'rgba(56,189,248,0.08)',
+            borderWidth: 2,
+            pointRadius: 2,
+            fill: true,
+            tension: 0.3,
+          },
+          {
+            label: '期初投入',
+            data: [100000.0],
+            borderColor: '#475569',
+            borderDash: [5, 5],
+            borderWidth: 1.5,
+            pointRadius: 0,
+            fill: false,
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { labels: { color: '#94a3b8', font: { size: 11 } } }
+        },
+        scales: {
+          x: {
+            ticks: { color: '#64748b', maxTicksLimit: 10 },
+            grid:  { color: '#1e293b' }
+          },
+          y: {
+            ticks: {
+              color: '#64748b',
+              callback: v => '$' + v.toLocaleString('en-US', {minimumFractionDigits:0})
+            },
+            grid: { color: '#1e293b' }
+          }
+        }
+      }
+    });
+  </script>
+
+</body>
+</html>
