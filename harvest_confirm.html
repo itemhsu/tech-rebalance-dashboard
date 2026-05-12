@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>稅務收割確認</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #0f172a;
+      color: #e2e8f0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .card {
+      background: #1e293b;
+      border-radius: 16px;
+      padding: 32px 36px;
+      max-width: 520px;
+      width: 100%;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    }
+    .icon { font-size: 40px; margin-bottom: 12px; }
+    h1 {
+      font-size: 22px;
+      font-weight: 700;
+      color: #f8fafc;
+      margin-bottom: 6px;
+    }
+    .subtitle {
+      font-size: 13px;
+      color: #64748b;
+      margin-bottom: 28px;
+    }
+    .kpi-row {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .kpi {
+      flex: 1;
+      background: #0f172a;
+      border-radius: 10px;
+      padding: 16px;
+      text-align: center;
+    }
+    .kpi-label {
+      font-size: 11px;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 6px;
+    }
+    .kpi-value {
+      font-size: 22px;
+      font-weight: 700;
+      color: #38bdf8;
+    }
+    .kpi-value.green { color: #10b981; }
+    .tickers {
+      background: #0f172a;
+      border-radius: 10px;
+      padding: 14px 16px;
+      margin-bottom: 20px;
+      font-size: 13px;
+    }
+    .tickers-label {
+      font-size: 11px;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 8px;
+    }
+    .ticker-badge {
+      display: inline-block;
+      background: #0c4a6e;
+      color: #7dd3fc;
+      font-family: monospace;
+      font-weight: bold;
+      padding: 3px 10px;
+      border-radius: 4px;
+      font-size: 13px;
+      margin: 3px 4px 3px 0;
+    }
+    .info-box {
+      background: #172033;
+      border: 1px solid #1e3a5f;
+      border-radius: 10px;
+      padding: 14px 16px;
+      margin-bottom: 24px;
+      font-size: 12px;
+      color: #94a3b8;
+      line-height: 1.7;
+    }
+    .info-box strong { color: #e2e8f0; }
+    .btn-row {
+      display: flex;
+      gap: 12px;
+    }
+    .btn {
+      flex: 1;
+      padding: 14px 20px;
+      border: none;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity 0.15s, transform 0.1s;
+    }
+    .btn:hover { opacity: 0.88; transform: translateY(-1px); }
+    .btn:active { transform: translateY(0); }
+    .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+    .btn-confirm {
+      background: linear-gradient(135deg, #059669, #10b981);
+      color: #fff;
+    }
+    .btn-skip {
+      background: #334155;
+      color: #94a3b8;
+    }
+    .result {
+      display: none;
+      margin-top: 20px;
+      border-radius: 10px;
+      padding: 16px 18px;
+      font-size: 14px;
+      font-weight: 600;
+      text-align: center;
+      line-height: 1.6;
+    }
+    .result.success {
+      background: #052e16;
+      border: 1px solid #166534;
+      color: #4ade80;
+    }
+    .result.error {
+      background: #450a0a;
+      border: 1px solid #7f1d1d;
+      color: #f87171;
+    }
+    .result.skipped {
+      background: #1e293b;
+      border: 1px solid #334155;
+      color: #94a3b8;
+    }
+    .spinner {
+      display: inline-block;
+      width: 18px; height: 18px;
+      border: 3px solid rgba(255,255,255,0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      vertical-align: middle;
+      margin-right: 8px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .divider {
+      border: none;
+      border-top: 1px solid #334155;
+      margin: 24px 0;
+    }
+    .footnote {
+      font-size: 11px;
+      color: #475569;
+      text-align: center;
+      line-height: 1.6;
+    }
+    #error-view {
+      display: none;
+      text-align: center;
+    }
+    #error-view h1 { color: #f87171; margin-bottom: 12px; }
+    #error-view p { color: #94a3b8; font-size: 14px; }
+  </style>
+</head>
+<body>
+<div class="card" id="main-view">
+  <div class="icon">💰</div>
+  <h1>稅務增益收割確認</h1>
+  <p class="subtitle" id="date-label">計算日期：載入中...</p>
+
+  <div class="kpi-row">
+    <div class="kpi">
+      <div class="kpi-label">計劃實現增益</div>
+      <div class="kpi-value" id="gain-val">—</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">估算節稅</div>
+      <div class="kpi-value green" id="saved-val">—</div>
+    </div>
+  </div>
+
+  <div class="tickers">
+    <div class="tickers-label">收割標的（賣出後即刻回買，提高成本基礎）</div>
+    <div id="tickers-list">—</div>
+  </div>
+
+  <div class="info-box">
+    <strong>操作說明：</strong>系統將對上方股票<strong>以市價賣出後立即回買相同股數</strong>，
+    實現帳面增益，步升成本基礎，在 0% 聯邦稅率範圍內減少未來稅負。<br><br>
+    ⚠️ 執行時市價可能已有變動，實際增益金額以成交價為準。
+    本操作為 <strong>Paper Trading</strong>（非真實金錢）。
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-confirm" id="btn-confirm" onclick="doConfirm()">
+      ✅ 執行收割
+    </button>
+    <button class="btn btn-skip" id="btn-skip" onclick="doSkip()">
+      ❌ 略過
+    </button>
+  </div>
+
+  <div class="result" id="result-box"></div>
+
+  <hr class="divider">
+  <p class="footnote">
+    此頁面由每日再平衡系統自動生成 · Paper Trading 模式<br>
+    執行後約 3–5 分鐘收到確認信件
+  </p>
+</div>
+
+<div class="card" id="error-view">
+  <div class="icon">⚠️</div>
+  <h1>連結已失效</h1>
+  <p>此收割確認連結缺少必要參數。<br>請從最新的每日郵件中重新開啟連結。</p>
+</div>
+
+<script>
+  // ── 讀取 URL fragment 參數 ───────────────────────────────────────────────
+  function parseFragment() {
+    const hash = window.location.hash.slice(1); // 去掉 #
+    const params = {};
+    hash.split('&').forEach(pair => {
+      const [k, v] = pair.split('=');
+      if (k) params[decodeURIComponent(k)] = decodeURIComponent(v || '');
+    });
+    return params;
+  }
+
+  const p = parseFragment();
+
+  // 驗證必要參數
+  if (!p.token || !p.date || !p.gain) {
+    document.getElementById('main-view').style.display = 'none';
+    document.getElementById('error-view').style.display = 'block';
+  } else {
+    // 填入資料
+    document.getElementById('date-label').textContent = `計算日期：${p.date}`;
+    document.getElementById('gain-val').textContent   = `$${Number(p.gain).toLocaleString()}`;
+    document.getElementById('saved-val').textContent  = p.saved ? `$${Number(p.saved).toLocaleString()}` : '—';
+
+    if (p.tickers) {
+      const tickersHtml = p.tickers.split(',')
+        .map(t => `<span class="ticker-badge">${t.trim()}</span>`)
+        .join('');
+      document.getElementById('tickers-list').innerHTML = tickersHtml;
+    }
+
+    // 超過 3 天視為過期
+    const planDate = new Date(p.date);
+    const today    = new Date();
+    const diffDays = (today - planDate) / (1000 * 86400);
+    if (diffDays > 3) {
+      document.getElementById('main-view').style.display = 'none';
+      document.getElementById('error-view').style.display = 'block';
+      document.getElementById('error-view').querySelector('p').textContent =
+        `此確認連結已過期（計算日期：${p.date}）。請等待下一次每日郵件的最新計劃。`;
+    }
+  }
+
+  // ── 執行收割 ─────────────────────────────────────────────────────────────
+  async function doConfirm() {
+    const btnConfirm = document.getElementById('btn-confirm');
+    const btnSkip    = document.getElementById('btn-skip');
+    const resultBox  = document.getElementById('result-box');
+
+    btnConfirm.disabled = true;
+    btnSkip.disabled    = true;
+    btnConfirm.innerHTML = '<span class="spinner"></span>送出中...';
+
+    try {
+      const resp = await fetch(
+        'https://api.github.com/repos/itemhsu/tech-rebalance/actions/workflows/harvest.yml/dispatches',
+        {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${p.token}`,
+            'Accept':        'application/vnd.github+json',
+            'X-GitHub-Api-Version': '2022-11-28',
+            'Content-Type':  'application/json',
+          },
+          body: JSON.stringify({
+            ref:    'main',
+            inputs: { dry_run: 'false' },
+          }),
+        }
+      );
+
+      if (resp.status === 204) {
+        resultBox.className = 'result success';
+        resultBox.style.display = 'block';
+        resultBox.innerHTML =
+          '✅ 收割指令已送出！<br>' +
+          '<span style="font-size:12px;font-weight:400;color:#86efac;">' +
+          'GitHub Actions 正在執行，約 3–5 分鐘後收到確認信件。</span>';
+        btnConfirm.innerHTML = '✅ 已執行';
+      } else {
+        const body = await resp.text();
+        throw new Error(`HTTP ${resp.status}: ${body}`);
+      }
+    } catch (err) {
+      resultBox.className = 'result error';
+      resultBox.style.display = 'block';
+      resultBox.innerHTML =
+        `❌ 送出失敗：${err.message}<br>` +
+        '<span style="font-size:12px;font-weight:400;">' +
+        '請稍後重試，或聯絡系統管理員。</span>';
+      btnConfirm.disabled = false;
+      btnConfirm.innerHTML = '✅ 執行收割';
+      btnSkip.disabled = false;
+    }
+  }
+
+  // ── 略過 ─────────────────────────────────────────────────────────────────
+  function doSkip() {
+    const resultBox = document.getElementById('result-box');
+    document.getElementById('btn-confirm').disabled = true;
+    document.getElementById('btn-skip').disabled    = true;
+    resultBox.className = 'result skipped';
+    resultBox.style.display = 'block';
+    resultBox.innerHTML = '已略過本次收割。';
+  }
+</script>
+</body>
+</html>

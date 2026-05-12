@@ -16,24 +16,24 @@
   <!-- Header -->
   <div class="mb-6">
     <h1 class="text-2xl font-bold text-white">🤖 科技股自動再平衡 Dashboard</h1>
-    <p class="text-slate-400 text-sm mt-1">最後更新：2026-05-13 00:06 台灣時間</p>
+    <p class="text-slate-400 text-sm mt-1">最後更新：2026-05-13 07:10 台灣時間</p>
   </div>
 
   <!-- KPI Cards -->
   <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
     <div class="card">
       <div class="text-xs text-slate-400 uppercase tracking-wide mb-1">總 NAV</div>
-      <div class="text-2xl font-bold text-white">$102,505.29</div>
+      <div class="text-2xl font-bold text-white">$103,434.49</div>
       <div class="text-xs text-slate-500 mt-1">期初 $100,000.00</div>
     </div>
     <div class="card">
       <div class="text-xs text-slate-400 uppercase tracking-wide mb-1">今日變動</div>
-      <div class="text-2xl font-bold text-red-400">$-2,219.25</div>
-      <div class="text-xs text-red-400 mt-1">-2.12%</div>
+      <div class="text-2xl font-bold text-red-400">$-1,290.05</div>
+      <div class="text-xs text-red-400 mt-1">-1.23%</div>
     </div>
     <div class="card">
       <div class="text-xs text-slate-400 uppercase tracking-wide mb-1">累計報酬</div>
-      <div class="text-2xl font-bold text-emerald-400">+2.51%</div>
+      <div class="text-2xl font-bold text-emerald-400">+3.43%</div>
       <div class="text-xs text-slate-500 mt-1">自 2026-05-05</div>
     </div>
     <div class="card">
@@ -50,6 +50,124 @@
       <canvas id="navChart"></canvas>
     </div>
   </div>
+
+  
+  <!-- 📉 近365天回撤對比 -->
+  <div class="card mb-6">
+    <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+      <h2 class="text-sm font-semibold text-slate-400 uppercase tracking-wide">
+        📉 近365天回撤對比
+      </h2>
+      <div class="flex flex-wrap gap-4 text-xs">
+        <label class="flex items-center gap-1.5 cursor-pointer select-none">
+          <input type="checkbox" id="dd_cb_port" checked
+                 class="w-3.5 h-3.5 accent-sky-400">
+          <span class="text-sky-300 font-semibold">我的投組</span>
+        </label>
+        <label class="flex items-center gap-1.5 cursor-pointer select-none">
+          <input type="checkbox" id="dd_cb_nasdaq" checked
+                 class="w-3.5 h-3.5" style="accent-color:#a16207">
+          <span style="color:#a16207" class="font-semibold">NASDAQ</span>
+        </label>
+        <label class="flex items-center gap-1.5 cursor-pointer select-none">
+          <input type="checkbox" id="dd_cb_sp500" checked
+                 class="w-3.5 h-3.5 accent-slate-400">
+          <span class="text-slate-400 font-semibold">S&amp;P500</span>
+        </label>
+      </div>
+    </div>
+    <div style="height:220px">
+      <canvas id="ddChart"></canvas>
+    </div>
+  </div>
+
+  <script>
+  (function() {
+    const ddLabels  = ["2025-05-12", "2025-05-13", "2025-05-14", "2025-05-15", "2025-05-16", "2025-05-19", "2025-05-20", "2025-05-21", "2025-05-22", "2025-05-23", "2025-05-27", "2025-05-28", "2025-05-29", "2025-05-30", "2025-06-02", "2025-06-03", "2025-06-04", "2025-06-05", "2025-06-06", "2025-06-09", "2025-06-10", "2025-06-11", "2025-06-12", "2025-06-13", "2025-06-16", "2025-06-17", "2025-06-18", "2025-06-20", "2025-06-23", "2025-06-24", "2025-06-25", "2025-06-26", "2025-06-27", "2025-06-30", "2025-07-01", "2025-07-02", "2025-07-03", "2025-07-07", "2025-07-08", "2025-07-09", "2025-07-10", "2025-07-11", "2025-07-14", "2025-07-15", "2025-07-16", "2025-07-17", "2025-07-18", "2025-07-21", "2025-07-22", "2025-07-23", "2025-07-24", "2025-07-25", "2025-07-28", "2025-07-29", "2025-07-30", "2025-07-31", "2025-08-01", "2025-08-04", "2025-08-05", "2025-08-06", "2025-08-07", "2025-08-08", "2025-08-11", "2025-08-12", "2025-08-13", "2025-08-14", "2025-08-15", "2025-08-18", "2025-08-19", "2025-08-20", "2025-08-21", "2025-08-22", "2025-08-25", "2025-08-26", "2025-08-27", "2025-08-28", "2025-08-29", "2025-09-02", "2025-09-03", "2025-09-04", "2025-09-05", "2025-09-08", "2025-09-09", "2025-09-10", "2025-09-11", "2025-09-12", "2025-09-15", "2025-09-16", "2025-09-17", "2025-09-18", "2025-09-19", "2025-09-22", "2025-09-23", "2025-09-24", "2025-09-25", "2025-09-26", "2025-09-29", "2025-09-30", "2025-10-01", "2025-10-02", "2025-10-03", "2025-10-06", "2025-10-07", "2025-10-08", "2025-10-09", "2025-10-10", "2025-10-13", "2025-10-14", "2025-10-15", "2025-10-16", "2025-10-17", "2025-10-20", "2025-10-21", "2025-10-22", "2025-10-23", "2025-10-24", "2025-10-27", "2025-10-28", "2025-10-29", "2025-10-30", "2025-10-31", "2025-11-03", "2025-11-04", "2025-11-05", "2025-11-06", "2025-11-07", "2025-11-10", "2025-11-11", "2025-11-12", "2025-11-13", "2025-11-14", "2025-11-17", "2025-11-18", "2025-11-19", "2025-11-20", "2025-11-21", "2025-11-24", "2025-11-25", "2025-11-26", "2025-11-28", "2025-12-01", "2025-12-02", "2025-12-03", "2025-12-04", "2025-12-05", "2025-12-08", "2025-12-09", "2025-12-10", "2025-12-11", "2025-12-12", "2025-12-15", "2025-12-16", "2025-12-17", "2025-12-18", "2025-12-19", "2025-12-22", "2025-12-23", "2025-12-24", "2025-12-26", "2025-12-29", "2025-12-30", "2025-12-31", "2026-01-02", "2026-01-05", "2026-01-06", "2026-01-07", "2026-01-08", "2026-01-09", "2026-01-12", "2026-01-13", "2026-01-14", "2026-01-15", "2026-01-16", "2026-01-20", "2026-01-21", "2026-01-22", "2026-01-23", "2026-01-26", "2026-01-27", "2026-01-28", "2026-01-29", "2026-01-30", "2026-02-02", "2026-02-03", "2026-02-04", "2026-02-05", "2026-02-06", "2026-02-09", "2026-02-10", "2026-02-11", "2026-02-12", "2026-02-13", "2026-02-17", "2026-02-18", "2026-02-19", "2026-02-20", "2026-02-23", "2026-02-24", "2026-02-25", "2026-02-26", "2026-02-27", "2026-03-02", "2026-03-03", "2026-03-04", "2026-03-05", "2026-03-06", "2026-03-09", "2026-03-10", "2026-03-11", "2026-03-12", "2026-03-13", "2026-03-16", "2026-03-17", "2026-03-18", "2026-03-19", "2026-03-20", "2026-03-23", "2026-03-24", "2026-03-25", "2026-03-26", "2026-03-27", "2026-03-30", "2026-03-31", "2026-04-01", "2026-04-02", "2026-04-06", "2026-04-07", "2026-04-08", "2026-04-09", "2026-04-10", "2026-04-13", "2026-04-14", "2026-04-15", "2026-04-16", "2026-04-17", "2026-04-20", "2026-04-21", "2026-04-22", "2026-04-23", "2026-04-24", "2026-04-27", "2026-04-28", "2026-04-29", "2026-04-30", "2026-05-01", "2026-05-04", "2026-05-05", "2026-05-06", "2026-05-07", "2026-05-08", "2026-05-11"];
+    const ddDatasets = [
+      {
+        label: '我的投組',
+        data:  [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 0.0, 0.0, 0.0, 0.0, 0.0],
+        borderColor: '#38bdf8',
+        backgroundColor: 'rgba(56,189,248,0.08)',
+        borderWidth: 2.4,
+        pointRadius: 0,
+        fill: false,
+        tension: 0.25,
+        spanGaps: false,
+      },
+      {
+        label: 'NASDAQ',
+        data:  [0.0, 0.0, 0.0, -0.18, 0.0, 0.0, -0.38, -1.78, -1.51, -2.49, -0.08, -0.6, -0.21, -0.53, 0.0, 0.0, 0.0, -0.83, 0.0, 0.0, 0.0, -0.5, -0.27, -1.56, -0.07, -0.98, -0.86, -1.36, -0.43, 0.0, 0.0, 0.0, 0.0, 0.0, -0.82, 0.0, 0.0, -0.92, -0.89, 0.0, 0.0, -0.22, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.39, 0.0, 0.0, 0.0, 0.0, -0.38, -0.23, -0.27, -2.5, -0.59, -1.24, -0.04, 0.0, 0.0, -0.3, 0.0, 0.0, -0.01, -0.42, -0.38, -1.83, -2.49, -2.82, -1.0, -1.22, -0.78, -0.57, -0.04, -1.19, -2.0, -0.99, -0.03, -0.06, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.07, -0.39, 0.0, 0.0, 0.0, -0.95, -1.28, -1.77, -1.34, -0.87, -0.57, -0.15, 0.0, -0.28, 0.0, -0.67, 0.0, -0.08, -3.64, -1.51, -2.26, -1.62, -2.09, -1.58, -0.23, -0.39, -1.31, -0.44, 0.0, 0.0, 0.0, 0.0, -1.57, -0.97, -0.52, -2.55, -1.91, -3.78, -3.98, -1.8, -2.05, -2.3, -4.54, -4.42, -5.22, -6.37, -5.82, -7.85, -7.03, -4.53, -3.89, -3.1, -2.47, -2.85, -2.27, -2.11, -1.89, -1.59, -1.72, -1.59, -1.27, -1.52, -3.19, -3.76, -3.54, -5.28, -3.97, -2.72, -2.21, -1.66, -1.44, -1.53, -2.02, -2.25, -2.99, -3.02, -2.35, -1.72, -1.56, -2.0, -1.2, -0.94, -1.04, -2.03, -1.79, -1.85, -4.19, -3.06, -2.18, -1.91, -1.49, -0.59, -0.42, -1.14, -2.07, -1.53, -2.94, -4.4, -5.92, -3.87, -3.0, -3.57, -3.72, -5.68, -5.89, -5.76, -5.03, -5.32, -4.48, -5.56, -4.57, -3.37, -4.51, -5.39, -5.05, -6.02, -4.8, -5.05, -6.56, -5.27, -5.26, -5.19, -6.87, -7.73, -6.61, -6.17, -7.54, -7.8, -9.65, -8.4, -9.17, -8.47, -10.65, -12.56, -13.21, -9.88, -8.84, -8.68, -8.19, -8.1, -5.52, -4.74, -4.41, -3.23, -1.33, 0.0, 0.0, 0.0, -0.26, -0.85, 0.0, -0.89, 0.0, 0.0, -0.9, -0.86, 0.0, 0.0, -0.19, 0.0, 0.0, -0.13, 0.0, 0.0],
+        borderColor: '#a16207',
+        borderWidth: 1.8,
+        pointRadius: 0,
+        fill: false,
+        tension: 0.25,
+        spanGaps: false,
+      },
+      {
+        label: 'S&P500',
+        data:  [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.39, -2.0, -2.04, -2.7, -0.71, -1.26, -0.86, -0.87, -0.46, 0.0, 0.0, -0.53, 0.0, 0.0, 0.0, -0.27, 0.0, -1.13, -0.2, -1.03, -1.07, -1.28, -0.33, 0.0, -0.0, 0.0, 0.0, 0.0, -0.11, 0.0, 0.0, -0.79, -0.86, -0.26, 0.0, -0.33, -0.19, -0.58, -0.27, 0.0, -0.01, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.3, -0.42, -0.79, -2.38, -0.94, -1.42, -0.7, -0.78, -0.01, -0.26, 0.0, 0.0, 0.0, -0.29, -0.3, -0.88, -1.12, -1.52, -0.03, -0.45, -0.04, 0.0, 0.0, -0.64, -1.33, -0.82, 0.0, -0.32, -0.11, 0.0, 0.0, 0.0, -0.05, 0.0, -0.13, -0.23, 0.0, 0.0, 0.0, -0.55, -0.83, -1.33, -0.75, -0.49, -0.08, 0.0, 0.0, 0.0, 0.0, -0.38, 0.0, -0.28, -2.98, -1.47, -1.62, -1.22, -1.85, -1.33, -0.28, -0.27, -0.8, -0.23, 0.0, 0.0, 0.0, -0.0, -0.99, -0.74, -0.56, -1.73, -1.37, -2.48, -2.35, -0.85, -0.64, -0.58, -2.23, -2.28, -3.17, -3.97, -3.61, -5.11, -4.18, -2.7, -1.81, -1.14, -0.61, -1.14, -0.89, -0.6, -0.49, -0.3, -0.64, -0.73, -0.06, 0.0, -1.07, -1.22, -1.46, -2.6, -1.83, -0.96, -0.33, 0.0, 0.0, -0.03, -0.38, -0.52, -1.25, -1.06, -0.43, 0.0, -0.34, -0.34, 0.0, 0.0, -0.19, -0.73, -0.47, -0.53, -2.59, -1.46, -0.92, -0.88, -0.39, 0.0, -0.01, -0.14, -0.57, -0.03, -0.87, -1.37, -2.58, -0.66, -0.2, -0.53, -0.53, -2.09, -2.04, -1.94, -1.39, -1.67, -0.99, -2.02, -1.27, -0.47, -1.0, -1.43, -1.39, -2.32, -1.56, -2.12, -3.42, -2.62, -2.82, -2.91, -4.38, -4.96, -4.0, -3.76, -5.07, -5.33, -6.77, -5.7, -6.05, -5.54, -7.19, -8.74, -9.1, -6.45, -5.78, -5.67, -5.26, -5.18, -2.81, -2.21, -2.32, -1.32, -0.16, 0.0, 0.0, 0.0, -0.24, -0.87, 0.0, -0.41, 0.0, 0.0, -0.49, -0.53, 0.0, 0.0, -0.41, 0.0, 0.0, -0.38, 0.0, 0.0],
+        borderColor: '#64748b',
+        borderDash: [5, 3],
+        borderWidth: 1.6,
+        pointRadius: 0,
+        fill: false,
+        tension: 0.25,
+        spanGaps: false,
+      },
+    ];
+    const ddCtx = document.getElementById('ddChart').getContext('2d');
+    const ddChart = new Chart(ddCtx, {
+      type: 'line',
+      data: { labels: ddLabels, datasets: ddDatasets },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: function(ctx) {
+                if (ctx.raw == null) return null;
+                return ctx.dataset.label + ': ' + ctx.raw.toFixed(1) + '%';
+              }
+            }
+          }
+        },
+        scales: {
+          x: {
+            ticks: { color: '#64748b', maxTicksLimit: 10, font: { size: 10 } },
+            grid:  { color: 'rgba(255,255,255,0.04)' }
+          },
+          y: {
+            ticks: {
+              color: '#64748b',
+              font: { size: 10 },
+              callback: function(v) { return v.toFixed(0) + '%'; }
+            },
+            grid: { color: 'rgba(255,255,255,0.04)' }
+          }
+        }
+      }
+    });
+
+    // Checkbox 控制
+    var cbMap = [
+      { id: 'dd_cb_port',   idx: 0 },
+      { id: 'dd_cb_nasdaq', idx: 1 },
+      { id: 'dd_cb_sp500',  idx: 2 },
+    ];
+    cbMap.forEach(function(item) {
+      document.getElementById(item.id).addEventListener('change', function() {
+        ddChart.setDatasetVisibility(item.idx, this.checked);
+        ddChart.update();
+      });
+    });
+  })();
+  </script>
 
   <!-- Holdings Table -->
   <div class="card mb-6">
@@ -75,15 +193,15 @@
           <td class="py-2 px-3 font-mono font-bold text-sky-300">AMD</td>
           <td class="py-2 px-3 text-right">27.0000</td>
           <td class="py-2 px-3 text-right">$358.48</td>
-          <td class="py-2 px-3 text-right">$434.52</td>
-          <td class="py-2 px-3 text-right font-semibold">$11,732.04</td>
-          <td class="py-2 px-3 text-right text-emerald-400 font-semibold">$2,053.19</td>
-          <td class="py-2 px-3 text-right text-emerald-400">+21.21%</td>
+          <td class="py-2 px-3 text-right">$448.70</td>
+          <td class="py-2 px-3 text-right font-semibold">$12,114.90</td>
+          <td class="py-2 px-3 text-right text-emerald-400 font-semibold">$2,436.05</td>
+          <td class="py-2 px-3 text-right text-emerald-400">+25.17%</td>
           <td class="py-2 px-3 text-right">
             <div class="flex items-center gap-1 justify-end">
-              <span>11.4%</span>
+              <span>11.7%</span>
               <div class="w-12 h-1.5 bg-slate-600 rounded-full overflow-hidden">
-                <div class="h-full bg-sky-400 rounded-full" style="width:46%"></div>
+                <div class="h-full bg-sky-400 rounded-full" style="width:47%"></div>
               </div>
             </div>
           </td>
@@ -92,15 +210,15 @@
           <td class="py-2 px-3 font-mono font-bold text-sky-300">NVDA</td>
           <td class="py-2 px-3 text-right">50.0000</td>
           <td class="py-2 px-3 text-right">$197.20</td>
-          <td class="py-2 px-3 text-right">$217.73</td>
-          <td class="py-2 px-3 text-right font-semibold">$10,886.50</td>
-          <td class="py-2 px-3 text-right text-emerald-400 font-semibold">$1,026.51</td>
-          <td class="py-2 px-3 text-right text-emerald-400">+10.41%</td>
+          <td class="py-2 px-3 text-right">$220.01</td>
+          <td class="py-2 px-3 text-right font-semibold">$11,000.58</td>
+          <td class="py-2 px-3 text-right text-emerald-400 font-semibold">$1,140.58</td>
+          <td class="py-2 px-3 text-right text-emerald-400">+11.57%</td>
           <td class="py-2 px-3 text-right">
             <div class="flex items-center gap-1 justify-end">
               <span>10.6%</span>
               <div class="w-12 h-1.5 bg-slate-600 rounded-full overflow-hidden">
-                <div class="h-full bg-sky-400 rounded-full" style="width:42%"></div>
+                <div class="h-full bg-sky-400 rounded-full" style="width:43%"></div>
               </div>
             </div>
           </td>
@@ -109,13 +227,13 @@
           <td class="py-2 px-3 font-mono font-bold text-sky-300">AAPL</td>
           <td class="py-2 px-3 text-right">35.0000</td>
           <td class="py-2 px-3 text-right">$284.09</td>
-          <td class="py-2 px-3 text-right">$294.44</td>
-          <td class="py-2 px-3 text-right font-semibold">$10,305.40</td>
-          <td class="py-2 px-3 text-right text-emerald-400 font-semibold">$362.21</td>
-          <td class="py-2 px-3 text-right text-emerald-400">+3.64%</td>
+          <td class="py-2 px-3 text-right">$294.45</td>
+          <td class="py-2 px-3 text-right font-semibold">$10,305.75</td>
+          <td class="py-2 px-3 text-right text-emerald-400 font-semibold">$362.56</td>
+          <td class="py-2 px-3 text-right text-emerald-400">+3.65%</td>
           <td class="py-2 px-3 text-right">
             <div class="flex items-center gap-1 justify-end">
-              <span>10.1%</span>
+              <span>10.0%</span>
               <div class="w-12 h-1.5 bg-slate-600 rounded-full overflow-hidden">
                 <div class="h-full bg-sky-400 rounded-full" style="width:40%"></div>
               </div>
@@ -126,27 +244,27 @@
           <td class="py-2 px-3 font-mono font-bold text-sky-300">V</td>
           <td class="py-2 px-3 text-right">31.0000</td>
           <td class="py-2 px-3 text-right">$321.99</td>
-          <td class="py-2 px-3 text-right">$327.37</td>
-          <td class="py-2 px-3 text-right font-semibold">$10,148.47</td>
-          <td class="py-2 px-3 text-right text-emerald-400 font-semibold">$166.78</td>
-          <td class="py-2 px-3 text-right text-emerald-400">+1.67%</td>
+          <td class="py-2 px-3 text-right">$326.42</td>
+          <td class="py-2 px-3 text-right font-semibold">$10,119.02</td>
+          <td class="py-2 px-3 text-right text-emerald-400 font-semibold">$137.33</td>
+          <td class="py-2 px-3 text-right text-emerald-400">+1.38%</td>
           <td class="py-2 px-3 text-right">
             <div class="flex items-center gap-1 justify-end">
-              <span>9.9%</span>
+              <span>9.8%</span>
               <div class="w-12 h-1.5 bg-slate-600 rounded-full overflow-hidden">
-                <div class="h-full bg-sky-400 rounded-full" style="width:40%"></div>
+                <div class="h-full bg-sky-400 rounded-full" style="width:39%"></div>
               </div>
             </div>
           </td>
         </tr>
         <tr class="border-b border-slate-700 hover:bg-slate-700/40 transition-colors">
-          <td class="py-2 px-3 font-mono font-bold text-sky-300">MSFT</td>
-          <td class="py-2 px-3 text-right">24.0000</td>
-          <td class="py-2 px-3 text-right">$410.65</td>
-          <td class="py-2 px-3 text-right">$408.75</td>
-          <td class="py-2 px-3 text-right font-semibold">$9,810.00</td>
-          <td class="py-2 px-3 text-right text-red-400 font-semibold">$-45.60</td>
-          <td class="py-2 px-3 text-right text-red-400">-0.46%</td>
+          <td class="py-2 px-3 font-mono font-bold text-sky-300">TSM</td>
+          <td class="py-2 px-3 text-right">25.0000</td>
+          <td class="py-2 px-3 text-right">$396.99</td>
+          <td class="py-2 px-3 text-right">$395.46</td>
+          <td class="py-2 px-3 text-right font-semibold">$9,886.50</td>
+          <td class="py-2 px-3 text-right text-red-400 font-semibold">$-38.25</td>
+          <td class="py-2 px-3 text-right text-red-400">-0.39%</td>
           <td class="py-2 px-3 text-right">
             <div class="flex items-center gap-1 justify-end">
               <span>9.6%</span>
@@ -157,13 +275,13 @@
           </td>
         </tr>
         <tr class="border-b border-slate-700 hover:bg-slate-700/40 transition-colors">
-          <td class="py-2 px-3 font-mono font-bold text-sky-300">TSM</td>
-          <td class="py-2 px-3 text-right">25.0000</td>
-          <td class="py-2 px-3 text-right">$396.99</td>
-          <td class="py-2 px-3 text-right">$389.29</td>
-          <td class="py-2 px-3 text-right font-semibold">$9,732.25</td>
-          <td class="py-2 px-3 text-right text-red-400 font-semibold">$-192.50</td>
-          <td class="py-2 px-3 text-right text-red-400">-1.94%</td>
+          <td class="py-2 px-3 font-mono font-bold text-sky-300">MSFT</td>
+          <td class="py-2 px-3 text-right">24.0000</td>
+          <td class="py-2 px-3 text-right">$410.65</td>
+          <td class="py-2 px-3 text-right">$407.37</td>
+          <td class="py-2 px-3 text-right font-semibold">$9,776.87</td>
+          <td class="py-2 px-3 text-right text-red-400 font-semibold">$-78.73</td>
+          <td class="py-2 px-3 text-right text-red-400">-0.80%</td>
           <td class="py-2 px-3 text-right">
             <div class="flex items-center gap-1 justify-end">
               <span>9.5%</span>
@@ -177,10 +295,10 @@
           <td class="py-2 px-3 font-mono font-bold text-sky-300">GOOGL</td>
           <td class="py-2 px-3 text-right">25.0000</td>
           <td class="py-2 px-3 text-right">$386.57</td>
-          <td class="py-2 px-3 text-right">$386.24</td>
-          <td class="py-2 px-3 text-right font-semibold">$9,656.00</td>
-          <td class="py-2 px-3 text-right text-red-400 font-semibold">$-8.25</td>
-          <td class="py-2 px-3 text-right text-red-400">-0.09%</td>
+          <td class="py-2 px-3 text-right">$390.21</td>
+          <td class="py-2 px-3 text-right font-semibold">$9,755.25</td>
+          <td class="py-2 px-3 text-right text-emerald-400 font-semibold">$91.00</td>
+          <td class="py-2 px-3 text-right text-emerald-400">+0.94%</td>
           <td class="py-2 px-3 text-right">
             <div class="flex items-center gap-1 justify-end">
               <span>9.4%</span>
@@ -194,27 +312,10 @@
           <td class="py-2 px-3 font-mono font-bold text-sky-300">META</td>
           <td class="py-2 px-3 text-right">16.0000</td>
           <td class="py-2 px-3 text-right">$604.29</td>
-          <td class="py-2 px-3 text-right">$600.00</td>
-          <td class="py-2 px-3 text-right font-semibold">$9,599.92</td>
-          <td class="py-2 px-3 text-right text-red-400 font-semibold">$-68.72</td>
-          <td class="py-2 px-3 text-right text-red-400">-0.71%</td>
-          <td class="py-2 px-3 text-right">
-            <div class="flex items-center gap-1 justify-end">
-              <span>9.4%</span>
-              <div class="w-12 h-1.5 bg-slate-600 rounded-full overflow-hidden">
-                <div class="h-full bg-sky-400 rounded-full" style="width:37%"></div>
-              </div>
-            </div>
-          </td>
-        </tr>
-        <tr class="border-b border-slate-700 hover:bg-slate-700/40 transition-colors">
-          <td class="py-2 px-3 font-mono font-bold text-sky-300">AMZN</td>
-          <td class="py-2 px-3 text-right">36.0000</td>
-          <td class="py-2 px-3 text-right">$273.81</td>
-          <td class="py-2 px-3 text-right">$264.60</td>
-          <td class="py-2 px-3 text-right font-semibold">$9,525.60</td>
-          <td class="py-2 px-3 text-right text-red-400 font-semibold">$-331.73</td>
-          <td class="py-2 px-3 text-right text-red-400">-3.37%</td>
+          <td class="py-2 px-3 text-right">$602.00</td>
+          <td class="py-2 px-3 text-right font-semibold">$9,632.00</td>
+          <td class="py-2 px-3 text-right text-red-400 font-semibold">$-36.64</td>
+          <td class="py-2 px-3 text-right text-red-400">-0.38%</td>
           <td class="py-2 px-3 text-right">
             <div class="flex items-center gap-1 justify-end">
               <span>9.3%</span>
@@ -228,10 +329,27 @@
           <td class="py-2 px-3 font-mono font-bold text-sky-300">AVGO</td>
           <td class="py-2 px-3 text-right">23.0000</td>
           <td class="py-2 px-3 text-right">$432.41</td>
-          <td class="py-2 px-3 text-right">$412.54</td>
-          <td class="py-2 px-3 text-right font-semibold">$9,488.42</td>
-          <td class="py-2 px-3 text-right text-red-400 font-semibold">$-456.93</td>
-          <td class="py-2 px-3 text-right text-red-400">-4.59%</td>
+          <td class="py-2 px-3 text-right">$418.43</td>
+          <td class="py-2 px-3 text-right font-semibold">$9,623.89</td>
+          <td class="py-2 px-3 text-right text-red-400 font-semibold">$-321.46</td>
+          <td class="py-2 px-3 text-right text-red-400">-3.23%</td>
+          <td class="py-2 px-3 text-right">
+            <div class="flex items-center gap-1 justify-end">
+              <span>9.3%</span>
+              <div class="w-12 h-1.5 bg-slate-600 rounded-full overflow-hidden">
+                <div class="h-full bg-sky-400 rounded-full" style="width:37%"></div>
+              </div>
+            </div>
+          </td>
+        </tr>
+        <tr class="border-b border-slate-700 hover:bg-slate-700/40 transition-colors">
+          <td class="py-2 px-3 font-mono font-bold text-sky-300">AMZN</td>
+          <td class="py-2 px-3 text-right">36.0000</td>
+          <td class="py-2 px-3 text-right">$273.81</td>
+          <td class="py-2 px-3 text-right">$266.65</td>
+          <td class="py-2 px-3 text-right font-semibold">$9,599.38</td>
+          <td class="py-2 px-3 text-right text-red-400 font-semibold">$-257.95</td>
+          <td class="py-2 px-3 text-right text-red-400">-2.62%</td>
           <td class="py-2 px-3 text-right">
             <div class="flex items-center gap-1 justify-end">
               <span>9.3%</span>
@@ -265,105 +383,105 @@
         <tr class="border-b border-slate-700 bg-emerald-900/30">
           <td class="py-2 px-3 text-slate-400 text-center">1</td>
           <td class="py-2 px-3 font-mono font-bold text-sky-300">NVDA<span class="text-xs bg-emerald-600 text-white px-1.5 py-0.5 rounded ml-1">持有</span></td>
-          <td class="py-2 px-3 text-right">$217.94</td>
+          <td class="py-2 px-3 text-right">$220.14</td>
           <td class="py-2 px-3 text-right text-slate-300">24.44B</td>
-          <td class="py-2 px-3 text-right font-semibold">$5.33T</td>
+          <td class="py-2 px-3 text-right font-semibold">$5.38T</td>
         </tr>
         <tr class="border-b border-slate-700 bg-emerald-900/30">
           <td class="py-2 px-3 text-slate-400 text-center">2</td>
           <td class="py-2 px-3 font-mono font-bold text-sky-300">AAPL<span class="text-xs bg-emerald-600 text-white px-1.5 py-0.5 rounded ml-1">持有</span></td>
-          <td class="py-2 px-3 text-right">$294.52</td>
+          <td class="py-2 px-3 text-right">$294.72</td>
           <td class="py-2 px-3 text-right text-slate-300">15.20B</td>
           <td class="py-2 px-3 text-right font-semibold">$4.48T</td>
         </tr>
         <tr class="border-b border-slate-700 bg-emerald-900/30">
           <td class="py-2 px-3 text-slate-400 text-center">3</td>
           <td class="py-2 px-3 font-mono font-bold text-sky-300">MSFT<span class="text-xs bg-emerald-600 text-white px-1.5 py-0.5 rounded ml-1">持有</span></td>
-          <td class="py-2 px-3 text-right">$408.90</td>
+          <td class="py-2 px-3 text-right">$407.71</td>
           <td class="py-2 px-3 text-right text-slate-300">7.43B</td>
-          <td class="py-2 px-3 text-right font-semibold">$3.04T</td>
+          <td class="py-2 px-3 text-right font-semibold">$3.03T</td>
         </tr>
         <tr class="border-b border-slate-700 bg-emerald-900/30">
           <td class="py-2 px-3 text-slate-400 text-center">4</td>
           <td class="py-2 px-3 font-mono font-bold text-sky-300">AMZN<span class="text-xs bg-emerald-600 text-white px-1.5 py-0.5 rounded ml-1">持有</span></td>
-          <td class="py-2 px-3 text-right">$264.76</td>
+          <td class="py-2 px-3 text-right">$265.84</td>
           <td class="py-2 px-3 text-right text-slate-300">10.53B</td>
-          <td class="py-2 px-3 text-right font-semibold">$2.79T</td>
+          <td class="py-2 px-3 text-right font-semibold">$2.80T</td>
         </tr>
         <tr class="border-b border-slate-700 bg-emerald-900/30">
           <td class="py-2 px-3 text-slate-400 text-center">5</td>
           <td class="py-2 px-3 font-mono font-bold text-sky-300">GOOGL<span class="text-xs bg-emerald-600 text-white px-1.5 py-0.5 rounded ml-1">持有</span></td>
-          <td class="py-2 px-3 text-right">$386.19</td>
+          <td class="py-2 px-3 text-right">$385.88</td>
           <td class="py-2 px-3 text-right text-slate-300">5.95B</td>
           <td class="py-2 px-3 text-right font-semibold">$2.30T</td>
         </tr>
         <tr class="border-b border-slate-700 bg-emerald-900/30">
           <td class="py-2 px-3 text-slate-400 text-center">6</td>
           <td class="py-2 px-3 font-mono font-bold text-sky-300">TSM<span class="text-xs bg-emerald-600 text-white px-1.5 py-0.5 rounded ml-1">持有</span></td>
-          <td class="py-2 px-3 text-right">$389.61</td>
+          <td class="py-2 px-3 text-right">$396.39</td>
           <td class="py-2 px-3 text-right text-slate-300">5.18B</td>
-          <td class="py-2 px-3 text-right font-semibold">$2.02T</td>
+          <td class="py-2 px-3 text-right font-semibold">$2.05T</td>
         </tr>
         <tr class="border-b border-slate-700 bg-emerald-900/30">
           <td class="py-2 px-3 text-slate-400 text-center">7</td>
           <td class="py-2 px-3 font-mono font-bold text-sky-300">AVGO<span class="text-xs bg-emerald-600 text-white px-1.5 py-0.5 rounded ml-1">持有</span></td>
-          <td class="py-2 px-3 text-right">$412.94</td>
+          <td class="py-2 px-3 text-right">$416.81</td>
           <td class="py-2 px-3 text-right text-slate-300">4.68B</td>
-          <td class="py-2 px-3 text-right font-semibold">$1.93T</td>
+          <td class="py-2 px-3 text-right font-semibold">$1.95T</td>
         </tr>
         <tr class="border-b border-slate-700 bg-emerald-900/30">
           <td class="py-2 px-3 text-slate-400 text-center">8</td>
           <td class="py-2 px-3 font-mono font-bold text-sky-300">META<span class="text-xs bg-emerald-600 text-white px-1.5 py-0.5 rounded ml-1">持有</span></td>
-          <td class="py-2 px-3 text-right">$600.22</td>
+          <td class="py-2 px-3 text-right">$602.44</td>
           <td class="py-2 px-3 text-right text-slate-300">2.56B</td>
           <td class="py-2 px-3 text-right font-semibold">$1.54T</td>
         </tr>
         <tr class="border-b border-slate-700 bg-emerald-900/30">
           <td class="py-2 px-3 text-slate-400 text-center">9</td>
           <td class="py-2 px-3 font-mono font-bold text-sky-300">AMD<span class="text-xs bg-emerald-600 text-white px-1.5 py-0.5 rounded ml-1">持有</span></td>
-          <td class="py-2 px-3 text-right">$435.15</td>
+          <td class="py-2 px-3 text-right">$449.33</td>
           <td class="py-2 px-3 text-right text-slate-300">1.62B</td>
-          <td class="py-2 px-3 text-right font-semibold">$0.70T</td>
+          <td class="py-2 px-3 text-right font-semibold">$0.73T</td>
         </tr>
         <tr class="border-b border-slate-700 bg-emerald-900/30">
           <td class="py-2 px-3 text-slate-400 text-center">10</td>
           <td class="py-2 px-3 font-mono font-bold text-sky-300">V<span class="text-xs bg-emerald-600 text-white px-1.5 py-0.5 rounded ml-1">持有</span></td>
-          <td class="py-2 px-3 text-right">$327.36</td>
+          <td class="py-2 px-3 text-right">$326.47</td>
           <td class="py-2 px-3 text-right text-slate-300">2.06B</td>
           <td class="py-2 px-3 text-right font-semibold">$0.67T</td>
         </tr>
         <tr class="border-b border-slate-700 ">
           <td class="py-2 px-3 text-slate-400 text-center">11</td>
           <td class="py-2 px-3 font-mono font-bold text-sky-300">ASML</td>
-          <td class="py-2 px-3 text-right">$1,485.15</td>
+          <td class="py-2 px-3 text-right">$1,520.69</td>
           <td class="py-2 px-3 text-right text-slate-300">0.39B</td>
-          <td class="py-2 px-3 text-right font-semibold">$0.59T</td>
+          <td class="py-2 px-3 text-right font-semibold">$0.60T</td>
         </tr>
         <tr class="border-b border-slate-700 ">
           <td class="py-2 px-3 text-slate-400 text-center">12</td>
           <td class="py-2 px-3 font-mono font-bold text-sky-300">ORCL</td>
-          <td class="py-2 px-3 text-right">$184.25</td>
+          <td class="py-2 px-3 text-right">$186.79</td>
           <td class="py-2 px-3 text-right text-slate-300">2.75B</td>
           <td class="py-2 px-3 text-right font-semibold">$0.51T</td>
         </tr>
         <tr class="border-b border-slate-700 ">
           <td class="py-2 px-3 text-slate-400 text-center">13</td>
           <td class="py-2 px-3 font-mono font-bold text-sky-300">INTC</td>
-          <td class="py-2 px-3 text-right">$117.74</td>
+          <td class="py-2 px-3 text-right">$120.29</td>
           <td class="py-2 px-3 text-right text-slate-300">4.26B</td>
-          <td class="py-2 px-3 text-right font-semibold">$0.50T</td>
+          <td class="py-2 px-3 text-right font-semibold">$0.51T</td>
         </tr>
         <tr class="border-b border-slate-700 ">
           <td class="py-2 px-3 text-slate-400 text-center">14</td>
           <td class="py-2 px-3 font-mono font-bold text-sky-300">MA</td>
-          <td class="py-2 px-3 text-right">$504.59</td>
+          <td class="py-2 px-3 text-right">$499.91</td>
           <td class="py-2 px-3 text-right text-slate-300">0.92B</td>
-          <td class="py-2 px-3 text-right font-semibold">$0.47T</td>
+          <td class="py-2 px-3 text-right font-semibold">$0.46T</td>
         </tr>
         <tr class="border-b border-slate-700 ">
           <td class="py-2 px-3 text-slate-400 text-center">15</td>
           <td class="py-2 px-3 font-mono font-bold text-sky-300">CSCO</td>
-          <td class="py-2 px-3 text-right">$98.18</td>
+          <td class="py-2 px-3 text-right">$99.31</td>
           <td class="py-2 px-3 text-right text-slate-300">4.04B</td>
           <td class="py-2 px-3 text-right font-semibold">$0.40T</td>
         </tr></tbody>
@@ -389,7 +507,7 @@
         <tbody>
         <tr class="border-b border-slate-700">
           <td class="py-2 px-3 font-mono text-slate-300">2026-05-12</td>
-          <td class="py-2 px-3 text-right font-semibold">$102,505.29</td>
+          <td class="py-2 px-3 text-right font-semibold">$103,434.49</td>
           <td class="py-2 px-3 text-center">無異動</td>
           <td class="py-2 px-3 text-slate-400 text-xs">NVDA, AAPL, MSFT, AMZN, GOOGL, TSM, AVGO, META, AMD, V</td>
         </tr>
@@ -437,7 +555,7 @@
         datasets: [
           {
             label: '帳戶 NAV',
-            data: [99988.04, 102591.34, 102999.23, 104076.25, 104724.54, 102505.29],
+            data: [99988.04, 102591.34, 102999.23, 104076.25, 104724.54, 103434.49],
             borderColor: '#38bdf8',
             backgroundColor: 'rgba(56,189,248,0.08)',
             borderWidth: 2,
