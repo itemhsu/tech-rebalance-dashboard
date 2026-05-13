@@ -1,0 +1,213 @@
+2026-05-13 02:26:38 [INFO] d2p2t6.main: ════════════════════════════════════════════════════════════
+2026-05-13 02:26:38 [INFO] d2p2t6.main: D2P2T6 每日執行  2026-05-13
+2026-05-13 02:26:38 [INFO] d2p2t6.main: ════════════════════════════════════════════════════════════
+2026-05-13 02:26:38 [INFO] d2p2t6.main: ⚠️  DRY_RUN 模式：只計算，不實際下單
+2026-05-13 02:26:38 [INFO] trader: AlpacaClient 初始化（Paper 模式）
+2026-05-13 02:26:38 [INFO] trader: 2026-05-13 是交易日
+2026-05-13 02:26:48 [INFO] universe: 市值取得完成：30 / 30 檔有效
+2026-05-13 02:26:48 [INFO] market_cap: 取得收盤價：30 / 30 檔
+2026-05-13 02:26:50 [INFO] universe: D2P2T6 理論組合（10 檔）：['AAPL', 'AMZN', 'AVGO', 'GOOGL', 'JNJ', 'LLY', 'LMT', 'MSFT', 'NVDA', 'RTX']
+2026-05-13 02:26:50 [INFO] universe:   軍火 TOP2：['RTX', 'LMT']
+2026-05-13 02:26:50 [INFO] universe:   醫藥 TOP2：['LLY', 'JNJ']
+2026-05-13 02:26:50 [INFO] universe:   科技 TOP6：['NVDA', 'GOOGL', 'AAPL', 'MSFT', 'AMZN', 'AVGO']
+2026-05-13 02:26:50 [INFO] d2p2t6.main: D2P2T6 理論組合 [10 檔]：['AAPL', 'AMZN', 'AVGO', 'GOOGL', 'JNJ', 'LLY', 'LMT', 'MSFT', 'NVDA', 'RTX']
+2026-05-13 02:26:50 [INFO] trader: 帳戶 NAV: $100000.00  現金: $100000.00
+2026-05-13 02:26:50 [INFO] trader: 現有持倉：0 檔
+2026-05-13 02:26:51 [INFO] d2p2t6.main: 今日 2026-05-13 不是當月第一個交易日（本月第一交易日：2026-05-01）
+2026-05-13 02:26:51 [INFO] portfolio: BUY  AAPL × 33.0000（new_entrant, ~$9725.76）
+2026-05-13 02:26:51 [INFO] portfolio: BUY  AMZN × 37.0000（new_entrant, ~$9836.08）
+2026-05-13 02:26:51 [INFO] portfolio: BUY  AVGO × 23.0000（new_entrant, ~$9586.63）
+2026-05-13 02:26:51 [INFO] portfolio: BUY  GOOGL × 25.0000（new_entrant, ~$9647.00）
+2026-05-13 02:26:51 [INFO] portfolio: BUY  JNJ × 44.0000（new_entrant, ~$9870.96）
+2026-05-13 02:26:51 [INFO] portfolio: BUY  LLY × 10.0000（new_entrant, ~$9901.10）
+2026-05-13 02:26:51 [INFO] portfolio: BUY  LMT × 19.0000（new_entrant, ~$9899.19）
+2026-05-13 02:26:51 [INFO] portfolio: BUY  MSFT × 24.0000（new_entrant, ~$9785.04）
+2026-05-13 02:26:51 [INFO] portfolio: BUY  NVDA × 45.0000（new_entrant, ~$9906.30）
+2026-05-13 02:26:51 [INFO] portfolio: BUY  RTX × 55.0000（new_entrant, ~$9838.95）
+2026-05-13 02:26:51 [INFO] portfolio: 再平衡計劃：0 筆賣單 + 10 筆買單
+2026-05-13 02:26:51 [INFO] d2p2t6.main: 非再平衡日：過濾後剩 0 筆現金部署訂單
+2026-05-13 02:26:51 [INFO] trader: 無再平衡訂單需要執行
+2026-05-13 02:26:51 [INFO] portfolio: 持倉快照已儲存：/home/runner/work/tech-rebalance/tech-rebalance/d2p2t6/data/portfolio_state.json
+2026-05-13 02:26:51 [INFO] portfolio: NAV 歷史已更新：2026-05-13（共 1 筆）
+2026-05-13 02:26:51 [INFO] dashboard_d2p2t6: D2P2T6 Dashboard 已生成：/home/runner/work/tech-rebalance/tech-rebalance/d2p2t6/data/dashboard.html
+2026-05-13 02:26:51 [INFO] d2p2t6.main: [DRY RUN] 跳過寄信
+2026-05-13 02:26:51 [INFO] d2p2t6.main: ════════════════════════════════════════════════════════════
+2026-05-13 02:26:51 [INFO] d2p2t6.main: 執行完成
+2026-05-13 02:26:51 [INFO] d2p2t6.main:   日期    : 2026-05-13
+2026-05-13 02:26:51 [INFO] d2p2t6.main:   NAV     : $100,000.00
+2026-05-13 02:26:51 [INFO] d2p2t6.main:   現金    : $100,000.00
+2026-05-13 02:26:51 [INFO] d2p2t6.main:   組合    : AAPL, AMZN, AVGO, GOOGL, JNJ, LLY, LMT, MSFT, NVDA, RTX
+2026-05-13 02:26:51 [INFO] d2p2t6.main:   訂單數  : 0 筆
+2026-05-13 02:26:51 [INFO] d2p2t6.main:   模式    : DRY RUN（現金部署）
+2026-05-13 02:26:51 [INFO] d2p2t6.main:   Dashboard: 
+2026-05-13 02:26:51 [INFO] d2p2t6.main: ════════════════════════════════════════════════════════════
+2026-05-13 02:32:09 [INFO] d2p2t6.main: ════════════════════════════════════════════════════════════
+2026-05-13 02:32:09 [INFO] d2p2t6.main: D2P2T6 每日執行  2026-05-13
+2026-05-13 02:32:09 [INFO] d2p2t6.main: ════════════════════════════════════════════════════════════
+2026-05-13 02:32:09 [INFO] trader: AlpacaClient 初始化（Paper 模式）
+2026-05-13 02:32:09 [INFO] trader: 2026-05-13 是交易日
+2026-05-13 02:32:22 [INFO] universe: 市值取得完成：30 / 30 檔有效
+2026-05-13 02:32:22 [INFO] market_cap: 取得收盤價：30 / 30 檔
+2026-05-13 02:32:25 [INFO] universe: D2P2T6 理論組合（10 檔）：['AAPL', 'AMZN', 'AVGO', 'GOOGL', 'JNJ', 'LLY', 'LMT', 'MSFT', 'NVDA', 'RTX']
+2026-05-13 02:32:25 [INFO] universe:   軍火 TOP2：['RTX', 'LMT']
+2026-05-13 02:32:25 [INFO] universe:   醫藥 TOP2：['LLY', 'JNJ']
+2026-05-13 02:32:25 [INFO] universe:   科技 TOP6：['NVDA', 'GOOGL', 'AAPL', 'MSFT', 'AMZN', 'AVGO']
+2026-05-13 02:32:25 [INFO] d2p2t6.main: D2P2T6 理論組合 [10 檔]：['AAPL', 'AMZN', 'AVGO', 'GOOGL', 'JNJ', 'LLY', 'LMT', 'MSFT', 'NVDA', 'RTX']
+2026-05-13 02:32:25 [INFO] trader: 帳戶 NAV: $100000.00  現金: $100000.00
+2026-05-13 02:32:25 [INFO] trader: 現有持倉：0 檔
+2026-05-13 02:32:26 [INFO] d2p2t6.main: 今日 2026-05-13 不是當月第一個交易日（本月第一交易日：2026-05-01）
+2026-05-13 02:32:26 [INFO] portfolio: BUY  AAPL × 33.0000（new_entrant, ~$9725.76）
+2026-05-13 02:32:26 [INFO] portfolio: BUY  AMZN × 37.0000（new_entrant, ~$9836.08）
+2026-05-13 02:32:26 [INFO] portfolio: BUY  AVGO × 23.0000（new_entrant, ~$9586.63）
+2026-05-13 02:32:26 [INFO] portfolio: BUY  GOOGL × 25.0000（new_entrant, ~$9647.00）
+2026-05-13 02:32:26 [INFO] portfolio: BUY  JNJ × 44.0000（new_entrant, ~$9870.96）
+2026-05-13 02:32:26 [INFO] portfolio: BUY  LLY × 10.0000（new_entrant, ~$9901.10）
+2026-05-13 02:32:26 [INFO] portfolio: BUY  LMT × 19.0000（new_entrant, ~$9899.19）
+2026-05-13 02:32:26 [INFO] portfolio: BUY  MSFT × 24.0000（new_entrant, ~$9785.04）
+2026-05-13 02:32:26 [INFO] portfolio: BUY  NVDA × 45.0000（new_entrant, ~$9906.30）
+2026-05-13 02:32:26 [INFO] portfolio: BUY  RTX × 55.0000（new_entrant, ~$9838.95）
+2026-05-13 02:32:26 [INFO] portfolio: 再平衡計劃：0 筆賣單 + 10 筆買單
+2026-05-13 02:32:26 [INFO] d2p2t6.main: 非再平衡日：過濾後剩 0 筆現金部署訂單
+2026-05-13 02:32:26 [INFO] trader: 無再平衡訂單需要執行
+2026-05-13 02:32:26 [INFO] portfolio: 持倉快照已儲存：/home/runner/work/tech-rebalance/tech-rebalance/d2p2t6/data/portfolio_state.json
+2026-05-13 02:32:26 [INFO] portfolio: NAV 歷史已更新：2026-05-13（共 1 筆）
+2026-05-13 02:32:26 [INFO] dashboard_d2p2t6: D2P2T6 Dashboard 已生成：/home/runner/work/tech-rebalance/tech-rebalance/d2p2t6/data/dashboard.html
+2026-05-13 02:32:26 [INFO] email_report: 📧 SendGrid 報告郵件已寄出 → itemhsu@gmail.com
+2026-05-13 02:32:26 [INFO] d2p2t6.main: ════════════════════════════════════════════════════════════
+2026-05-13 02:32:26 [INFO] d2p2t6.main: 執行完成
+2026-05-13 02:32:26 [INFO] d2p2t6.main:   日期    : 2026-05-13
+2026-05-13 02:32:26 [INFO] d2p2t6.main:   NAV     : $100,000.00
+2026-05-13 02:32:26 [INFO] d2p2t6.main:   現金    : $100,000.00
+2026-05-13 02:32:26 [INFO] d2p2t6.main:   組合    : AAPL, AMZN, AVGO, GOOGL, JNJ, LLY, LMT, MSFT, NVDA, RTX
+2026-05-13 02:32:26 [INFO] d2p2t6.main:   訂單數  : 0 筆
+2026-05-13 02:32:26 [INFO] d2p2t6.main:   模式    : LIVE（現金部署）
+2026-05-13 02:32:26 [INFO] d2p2t6.main:   Dashboard: 
+2026-05-13 02:32:26 [INFO] d2p2t6.main: ════════════════════════════════════════════════════════════
+2026-05-13 02:52:15 [INFO] d2p2t6.main: ════════════════════════════════════════════════════════════
+2026-05-13 02:52:15 [INFO] d2p2t6.main: D2P2T6 每日執行  2026-05-13
+2026-05-13 02:52:15 [INFO] d2p2t6.main: ════════════════════════════════════════════════════════════
+2026-05-13 02:52:15 [INFO] trader: AlpacaClient 初始化（Paper 模式）
+2026-05-13 02:52:15 [INFO] trader: 2026-05-13 是交易日
+2026-05-13 02:52:23 [INFO] universe: 市值取得完成：30 / 30 檔有效
+2026-05-13 02:52:24 [INFO] market_cap: 取得收盤價：30 / 30 檔
+2026-05-13 02:52:26 [INFO] universe: D2P2T6 理論組合（10 檔）：['AAPL', 'AMZN', 'AVGO', 'GOOGL', 'JNJ', 'LLY', 'LMT', 'MSFT', 'NVDA', 'RTX']
+2026-05-13 02:52:26 [INFO] universe:   軍火 TOP2：['RTX', 'LMT']
+2026-05-13 02:52:26 [INFO] universe:   醫藥 TOP2：['LLY', 'JNJ']
+2026-05-13 02:52:26 [INFO] universe:   科技 TOP6：['NVDA', 'GOOGL', 'AAPL', 'MSFT', 'AMZN', 'AVGO']
+2026-05-13 02:52:26 [INFO] d2p2t6.main: D2P2T6 理論組合 [10 檔]：['AAPL', 'AMZN', 'AVGO', 'GOOGL', 'JNJ', 'LLY', 'LMT', 'MSFT', 'NVDA', 'RTX']
+2026-05-13 02:52:26 [INFO] trader: 帳戶 NAV: $100000.00  現金: $100000.00
+2026-05-13 02:52:26 [INFO] trader: 現有持倉：0 檔
+2026-05-13 02:52:26 [INFO] d2p2t6.main: 今日 2026-05-13 不是當月第一個交易日（本月第一交易日：2026-05-01）
+2026-05-13 02:52:26 [INFO] portfolio: BUY  AAPL × 33.0000（new_entrant, ~$9725.76）
+2026-05-13 02:52:26 [INFO] portfolio: BUY  AMZN × 37.0000（new_entrant, ~$9836.08）
+2026-05-13 02:52:26 [INFO] portfolio: BUY  AVGO × 23.0000（new_entrant, ~$9586.63）
+2026-05-13 02:52:26 [INFO] portfolio: BUY  GOOGL × 25.0000（new_entrant, ~$9647.00）
+2026-05-13 02:52:26 [INFO] portfolio: BUY  JNJ × 44.0000（new_entrant, ~$9870.96）
+2026-05-13 02:52:26 [INFO] portfolio: BUY  LLY × 10.0000（new_entrant, ~$9901.10）
+2026-05-13 02:52:26 [INFO] portfolio: BUY  LMT × 19.0000（new_entrant, ~$9899.19）
+2026-05-13 02:52:26 [INFO] portfolio: BUY  MSFT × 24.0000（new_entrant, ~$9785.04）
+2026-05-13 02:52:26 [INFO] portfolio: BUY  NVDA × 45.0000（new_entrant, ~$9906.30）
+2026-05-13 02:52:26 [INFO] portfolio: BUY  RTX × 55.0000（new_entrant, ~$9838.95）
+2026-05-13 02:52:26 [INFO] portfolio: 再平衡計劃：0 筆賣單 + 10 筆買單
+2026-05-13 02:52:26 [INFO] d2p2t6.main: 🆕 初始建倉：執行全部 10 筆 BUY
+2026-05-13 02:52:26 [INFO] trader: 市場休市，送出 day 訂單，將於開盤時（09:30 ET）自動成交
+2026-05-13 02:52:26 [INFO] trader: 訂單送出：BUY AAPL × 33  order_id=8918ae0a-cfdb-4f3e-bb28-63390bfe6be4
+2026-05-13 02:52:26 [INFO] trader: 訂單送出：BUY AMZN × 37  order_id=14da1c84-7f06-42b7-981d-aa1b1b06a02f
+2026-05-13 02:52:26 [INFO] trader: 訂單送出：BUY AVGO × 23  order_id=169470d8-93fb-448e-b8fd-25719bc22534
+2026-05-13 02:52:27 [INFO] trader: 訂單送出：BUY GOOGL × 25  order_id=df0f65e2-7dc4-47d3-b991-baa85386b2fc
+2026-05-13 02:52:27 [INFO] trader: 訂單送出：BUY JNJ × 44  order_id=e4fc8b01-fb0a-42a9-916f-47bf48b0db13
+2026-05-13 02:52:27 [INFO] trader: 訂單送出：BUY LLY × 10  order_id=2792943a-3cae-4323-ac26-07187d868f19
+2026-05-13 02:52:27 [INFO] trader: 訂單送出：BUY LMT × 19  order_id=aa915dae-80bc-484f-908a-f6ee7cd8441f
+2026-05-13 02:52:27 [INFO] trader: 訂單送出：BUY MSFT × 24  order_id=2627e5b3-683d-4255-a0ce-110044f98c45
+2026-05-13 02:52:27 [INFO] trader: 訂單送出：BUY NVDA × 45  order_id=e9dde667-8470-47f1-beb8-e7499512949c
+2026-05-13 02:52:28 [INFO] trader: 訂單送出：BUY RTX × 55  order_id=3ccf8303-2d0c-4b19-b7d4-c0b9897b628d
+2026-05-13 02:52:28 [INFO] trader: 10 筆買單已送出，等待開盤（09:30 ET）成交
+2026-05-13 02:52:28 [INFO] trader: 再平衡完成：共送出 10 筆訂單
+2026-05-13 02:52:28 [INFO] trader: 帳戶 NAV: $100000.00  現金: $100000.00
+2026-05-13 02:52:28 [INFO] trader: 現有持倉：0 檔
+2026-05-13 02:52:28 [INFO] portfolio: 持倉快照已儲存：/home/runner/work/tech-rebalance/tech-rebalance/d2p2t6/data/portfolio_state.json
+2026-05-13 02:52:28 [INFO] portfolio: NAV 歷史已更新：2026-05-13（共 1 筆）
+2026-05-13 02:52:28 [INFO] dashboard_d2p2t6: D2P2T6 Dashboard 已生成：/home/runner/work/tech-rebalance/tech-rebalance/d2p2t6/data/dashboard.html
+2026-05-13 02:52:28 [INFO] email_report: 📧 SendGrid 報告郵件已寄出 → itemhsu@gmail.com
+2026-05-13 02:52:28 [INFO] d2p2t6.main: ════════════════════════════════════════════════════════════
+2026-05-13 02:52:28 [INFO] d2p2t6.main: 執行完成
+2026-05-13 02:52:28 [INFO] d2p2t6.main:   日期    : 2026-05-13
+2026-05-13 02:52:28 [INFO] d2p2t6.main:   NAV     : $100,000.00
+2026-05-13 02:52:28 [INFO] d2p2t6.main:   現金    : $100,000.00
+2026-05-13 02:52:28 [INFO] d2p2t6.main:   組合    : AAPL, AMZN, AVGO, GOOGL, JNJ, LLY, LMT, MSFT, NVDA, RTX
+2026-05-13 02:52:28 [INFO] d2p2t6.main:   訂單數  : 10 筆
+2026-05-13 02:52:28 [INFO] d2p2t6.main:   模式    : LIVE（現金部署）
+2026-05-13 02:52:28 [INFO] d2p2t6.main:   Dashboard: 
+2026-05-13 02:52:28 [INFO] d2p2t6.main: ════════════════════════════════════════════════════════════
+2026-05-13 15:33:50 [INFO] d2p2t6.main: ════════════════════════════════════════════════════════════
+2026-05-13 15:33:50 [INFO] d2p2t6.main: D2P2T6 每日執行  2026-05-13
+2026-05-13 15:33:50 [INFO] d2p2t6.main: ════════════════════════════════════════════════════════════
+2026-05-13 15:33:50 [INFO] trader: AlpacaClient 初始化（Paper 模式）
+2026-05-13 15:33:51 [INFO] trader: 2026-05-13 是交易日
+2026-05-13 15:34:09 [INFO] universe: 市值取得完成：30 / 30 檔有效
+2026-05-13 15:34:09 [INFO] market_cap: 取得收盤價：30 / 30 檔
+2026-05-13 15:34:12 [INFO] universe: D2P2T6 理論組合（10 檔）：['AAPL', 'AMZN', 'AVGO', 'GOOGL', 'JNJ', 'LLY', 'LMT', 'MSFT', 'NVDA', 'RTX']
+2026-05-13 15:34:12 [INFO] universe:   軍火 TOP2：['RTX', 'LMT']
+2026-05-13 15:34:12 [INFO] universe:   醫藥 TOP2：['LLY', 'JNJ']
+2026-05-13 15:34:12 [INFO] universe:   科技 TOP6：['NVDA', 'GOOGL', 'AAPL', 'MSFT', 'AMZN', 'AVGO']
+2026-05-13 15:34:12 [INFO] d2p2t6.main: D2P2T6 理論組合 [10 檔]：['AAPL', 'AMZN', 'AVGO', 'GOOGL', 'JNJ', 'LLY', 'LMT', 'MSFT', 'NVDA', 'RTX']
+2026-05-13 15:34:12 [INFO] trader: 帳戶 NAV: $100747.98  現金: $1965.82
+2026-05-13 15:34:12 [INFO] trader: 現有持倉：10 檔
+2026-05-13 15:34:13 [INFO] d2p2t6.main: 今日 2026-05-13 不是當月第一個交易日（本月第一交易日：2026-05-01）
+2026-05-13 15:34:13 [INFO] portfolio: BUY  RTX × 1.0000（cash_deploy, ~$179.15）
+2026-05-13 15:34:13 [INFO] portfolio: 再平衡計劃：0 筆賣單 + 1 筆買單
+2026-05-13 15:34:13 [INFO] d2p2t6.main: 非再平衡日：過濾後剩 1 筆現金部署訂單
+2026-05-13 15:34:13 [INFO] trader: 市場開盤中，訂單將即時成交（day）
+2026-05-13 15:34:13 [INFO] trader: 訂單送出：BUY RTX × 1  order_id=5eb830a0-7343-4c7f-8e78-056ded87b9ea
+2026-05-13 15:34:13 [INFO] trader: 等待 1 筆買單成交…
+2026-05-13 15:34:18 [INFO] trader: 訂單 5eb830a0 filled（RTX × 1 @ $179.25）
+2026-05-13 15:34:18 [INFO] trader: 再平衡完成：共送出 1 筆訂單
+2026-05-13 15:34:18 [INFO] trader: 帳戶 NAV: $100748.16  現金: $1786.57
+2026-05-13 15:34:18 [INFO] trader: 現有持倉：10 檔
+2026-05-13 15:34:18 [INFO] portfolio: 持倉快照已儲存：/home/runner/work/tech-rebalance/tech-rebalance/d2p2t6/data/portfolio_state.json
+2026-05-13 15:34:18 [INFO] portfolio: NAV 歷史已更新：2026-05-13（共 1 筆）
+2026-05-13 15:34:18 [INFO] dashboard_d2p2t6: D2P2T6 Dashboard 已生成：/home/runner/work/tech-rebalance/tech-rebalance/d2p2t6/data/dashboard.html
+2026-05-13 15:34:19 [INFO] email_report: 📧 SendGrid 報告郵件已寄出 → itemhsu@gmail.com
+2026-05-13 15:34:19 [INFO] d2p2t6.main: ════════════════════════════════════════════════════════════
+2026-05-13 15:34:19 [INFO] d2p2t6.main: 執行完成
+2026-05-13 15:34:19 [INFO] d2p2t6.main:   日期    : 2026-05-13
+2026-05-13 15:34:19 [INFO] d2p2t6.main:   NAV     : $100,748.16
+2026-05-13 15:34:19 [INFO] d2p2t6.main:   現金    : $1,786.57
+2026-05-13 15:34:19 [INFO] d2p2t6.main:   組合    : AAPL, AMZN, AVGO, GOOGL, JNJ, LLY, LMT, MSFT, NVDA, RTX
+2026-05-13 15:34:19 [INFO] d2p2t6.main:   訂單數  : 1 筆
+2026-05-13 15:34:19 [INFO] d2p2t6.main:   模式    : LIVE（現金部署）
+2026-05-13 15:34:19 [INFO] d2p2t6.main:   Dashboard: 
+2026-05-13 15:34:19 [INFO] d2p2t6.main: ════════════════════════════════════════════════════════════
+2026-05-13 23:43:00 [INFO] d2p2t6.main: ════════════════════════════════════════════════════════════
+2026-05-13 23:43:00 [INFO] d2p2t6.main: D2P2T6 每日執行  2026-05-13
+2026-05-13 23:43:00 [INFO] d2p2t6.main: ════════════════════════════════════════════════════════════
+2026-05-13 23:43:00 [INFO] d2p2t6.main: ⚠️  DRY_RUN 模式：只計算，不實際下單
+2026-05-13 23:43:00 [INFO] trader: AlpacaClient 初始化（Paper 模式）
+2026-05-13 23:43:00 [INFO] trader: 2026-05-13 是交易日
+2026-05-13 23:43:16 [INFO] universe: 市值取得完成：30 / 30 檔有效
+2026-05-13 23:43:16 [INFO] market_cap: 取得收盤價：30 / 30 檔
+2026-05-13 23:43:19 [INFO] universe: D2P2T6 理論組合（10 檔）：['AAPL', 'AMZN', 'AVGO', 'GOOGL', 'JNJ', 'LLY', 'LMT', 'MSFT', 'NVDA', 'RTX']
+2026-05-13 23:43:19 [INFO] universe:   軍火 TOP2：['RTX', 'LMT']
+2026-05-13 23:43:19 [INFO] universe:   醫藥 TOP2：['LLY', 'JNJ']
+2026-05-13 23:43:19 [INFO] universe:   科技 TOP6：['NVDA', 'GOOGL', 'AAPL', 'MSFT', 'AMZN', 'AVGO']
+2026-05-13 23:43:19 [INFO] d2p2t6.main: D2P2T6 理論組合 [10 檔]：['AAPL', 'AMZN', 'AVGO', 'GOOGL', 'JNJ', 'LLY', 'LMT', 'MSFT', 'NVDA', 'RTX']
+2026-05-13 23:43:19 [INFO] trader: 帳戶 NAV: $101381.21  現金: $1786.57
+2026-05-13 23:43:20 [INFO] trader: 現有持倉：10 檔
+2026-05-13 23:43:20 [INFO] d2p2t6.main: 今日 2026-05-13 不是當月第一個交易日（本月第一交易日：2026-05-01）
+2026-05-13 23:43:20 [INFO] portfolio: 再平衡計劃：0 筆賣單 + 0 筆買單
+2026-05-13 23:43:20 [INFO] d2p2t6.main: 非再平衡日：過濾後剩 0 筆現金部署訂單
+2026-05-13 23:43:20 [INFO] trader: 無再平衡訂單需要執行
+2026-05-13 23:43:20 [INFO] portfolio: 持倉快照已儲存：/home/runner/work/tech-rebalance/tech-rebalance/d2p2t6/data/portfolio_state.json
+2026-05-13 23:43:20 [INFO] portfolio: NAV 歷史已更新：2026-05-13（共 1 筆）
+2026-05-13 23:43:20 [INFO] dashboard_d2p2t6: D2P2T6 Dashboard 已生成：/home/runner/work/tech-rebalance/tech-rebalance/d2p2t6/data/dashboard.html
+2026-05-13 23:43:20 [INFO] d2p2t6.main: [DRY RUN] 跳過寄信
+2026-05-13 23:43:20 [INFO] d2p2t6.main: ════════════════════════════════════════════════════════════
+2026-05-13 23:43:20 [INFO] d2p2t6.main: 執行完成
+2026-05-13 23:43:20 [INFO] d2p2t6.main:   日期    : 2026-05-13
+2026-05-13 23:43:20 [INFO] d2p2t6.main:   NAV     : $101,381.21
+2026-05-13 23:43:20 [INFO] d2p2t6.main:   現金    : $1,786.57
+2026-05-13 23:43:20 [INFO] d2p2t6.main:   組合    : AAPL, AMZN, AVGO, GOOGL, JNJ, LLY, LMT, MSFT, NVDA, RTX
+2026-05-13 23:43:20 [INFO] d2p2t6.main:   訂單數  : 0 筆
+2026-05-13 23:43:20 [INFO] d2p2t6.main:   模式    : DRY RUN（現金部署）
+2026-05-13 23:43:20 [INFO] d2p2t6.main:   Dashboard: https://itemhsu.github.io/tech-rebalance-dashboard/d2p2t6/dashboard.html
+2026-05-13 23:43:20 [INFO] d2p2t6.main: ════════════════════════════════════════════════════════════

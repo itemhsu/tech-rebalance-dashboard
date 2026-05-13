@@ -1,0 +1,24 @@
+{
+  "initial_nav": 100000.0,
+  "start_date": "2026-05-13",
+  "history": [
+    {
+      "date": "2026-05-13",
+      "nav": 101381.21,
+      "cash": 1786.57,
+      "top10": [
+        "AAPL",
+        "AMZN",
+        "AVGO",
+        "GOOGL",
+        "JNJ",
+        "LLY",
+        "LMT",
+        "MSFT",
+        "NVDA",
+        "RTX"
+      ],
+      "trades_count": 0
+    }
+  ]
+}
