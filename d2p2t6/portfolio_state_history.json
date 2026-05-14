@@ -19,6 +19,24 @@
         "RTX"
       ],
       "trades_count": 0
+    },
+    {
+      "date": "2026-05-14",
+      "nav": 101553.37,
+      "cash": 1786.57,
+      "top10": [
+        "AAPL",
+        "AMZN",
+        "AVGO",
+        "GOOGL",
+        "JNJ",
+        "LLY",
+        "LMT",
+        "MSFT",
+        "NVDA",
+        "RTX"
+      ],
+      "trades_count": 0
     }
   ]
 }
