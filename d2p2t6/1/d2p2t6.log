@@ -419,3 +419,36 @@
 2026-05-15 20:54:35 [INFO] d2p2t6.main:   模式    : DRY RUN（現金部署）
 2026-05-15 20:54:35 [INFO] d2p2t6.main:   Dashboard: https://itemhsu.github.io/tech-rebalance-dashboard/d2p2t6/1/dashboard.html
 2026-05-15 20:54:35 [INFO] d2p2t6.main: ════════════════════════════════════════════════════════════
+2026-05-15 23:19:54 [INFO] d2p2t6.main: ════════════════════════════════════════════════════════════
+2026-05-15 23:19:54 [INFO] d2p2t6.main: D2P2T6 每日執行  帳戶 #1  2026-05-15
+2026-05-15 23:19:54 [INFO] d2p2t6.main: ════════════════════════════════════════════════════════════
+2026-05-15 23:19:54 [INFO] trader: AlpacaClient 初始化（Paper 模式）
+2026-05-15 23:19:54 [INFO] trader: 2026-05-15 是交易日
+2026-05-15 23:20:10 [INFO] universe: 市值取得完成：30 / 30 檔有效
+2026-05-15 23:20:10 [INFO] market_cap: 取得收盤價：30 / 30 檔
+2026-05-15 23:20:13 [INFO] universe: D2P2T6 理論組合（10 檔）：['AAPL', 'AMZN', 'AVGO', 'GOOGL', 'JNJ', 'LLY', 'LMT', 'MSFT', 'NVDA', 'RTX']
+2026-05-15 23:20:13 [INFO] universe:   軍火 TOP2：['RTX', 'LMT']
+2026-05-15 23:20:13 [INFO] universe:   醫藥 TOP2：['LLY', 'JNJ']
+2026-05-15 23:20:13 [INFO] universe:   科技 TOP6：['NVDA', 'GOOGL', 'AAPL', 'MSFT', 'AMZN', 'AVGO']
+2026-05-15 23:20:13 [INFO] d2p2t6.main: D2P2T6 理論組合 [10 檔]：['AAPL', 'AMZN', 'AVGO', 'GOOGL', 'JNJ', 'LLY', 'LMT', 'MSFT', 'NVDA', 'RTX']
+2026-05-15 23:20:13 [INFO] trader: 帳戶 NAV: $100663.13  現金: $1609.73
+2026-05-15 23:20:13 [INFO] trader: 現有持倉：10 檔
+2026-05-15 23:20:13 [INFO] d2p2t6.main: 今日 2026-05-15 不是當月第一個交易日（本月第一交易日：2026-05-01）
+2026-05-15 23:20:13 [INFO] portfolio: 再平衡計劃：0 筆賣單 + 0 筆買單
+2026-05-15 23:20:13 [INFO] d2p2t6.main: 非再平衡日：過濾後剩 0 筆現金部署訂單
+2026-05-15 23:20:13 [INFO] trader: 無再平衡訂單需要執行
+2026-05-15 23:20:13 [INFO] portfolio: 持倉快照已儲存：/home/runner/work/tech-rebalance/tech-rebalance/d2p2t6/data/1/portfolio_state.json
+2026-05-15 23:20:13 [INFO] portfolio: NAV 歷史已更新：2026-05-15（共 3 筆）
+2026-05-15 23:20:13 [INFO] dashboard: 基準指數回撤資料已快取（251 個交易日）
+2026-05-15 23:20:13 [INFO] dashboard: Dashboard 已生成：/home/runner/work/tech-rebalance/tech-rebalance/d2p2t6/data/1/dashboard.html
+2026-05-15 23:20:14 [INFO] email_report: 📧 SendGrid 報告郵件已寄出 → itemhsu@gmail.com
+2026-05-15 23:20:14 [INFO] d2p2t6.main: ════════════════════════════════════════════════════════════
+2026-05-15 23:20:14 [INFO] d2p2t6.main: 執行完成
+2026-05-15 23:20:14 [INFO] d2p2t6.main:   日期    : 2026-05-15
+2026-05-15 23:20:14 [INFO] d2p2t6.main:   NAV     : $100,663.13
+2026-05-15 23:20:14 [INFO] d2p2t6.main:   現金    : $1,609.73
+2026-05-15 23:20:14 [INFO] d2p2t6.main:   組合    : AAPL, AMZN, AVGO, GOOGL, JNJ, LLY, LMT, MSFT, NVDA, RTX
+2026-05-15 23:20:14 [INFO] d2p2t6.main:   訂單數  : 0 筆
+2026-05-15 23:20:14 [INFO] d2p2t6.main:   模式    : LIVE（現金部署）
+2026-05-15 23:20:14 [INFO] d2p2t6.main:   Dashboard: https://itemhsu.github.io/tech-rebalance-dashboard/mvp_dashboard.html?a=2
+2026-05-15 23:20:14 [INFO] d2p2t6.main: ════════════════════════════════════════════════════════════
