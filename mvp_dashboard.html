@@ -286,20 +286,24 @@ function render(d, allAccounts, currentAccount) {
 //  帳戶切換選單
 // ══════════════════════════════════════════════════════════════════════════════
 function renderAccountSwitcher(allAccounts, current, currentStrategy, accent) {
-  const sameStrategy = allAccounts.filter(a => a.strategy === currentStrategy);
   const el = document.getElementById("account-switcher");
 
-  if (sameStrategy.length <= 1) {
+  // 單一帳戶：靜態 badge
+  if (allAccounts.length <= 1) {
     el.innerHTML = `<span class="text-xs text-slate-400 border border-slate-600 px-3 py-1 rounded-full">
       帳戶&nbsp;#${current.id}
     </span>`;
     return;
   }
 
-  const options = sameStrategy.map(a =>
-    `<option value="?a=${a.id}" ${a.id === current.id ? "selected" : ""}>帳戶 #${a.id}</option>`
-  ).join("");
-  el.innerHTML = `<select class="text-sm rounded-lg px-3 py-1 border border-slate-600 cursor-pointer"
+  // 多帳戶：下拉選單，顯示全部帳戶（含跨策略）
+  const options = allAccounts.map(a => {
+    const label = a.label || `帳戶 #${a.id}`;
+    return `<option value="?a=${a.id}" ${a.id === current.id ? "selected" : ""}>${label}</option>`;
+  }).join("");
+
+  el.innerHTML = `<select
+    style="background:#1e293b;color:#e2e8f0;border:1px solid #475569;border-radius:8px;padding:4px 12px;font-size:0.875rem;cursor:pointer;"
     onchange="if(this.value) location.href=this.value">${options}</select>`;
 }
 
