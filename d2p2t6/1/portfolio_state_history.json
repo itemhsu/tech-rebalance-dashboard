@@ -1,0 +1,60 @@
+{
+  "initial_nav": 100000.0,
+  "start_date": "2026-05-13",
+  "history": [
+    {
+      "date": "2026-05-13",
+      "nav": 101383.76,
+      "cash": 1786.57,
+      "top10": [
+        "AAPL",
+        "AMZN",
+        "AVGO",
+        "GOOGL",
+        "JNJ",
+        "LLY",
+        "LMT",
+        "MSFT",
+        "NVDA",
+        "RTX"
+      ],
+      "trades_count": 0
+    },
+    {
+      "date": "2026-05-14",
+      "nav": 101958.96,
+      "cash": 1609.73,
+      "top10": [
+        "AAPL",
+        "AMZN",
+        "AVGO",
+        "GOOGL",
+        "JNJ",
+        "LLY",
+        "LMT",
+        "MSFT",
+        "NVDA",
+        "RTX"
+      ],
+      "trades_count": 1
+    },
+    {
+      "date": "2026-05-15",
+      "nav": 101257.91,
+      "cash": 1609.73,
+      "top10": [
+        "AAPL",
+        "AMZN",
+        "AVGO",
+        "GOOGL",
+        "JNJ",
+        "LLY",
+        "LMT",
+        "MSFT",
+        "NVDA",
+        "RTX"
+      ],
+      "trades_count": 0
+    }
+  ]
+}

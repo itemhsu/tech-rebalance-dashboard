@@ -1,0 +1,241 @@
+{
+  "date": "2026-05-15",
+  "defense": [
+    {
+      "sym": "RTX",
+      "rank": 1,
+      "mcap_b": 233.3,
+      "price": 173.4,
+      "chg_pct": -1.38
+    },
+    {
+      "sym": "LMT",
+      "rank": 2,
+      "mcap_b": 118.9,
+      "price": 515.83,
+      "chg_pct": -0.92
+    },
+    {
+      "sym": "GD",
+      "rank": 3,
+      "mcap_b": 91.2,
+      "price": 337.57,
+      "chg_pct": -0.95
+    },
+    {
+      "sym": "NOC",
+      "rank": 4,
+      "mcap_b": 77.1,
+      "price": 542.69,
+      "chg_pct": -1.08
+    },
+    {
+      "sym": "TDG",
+      "rank": 5,
+      "mcap_b": 64.5,
+      "price": 1154.08,
+      "chg_pct": -2.13
+    }
+  ],
+  "pharma": [
+    {
+      "sym": "LLY",
+      "rank": 1,
+      "mcap_b": 898.3,
+      "price": 1007.38,
+      "chg_pct": 0.06
+    },
+    {
+      "sym": "JNJ",
+      "rank": 2,
+      "mcap_b": 549.6,
+      "price": 228.31,
+      "chg_pct": -1.12
+    },
+    {
+      "sym": "MRK",
+      "rank": 3,
+      "mcap_b": 274.3,
+      "price": 111.07,
+      "chg_pct": -2.08
+    },
+    {
+      "sym": "AMGN",
+      "rank": 4,
+      "mcap_b": 176.9,
+      "price": 327.12,
+      "chg_pct": -2.6
+    },
+    {
+      "sym": "GILD",
+      "rank": 5,
+      "mcap_b": 160.8,
+      "price": 129.5,
+      "chg_pct": -1.95
+    }
+  ],
+  "tech": [
+    {
+      "sym": "NVDA",
+      "rank": 1,
+      "mcap_b": 5536.0,
+      "price": 228.39,
+      "chg_pct": -3.01
+    },
+    {
+      "sym": "GOOGL",
+      "rank": 2,
+      "mcap_b": 4809.3,
+      "price": 396.92,
+      "chg_pct": -1.05
+    },
+    {
+      "sym": "AAPL",
+      "rank": 3,
+      "mcap_b": 4439.7,
+      "price": 302.28,
+      "chg_pct": 1.37
+    },
+    {
+      "sym": "MSFT",
+      "rank": 4,
+      "mcap_b": 3135.9,
+      "price": 422.13,
+      "chg_pct": 3.11
+    },
+    {
+      "sym": "AMZN",
+      "rank": 5,
+      "mcap_b": 2823.9,
+      "price": 262.51,
+      "chg_pct": -1.76
+    },
+    {
+      "sym": "AVGO",
+      "rank": 6,
+      "mcap_b": 2022.4,
+      "price": 427.05,
+      "chg_pct": -2.92
+    },
+    {
+      "sym": "TSLA",
+      "rank": 7,
+      "mcap_b": 1602.5,
+      "price": 426.6,
+      "chg_pct": -3.74
+    },
+    {
+      "sym": "META",
+      "rank": 8,
+      "mcap_b": 1557.1,
+      "price": 613.31,
+      "chg_pct": -0.81
+    },
+    {
+      "sym": "AMD",
+      "rank": 9,
+      "mcap_b": 709.6,
+      "price": 434.9,
+      "chg_pct": -3.22
+    },
+    {
+      "sym": "ORCL",
+      "rank": 10,
+      "mcap_b": 555.9,
+      "price": 193.3,
+      "chg_pct": -1.17
+    }
+  ],
+  "top_def": [
+    "RTX",
+    "LMT"
+  ],
+  "top_pha": [
+    "LLY",
+    "JNJ"
+  ],
+  "top_tec": [
+    "NVDA",
+    "GOOGL",
+    "AAPL",
+    "MSFT",
+    "AMZN",
+    "AVGO"
+  ],
+  "d2p2t6_portfolio": [
+    "AAPL",
+    "AMZN",
+    "AVGO",
+    "GOOGL",
+    "JNJ",
+    "LLY",
+    "LMT",
+    "MSFT",
+    "NVDA",
+    "RTX"
+  ],
+  "caps_b": {
+    "LMT": 118.9,
+    "RTX": 233.3,
+    "NOC": 77.1,
+    "GD": 91.2,
+    "HII": 13.0,
+    "LHX": 56.7,
+    "LDOS": 15.7,
+    "TDG": 64.5,
+    "TXT": 15.7,
+    "CW": 27.1,
+    "JNJ": 549.6,
+    "PFE": 144.2,
+    "MRK": 274.3,
+    "LLY": 898.3,
+    "AMGN": 176.9,
+    "BMY": 114.8,
+    "GILD": 160.8,
+    "ABT": 146.8,
+    "BIIB": 28.3,
+    "REGN": 73.0,
+    "AAPL": 4439.7,
+    "MSFT": 3135.9,
+    "NVDA": 5536.0,
+    "GOOGL": 4809.3,
+    "META": 1557.1,
+    "AMZN": 2823.9,
+    "TSLA": 1602.5,
+    "ORCL": 555.9,
+    "AMD": 709.6,
+    "AVGO": 2022.4
+  },
+  "prices": {
+    "LMT": 515.83,
+    "RTX": 173.4,
+    "NOC": 542.69,
+    "GD": 337.57,
+    "HII": 331.36,
+    "LHX": 304.46,
+    "LDOS": 124.99,
+    "TDG": 1154.08,
+    "TXT": 90.39,
+    "CW": 729.54,
+    "JNJ": 228.31,
+    "PFE": 25.3,
+    "MRK": 111.07,
+    "LLY": 1007.38,
+    "AMGN": 327.12,
+    "BMY": 56.23,
+    "GILD": 129.5,
+    "ABT": 84.24,
+    "BIIB": 191.47,
+    "REGN": 695.1,
+    "AAPL": 302.28,
+    "MSFT": 422.13,
+    "NVDA": 228.39,
+    "GOOGL": 396.92,
+    "META": 613.31,
+    "AMZN": 262.51,
+    "TSLA": 426.6,
+    "ORCL": 193.3,
+    "AMD": 434.9,
+    "AVGO": 427.05
+  }
+}
