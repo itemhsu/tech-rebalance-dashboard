@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>D2P2T6 Dashboard</title>
+  <title>D2P2T6 Dashboard — 帳戶 #1</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
@@ -19,11 +19,22 @@
 
   <!-- Header -->
   <div class="mb-6">
-    <div class="flex items-center justify-between flex-wrap gap-2">
-      <h1 class="text-2xl font-bold text-white">D2P2T6 Dashboard</h1>
-      <span class="text-xs text-slate-500">2026-05-16 04:36 台灣時間</span>
+    <div class="flex items-start justify-between flex-wrap gap-3">
+      <!-- 左：標題 + 副標題 -->
+      <div>
+        <h1 class="text-2xl font-bold text-white">D2P2T6 Dashboard</h1>
+        <p class="text-slate-500 text-xs mt-1">軍火×2 + 醫藥×2 + 科技×6 = 10 檔等權重</p>
+      </div>
+      <!-- 右：帳戶選單 + 更新時間 -->
+      <div class="flex items-center gap-3 flex-wrap justify-end">
+        
+      <span class="inline-flex items-center gap-1 bg-slate-800 border border-slate-700
+                   text-slate-300 text-xs font-semibold px-2.5 py-1 rounded-md">
+        帳戶&nbsp;#1
+      </span>
+        <span class="text-xs text-slate-500 whitespace-nowrap">2026-05-16 04:54 台灣時間</span>
+      </div>
     </div>
-    <p class="text-slate-500 text-xs mt-1">軍火×2 + 醫藥×2 + 科技×6 = 10 檔等權重</p>
   </div>
 
   <!-- KPI Cards -->
@@ -31,17 +42,17 @@
   <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
     <div class="card">
       <div class="text-xs text-slate-400 uppercase tracking-wide mb-1">總 NAV</div>
-      <div class="text-2xl font-bold text-white">$100,734.59</div>
+      <div class="text-2xl font-bold text-white">$100,745.73</div>
       <div class="text-xs text-slate-500 mt-1">期初 $100,000.00</div>
     </div>
     <div class="card">
       <div class="text-xs text-slate-400 uppercase tracking-wide mb-1">今日變動</div>
-      <div class="text-2xl font-bold text-red-400">$-1,224.37</div>
-      <div class="text-xs text-red-400 mt-1">-1.20%</div>
+      <div class="text-2xl font-bold text-red-400">$-1,213.23</div>
+      <div class="text-xs text-red-400 mt-1">-1.19%</div>
     </div>
     <div class="card">
       <div class="text-xs text-slate-400 uppercase tracking-wide mb-1">累計報酬</div>
-      <div class="text-2xl font-bold text-emerald-400">+0.73%</div>
+      <div class="text-2xl font-bold text-emerald-400">+0.75%</div>
       <div class="text-xs text-slate-500 mt-1">自 2026-05-13</div>
     </div>
     <div class="card">
@@ -71,7 +82,7 @@
         datasets: [
           {
             label: '帳戶 NAV',
-            data: [101383.76, 101958.96, 100734.59],
+            data: [101383.76, 101958.96, 100745.73],
             borderColor: '#6366f1',
             backgroundColor: '#6366f118',
             borderWidth: 2,
@@ -236,10 +247,10 @@
           </td>
           <td class="py-2 px-3 text-right">45</td>
           <td class="py-2 px-3 text-right text-slate-400">$225.51</td>
-          <td class="py-2 px-3 text-right">$225.18</td>
-          <td class="py-2 px-3 text-right font-semibold">$10,133.09</td>
-          <td class="py-2 px-3 text-right text-red-400 font-semibold">$-14.65</td>
-          <td class="py-2 px-3 text-right text-red-400">-0.14%</td>
+          <td class="py-2 px-3 text-right">$225.01</td>
+          <td class="py-2 px-3 text-right font-semibold">$10,125.63</td>
+          <td class="py-2 px-3 text-right text-red-400 font-semibold">$-22.11</td>
+          <td class="py-2 px-3 text-right text-red-400">-0.22%</td>
           <td class="py-2 px-3 text-right">
             <div class="flex items-center gap-1.5 justify-end">
               <span class="text-slate-300">10.1%</span>
@@ -257,10 +268,10 @@
           </td>
           <td class="py-2 px-3 text-right">24</td>
           <td class="py-2 px-3 text-right text-slate-400">$402.25</td>
-          <td class="py-2 px-3 text-right">$420.71</td>
-          <td class="py-2 px-3 text-right font-semibold">$10,097.04</td>
-          <td class="py-2 px-3 text-right text-emerald-400 font-semibold">$443.04</td>
-          <td class="py-2 px-3 text-right text-emerald-400">+4.59%</td>
+          <td class="py-2 px-3 text-right">$420.34</td>
+          <td class="py-2 px-3 text-right font-semibold">$10,088.16</td>
+          <td class="py-2 px-3 text-right text-emerald-400 font-semibold">$434.16</td>
+          <td class="py-2 px-3 text-right text-emerald-400">+4.50%</td>
           <td class="py-2 px-3 text-right">
             <div class="flex items-center gap-1.5 justify-end">
               <span class="text-slate-300">10.0%</span>
@@ -316,14 +327,14 @@
         </tr>
         <tr class="border-b border-slate-700/60 hover:bg-slate-700/30 transition-colors">
           <td class="py-2 px-3 font-mono font-bold text-sky-300">
-            AAPL<span class="text-xs bg-emerald-700 text-white px-1.5 py-0.5 rounded ml-1">✓</span>
+            GOOGL<span class="text-xs bg-emerald-700 text-white px-1.5 py-0.5 rounded ml-1">✓</span>
           </td>
-          <td class="py-2 px-3 text-right">33</td>
-          <td class="py-2 px-3 text-right text-slate-400">$295.32</td>
-          <td class="py-2 px-3 text-right">$300.08</td>
-          <td class="py-2 px-3 text-right font-semibold">$9,902.64</td>
-          <td class="py-2 px-3 text-right text-emerald-400 font-semibold">$156.95</td>
-          <td class="py-2 px-3 text-right text-emerald-400">+1.61%</td>
+          <td class="py-2 px-3 text-right">25</td>
+          <td class="py-2 px-3 text-right text-slate-400">$386.86</td>
+          <td class="py-2 px-3 text-right">$396.41</td>
+          <td class="py-2 px-3 text-right font-semibold">$9,910.25</td>
+          <td class="py-2 px-3 text-right text-emerald-400 font-semibold">$238.73</td>
+          <td class="py-2 px-3 text-right text-emerald-400">+2.47%</td>
           <td class="py-2 px-3 text-right">
             <div class="flex items-center gap-1.5 justify-end">
               <span class="text-slate-300">9.8%</span>
@@ -337,14 +348,14 @@
         </tr>
         <tr class="border-b border-slate-700/60 hover:bg-slate-700/30 transition-colors">
           <td class="py-2 px-3 font-mono font-bold text-sky-300">
-            GOOGL<span class="text-xs bg-emerald-700 text-white px-1.5 py-0.5 rounded ml-1">✓</span>
+            AAPL<span class="text-xs bg-emerald-700 text-white px-1.5 py-0.5 rounded ml-1">✓</span>
           </td>
-          <td class="py-2 px-3 text-right">25</td>
-          <td class="py-2 px-3 text-right text-slate-400">$386.86</td>
-          <td class="py-2 px-3 text-right">$396.04</td>
-          <td class="py-2 px-3 text-right font-semibold">$9,901.03</td>
-          <td class="py-2 px-3 text-right text-emerald-400 font-semibold">$229.51</td>
-          <td class="py-2 px-3 text-right text-emerald-400">+2.37%</td>
+          <td class="py-2 px-3 text-right">33</td>
+          <td class="py-2 px-3 text-right text-slate-400">$295.32</td>
+          <td class="py-2 px-3 text-right">$299.94</td>
+          <td class="py-2 px-3 text-right font-semibold">$9,898.02</td>
+          <td class="py-2 px-3 text-right text-emerald-400 font-semibold">$152.33</td>
+          <td class="py-2 px-3 text-right text-emerald-400">+1.56%</td>
           <td class="py-2 px-3 text-right">
             <div class="flex items-center gap-1.5 justify-end">
               <span class="text-slate-300">9.8%</span>
@@ -383,10 +394,10 @@
           </td>
           <td class="py-2 px-3 text-right">23</td>
           <td class="py-2 px-3 text-right text-slate-400">$415.77</td>
-          <td class="py-2 px-3 text-right">$424.71</td>
-          <td class="py-2 px-3 text-right font-semibold">$9,768.33</td>
-          <td class="py-2 px-3 text-right text-emerald-400 font-semibold">$205.62</td>
-          <td class="py-2 px-3 text-right text-emerald-400">+2.15%</td>
+          <td class="py-2 px-3 text-right">$425.19</td>
+          <td class="py-2 px-3 text-right font-semibold">$9,779.37</td>
+          <td class="py-2 px-3 text-right text-emerald-400 font-semibold">$216.66</td>
+          <td class="py-2 px-3 text-right text-emerald-400">+2.27%</td>
           <td class="py-2 px-3 text-right">
             <div class="flex items-center gap-1.5 justify-end">
               <span class="text-slate-300">9.7%</span>
@@ -425,10 +436,10 @@
           </td>
           <td class="py-2 px-3 text-right">37</td>
           <td class="py-2 px-3 text-right text-slate-400">$263.97</td>
-          <td class="py-2 px-3 text-right">$262.96</td>
-          <td class="py-2 px-3 text-right font-semibold">$9,729.52</td>
-          <td class="py-2 px-3 text-right text-red-400 font-semibold">$-37.42</td>
-          <td class="py-2 px-3 text-right text-red-400">-0.38%</td>
+          <td class="py-2 px-3 text-right">$263.28</td>
+          <td class="py-2 px-3 text-right font-semibold">$9,741.36</td>
+          <td class="py-2 px-3 text-right text-red-400 font-semibold">$-25.58</td>
+          <td class="py-2 px-3 text-right text-red-400">-0.26%</td>
           <td class="py-2 px-3 text-right">
             <div class="flex items-center gap-1.5 justify-end">
               <span class="text-slate-300">9.7%</span>
@@ -642,7 +653,7 @@
             <td class="py-1.5 px-3 text-sm font-mono font-bold text-sky-300">
               NVDA <span class="text-xs text-emerald-400">✓</span>
             </td>
-            <td class="py-1.5 px-3 text-right text-sm">$225.14</td>
+            <td class="py-1.5 px-3 text-right text-sm">$225.08</td>
             <td class="py-1.5 px-3 text-right text-xs font-semibold"
                 style="color:#ef4444">-4.42%</td>
             <td class="py-1.5 px-3 text-right text-xs text-slate-400">
@@ -654,7 +665,7 @@
             <td class="py-1.5 px-3 text-sm font-mono font-bold text-sky-300">
               GOOGL <span class="text-xs text-emerald-400">✓</span>
             </td>
-            <td class="py-1.5 px-3 text-right text-sm">$396.01</td>
+            <td class="py-1.5 px-3 text-right text-sm">$396.31</td>
             <td class="py-1.5 px-3 text-right text-xs font-semibold"
                 style="color:#ef4444">-1.07%</td>
             <td class="py-1.5 px-3 text-right text-xs text-slate-400">
@@ -782,7 +793,7 @@
         <tbody>
         <tr class="border-b border-slate-700/60">
           <td class="py-2 px-3 font-mono text-slate-300">2026-05-15</td>
-          <td class="py-2 px-3 text-right font-semibold">$100,734.59</td>
+          <td class="py-2 px-3 text-right font-semibold">$100,745.73</td>
           <td class="py-2 px-3 text-center">無異動</td>
           <td class="py-2 px-3 text-slate-400 text-xs">AAPL, AMZN, AVGO, GOOGL, JNJ, LLY, LMT, MSFT, NVDA, RTX</td>
         </tr>

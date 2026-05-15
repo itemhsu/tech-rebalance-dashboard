@@ -1,43 +1,43 @@
 {
   "date": "2026-05-15",
-  "nav": 100734.59,
+  "nav": 100745.73,
   "cash": 1609.73,
   "positions": [
     {
       "symbol": "AAPL",
       "qty": 33.0,
       "avg_entry_price": 295.323939,
-      "current_price": 300.08,
-      "market_value": 9902.64,
-      "unrealized_pl": 156.950013,
-      "unrealized_plpc": 0.01610455629199772
+      "current_price": 299.94,
+      "market_value": 9898.02,
+      "unrealized_pl": 152.330013,
+      "unrealized_plpc": 0.015630500580584496
     },
     {
       "symbol": "AMZN",
       "qty": 37.0,
       "avg_entry_price": 263.971351,
-      "current_price": 262.96,
-      "market_value": 9729.52,
-      "unrealized_pl": -37.419987,
-      "unrealized_plpc": -0.0038312907676106103
+      "current_price": 263.28,
+      "market_value": 9741.36,
+      "unrealized_pl": -25.579987,
+      "unrealized_plpc": -0.0026190380031051166
     },
     {
       "symbol": "AVGO",
       "qty": 23.0,
       "avg_entry_price": 415.77,
-      "current_price": 424.71,
-      "market_value": 9768.33,
-      "unrealized_pl": 205.62,
-      "unrealized_plpc": 0.021502272891261998
+      "current_price": 425.19,
+      "market_value": 9779.37,
+      "unrealized_pl": 216.66,
+      "unrealized_plpc": 0.022656757341799554
     },
     {
       "symbol": "GOOGL",
       "qty": 25.0,
       "avg_entry_price": 386.8608,
-      "current_price": 396.0412,
-      "market_value": 9901.03,
-      "unrealized_pl": 229.51,
-      "unrealized_plpc": 0.02373049944579549
+      "current_price": 396.41,
+      "market_value": 9910.25,
+      "unrealized_pl": 238.73,
+      "unrealized_plpc": 0.02468381391963207
     },
     {
       "symbol": "JNJ",
@@ -70,19 +70,19 @@
       "symbol": "MSFT",
       "qty": 24.0,
       "avg_entry_price": 402.25,
-      "current_price": 420.71,
-      "market_value": 10097.04,
-      "unrealized_pl": 443.04,
-      "unrealized_plpc": 0.04589185829707893
+      "current_price": 420.34,
+      "market_value": 10088.16,
+      "unrealized_pl": 434.16,
+      "unrealized_plpc": 0.04497203231821007
     },
     {
       "symbol": "NVDA",
       "qty": 45.0,
       "avg_entry_price": 225.505333,
-      "current_price": 225.1798,
-      "market_value": 10133.091,
-      "unrealized_pl": -14.648985,
-      "unrealized_plpc": -0.0014435711815294408
+      "current_price": 225.0139,
+      "market_value": 10125.6255,
+      "unrealized_pl": -22.114485,
+      "unrealized_plpc": -0.0021792522308108782
     },
     {
       "symbol": "RTX",
@@ -170,13 +170,13 @@
     },
     {
       "symbol": "NVDA",
-      "close_price": 225.14,
+      "close_price": 225.08,
       "market_cap": 5457400000000.0,
       "rank": 1
     },
     {
       "symbol": "GOOGL",
-      "close_price": 396.01,
+      "close_price": 396.31,
       "market_cap": 4807200000000.0,
       "rank": 2
     },

@@ -79,14 +79,14 @@
       "sym": "NVDA",
       "rank": 1,
       "mcap_b": 5457.4,
-      "price": 225.14,
+      "price": 225.08,
       "chg_pct": -4.42
     },
     {
       "sym": "GOOGL",
       "rank": 2,
       "mcap_b": 4807.2,
-      "price": 396.01,
+      "price": 396.31,
       "chg_pct": -1.07
     },
     {
@@ -229,8 +229,8 @@
     "REGN": 698.22,
     "AAPL": 300.0,
     "MSFT": 420.8,
-    "NVDA": 225.14,
-    "GOOGL": 396.01,
+    "NVDA": 225.08,
+    "GOOGL": 396.31,
     "META": 614.38,
     "AMZN": 264.22,
     "TSLA": 422.27,
