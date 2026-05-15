@@ -1,97 +1,97 @@
 {
   "date": "2026-05-15",
-  "nav": 104537.69,
+  "nav": 103923.58,
   "cash": 1620.35,
   "positions": [
     {
       "symbol": "AAPL",
       "qty": 35.0,
       "avg_entry_price": 284.091143,
-      "current_price": 300.835,
-      "market_value": 10529.225,
-      "unrealized_pl": 586.034995,
-      "unrealized_plpc": 0.058938328112538164
+      "current_price": 299.93,
+      "market_value": 10497.55,
+      "unrealized_pl": 554.359995,
+      "unrealized_plpc": 0.05575273073543162
     },
     {
       "symbol": "AMD",
       "qty": 27.0,
       "avg_entry_price": 358.475926,
-      "current_price": 431.87,
-      "market_value": 11660.49,
-      "unrealized_pl": 1981.639998,
-      "unrealized_plpc": 0.20473919913941444
+      "current_price": 423.1746,
+      "market_value": 11425.7142,
+      "unrealized_pl": 1746.864198,
+      "unrealized_plpc": 0.18048261907551358
     },
     {
       "symbol": "AMZN",
       "qty": 36.0,
       "avg_entry_price": 273.814722,
-      "current_price": 262.11,
-      "market_value": 9435.96,
-      "unrealized_pl": -421.369992,
-      "unrealized_plpc": -0.04274686881153161
+      "current_price": 262.92,
+      "market_value": 9465.12,
+      "unrealized_pl": -392.209992,
+      "unrealized_plpc": -0.03978866410258247
     },
     {
       "symbol": "AVGO",
       "qty": 23.0,
       "avg_entry_price": 432.406522,
-      "current_price": 426.095,
-      "market_value": 9800.185,
-      "unrealized_pl": -145.165006,
-      "unrealized_plpc": -0.014596269202433537
+      "current_price": 423.5597,
+      "market_value": 9741.8731,
+      "unrealized_pl": -203.476906,
+      "unrealized_plpc": -0.020459501764869308
     },
     {
       "symbol": "GOOGL",
       "qty": 25.0,
       "avg_entry_price": 386.57,
-      "current_price": 395.94,
-      "market_value": 9898.5,
-      "unrealized_pl": 234.25,
-      "unrealized_plpc": 0.024238818325270972
+      "current_price": 396.06,
+      "market_value": 9901.5,
+      "unrealized_pl": 237.25,
+      "unrealized_plpc": 0.024549240758465478
     },
     {
       "symbol": "META",
       "qty": 16.0,
       "avg_entry_price": 604.29,
-      "current_price": 613.065,
-      "market_value": 9809.04,
-      "unrealized_pl": 140.4,
-      "unrealized_plpc": 0.014521173608697813
+      "current_price": 611.7,
+      "market_value": 9787.2,
+      "unrealized_pl": 118.56,
+      "unrealized_plpc": 0.012262324380678152
     },
     {
       "symbol": "MSFT",
       "qty": 24.0,
       "avg_entry_price": 410.65,
-      "current_price": 421.24,
-      "market_value": 10109.76,
-      "unrealized_pl": 254.16,
-      "unrealized_plpc": 0.02578838426884208
+      "current_price": 420.48,
+      "market_value": 10091.52,
+      "unrealized_pl": 235.92,
+      "unrealized_plpc": 0.023937659807622066
     },
     {
       "symbol": "NVDA",
       "qty": 50.0,
       "avg_entry_price": 197.2,
-      "current_price": 227.8101,
-      "market_value": 11390.505,
-      "unrealized_pl": 1530.505,
-      "unrealized_plpc": 0.155223630831643
+      "current_price": 224.64,
+      "market_value": 11232.0,
+      "unrealized_pl": 1372.0,
+      "unrealized_plpc": 0.13914807302231239
     },
     {
       "symbol": "TSM",
       "qty": 25.0,
       "avg_entry_price": 396.99,
-      "current_price": 406.39,
-      "market_value": 10159.75,
-      "unrealized_pl": 235.0,
-      "unrealized_plpc": 0.023678178291644626
+      "current_price": 403.43,
+      "market_value": 10085.75,
+      "unrealized_pl": 161.0,
+      "unrealized_plpc": 0.016222071084913976
     },
     {
       "symbol": "V",
       "qty": 31.0,
       "avg_entry_price": 321.99,
-      "current_price": 326.53,
-      "market_value": 10122.43,
-      "unrealized_pl": 140.74,
-      "unrealized_plpc": 0.014099816764495792
+      "current_price": 325.0,
+      "market_value": 10075.0,
+      "unrealized_pl": 93.31,
+      "unrealized_plpc": 0.00934811640113047
     }
   ],
   "top10": [
@@ -110,142 +110,142 @@
   "ranked_stocks": [
     {
       "symbol": "NVDA",
-      "close_price": 227.695,
+      "close_price": 225.08,
       "shares_outstanding": 24440000000,
-      "market_cap": 5564865800000.0,
+      "market_cap": 5500955200000.0,
       "rank": 1
     },
     {
       "symbol": "AAPL",
-      "close_price": 300.78,
+      "close_price": 300.0,
       "shares_outstanding": 15204137000,
-      "market_cap": 4573100326860.0,
+      "market_cap": 4561241100000.0,
       "rank": 2
     },
     {
       "symbol": "MSFT",
-      "close_price": 421.01,
+      "close_price": 420.8,
       "shares_outstanding": 7433000000,
-      "market_cap": 3129367330000.0,
+      "market_cap": 3127806400000.0,
       "rank": 3
     },
     {
       "symbol": "AMZN",
-      "close_price": 261.925,
+      "close_price": 264.22,
       "shares_outstanding": 10525000000,
-      "market_cap": 2756760625000.0,
+      "market_cap": 2780915500000.0005,
       "rank": 4
     },
     {
       "symbol": "GOOGL",
-      "close_price": 395.715,
+      "close_price": 396.31,
       "shares_outstanding": 5949000000,
-      "market_cap": 2354108535000.0,
+      "market_cap": 2357648190000.0,
       "rank": 5
     },
     {
       "symbol": "TSM",
-      "close_price": 405.94,
+      "close_price": 403.61,
       "shares_outstanding": 5180000000,
-      "market_cap": 2102769200000.0,
+      "market_cap": 2090699800000.0,
       "rank": 6
     },
     {
       "symbol": "AVGO",
-      "close_price": 425.61,
+      "close_price": 425.03,
       "shares_outstanding": 4680000000,
-      "market_cap": 1991854800000.0,
+      "market_cap": 1989140399999.9998,
       "rank": 7
     },
     {
       "symbol": "META",
-      "close_price": 612.675,
+      "close_price": 614.38,
       "shares_outstanding": 2560000000,
-      "market_cap": 1568448000000.0,
+      "market_cap": 1572812800000.0,
       "rank": 8
     },
     {
       "symbol": "AMD",
-      "close_price": 431.65,
+      "close_price": 424.18,
       "shares_outstanding": 1617000000,
-      "market_cap": 697978050000.0,
+      "market_cap": 685899060000.0,
       "rank": 9
     },
     {
       "symbol": "V",
-      "close_price": 326.43,
+      "close_price": 325.74,
       "shares_outstanding": 2060000000,
-      "market_cap": 672445800000.0,
+      "market_cap": 671024400000.0,
       "rank": 10
     },
     {
       "symbol": "ASML",
-      "close_price": 1516.44,
+      "close_price": 1498.69,
       "shares_outstanding": 394000000,
-      "market_cap": 597477360000.0,
+      "market_cap": 590483860000.0,
       "rank": 11
     },
     {
       "symbol": "ORCL",
-      "close_price": 191.97,
+      "close_price": 192.47,
       "shares_outstanding": 2750000000,
-      "market_cap": 527917500000.0,
+      "market_cap": 529292500000.0,
       "rank": 12
     },
     {
       "symbol": "CSCO",
-      "close_price": 116.31,
+      "close_price": 118.25,
       "shares_outstanding": 4040000000,
-      "market_cap": 469892400000.0,
+      "market_cap": 477730000000.0,
       "rank": 13
     },
     {
       "symbol": "INTC",
-      "close_price": 108.34,
+      "close_price": 108.08,
       "shares_outstanding": 4260000000,
-      "market_cap": 461528400000.0,
+      "market_cap": 460420800000.0,
       "rank": 14
     },
     {
       "symbol": "MA",
-      "close_price": 496.49,
+      "close_price": 494.32,
       "shares_outstanding": 924000000,
-      "market_cap": 458756760000.0,
+      "market_cap": 456751680000.0,
       "rank": 15
     },
     {
       "symbol": "PLTR",
-      "close_price": 133.68,
+      "close_price": 133.79,
       "shares_outstanding": 2100000000,
-      "market_cap": 280728000000.0,
+      "market_cap": 280959000000.0,
       "rank": 16
     },
     {
       "symbol": "TXN",
-      "close_price": 305.0,
+      "close_price": 302.695,
       "shares_outstanding": 908000000,
-      "market_cap": 276940000000.0,
+      "market_cap": 274847060000.0,
       "rank": 17
     },
     {
       "symbol": "QCOM",
-      "close_price": 199.68,
+      "close_price": 200.27,
       "shares_outstanding": 1120000000,
-      "market_cap": 223641600000.0,
+      "market_cap": 224302400000.0,
       "rank": 18
     },
     {
       "symbol": "IBM",
-      "close_price": 218.55,
+      "close_price": 219.435,
       "shares_outstanding": 906000000,
-      "market_cap": 198006300000.0,
+      "market_cap": 198808110000.0,
       "rank": 19
     },
     {
       "symbol": "CRM",
-      "close_price": 173.36,
+      "close_price": 173.48,
       "shares_outstanding": 968000000,
-      "market_cap": 167812480000.0,
+      "market_cap": 167928640000.0,
       "rank": 20
     }
   ]
