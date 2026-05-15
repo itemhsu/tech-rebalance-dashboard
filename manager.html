@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>策略管理介面 — Tech Rebalance</title>
+<style>
+  :root {
+    --bg:      #0f1117;
+    --surface: #1a1d27;
+    --border:  #2a2d3a;
+    --text:    #e2e8f0;
+    --muted:   #6b7280;
+    --green:   #22c55e;
+    --red:     #ef4444;
+    --amber:   #f59e0b;
+    --blue:    #3b82f6;
+    --purple:  #a855f7;
+    --orange:  #f97316;
+    --cyan:    #06b6d4;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 14px;
+    min-height: 100vh;
+  }
+
+  /* ── Header ───────────────────────────────────────────────────── */
+  header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  header h1 { font-size: 18px; font-weight: 700; letter-spacing: -0.3px; }
+  header h1 span { color: var(--blue); }
+  .token-wrap {
+    display: flex; gap: 8px; align-items: center;
+  }
+  .token-wrap input {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text);
+    padding: 6px 10px;
+    font-size: 13px;
+    width: 220px;
+  }
+  .token-wrap button {
+    background: var(--blue);
+    border: none; border-radius: 6px;
+    color: #fff; cursor: pointer;
+    font-size: 13px; padding: 6px 14px;
+    transition: opacity .15s;
+  }
+  .token-wrap button:hover { opacity: .85; }
+  #token-status { font-size: 12px; color: var(--muted); }
+
+  /* ── Main layout ───────────────────────────────────────────────── */
+  main { padding: 24px; }
+  .section-title {
+    font-size: 11px; font-weight: 600; letter-spacing: .08em;
+    color: var(--muted); text-transform: uppercase; margin-bottom: 12px;
+  }
+
+  /* ── Table ─────────────────────────────────────────────────────── */
+  .grid-wrapper { overflow-x: auto; }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    min-width: 600px;
+  }
+  th, td {
+    border: 1px solid var(--border);
+    padding: 12px 16px;
+    text-align: left;
+    vertical-align: top;
+  }
+  thead th {
+    background: var(--surface);
+    font-size: 11px; font-weight: 700;
+    letter-spacing: .06em; text-transform: uppercase;
+    color: var(--muted);
+  }
+  thead th.strategy-col { text-align: center; }
+  tbody tr:hover td { background: rgba(255,255,255,.03); }
+  td.account-col {
+    background: var(--surface);
+    font-weight: 600; white-space: nowrap;
+    min-width: 120px;
+  }
+  td.account-col .acct-id { font-size: 18px; font-weight: 800; }
+  td.account-col .acct-label { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+  /* ── Strategy cell ─────────────────────────────────────────────── */
+  .cell { min-width: 200px; }
+  .cell-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 10px;
+  }
+  .status-badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 11px; font-weight: 600; padding: 3px 8px;
+    border-radius: 999px;
+  }
+  .status-badge.enabled  { background: rgba(34,197,94,.15);  color: var(--green); }
+  .status-badge.disabled { background: rgba(239,68,68,.15);  color: var(--red); }
+  .status-badge.unknown  { background: rgba(107,114,128,.15); color: var(--muted); }
+  .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+
+  .nav-line {
+    font-size: 12px; color: var(--muted); margin-bottom: 8px;
+  }
+  .nav-line strong { color: var(--text); font-size: 15px; }
+  .nav-change { font-size: 11px; }
+  .nav-change.pos { color: var(--green); }
+  .nav-change.neg { color: var(--red); }
+
+  .btn-row { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
+  .btn {
+    border: none; border-radius: 6px; cursor: pointer;
+    font-size: 12px; font-weight: 600; padding: 5px 12px;
+    transition: opacity .15s;
+  }
+  .btn:hover { opacity: .8; }
+  .btn:disabled { opacity: .4; cursor: not-allowed; }
+  .btn-enable  { background: rgba(34,197,94,.2);  color: var(--green); }
+  .btn-disable { background: rgba(239,68,68,.2);  color: var(--red); }
+  .btn-run     { background: rgba(59,130,246,.2); color: var(--blue); }
+  .btn-dash    { background: rgba(107,114,128,.18); color: var(--muted); }
+
+  .last-run { font-size: 11px; color: var(--muted); margin-top: 6px; }
+
+  /* ── Footer ────────────────────────────────────────────────────── */
+  footer {
+    margin-top: 40px; padding: 0 24px 24px;
+    font-size: 11px; color: var(--muted);
+  }
+  footer a { color: var(--blue); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+
+  /* ── Toast ─────────────────────────────────────────────────────── */
+  #toast {
+    position: fixed; bottom: 24px; right: 24px;
+    background: #1e2130; border: 1px solid var(--border);
+    border-radius: 8px; padding: 10px 16px;
+    font-size: 13px; max-width: 320px;
+    box-shadow: 0 4px 24px rgba(0,0,0,.5);
+    transition: opacity .3s;
+    opacity: 0; pointer-events: none;
+    z-index: 999;
+  }
+  #toast.show { opacity: 1; pointer-events: auto; }
+  #toast.ok  { border-color: var(--green); }
+  #toast.err { border-color: var(--red); }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>⚙️ <span>Tech Rebalance</span> 管理介面</h1>
+  <div class="token-wrap">
+    <input type="password" id="token-input" placeholder="GitHub Personal Access Token">
+    <button onclick="saveToken()">儲存</button>
+    <span id="token-status">未儲存</span>
+  </div>
+</header>
+
+<main>
+  <p class="section-title">帳戶 × 策略 管理表</p>
+  <div class="grid-wrapper">
+    <table id="mgr-table">
+      <thead>
+        <tr>
+          <th>帳戶</th>
+          <th class="strategy-col" id="th-top10">📈 TOP10 科技</th>
+          <th class="strategy-col" id="th-d2p2t6">🎯 D2P2T6</th>
+        </tr>
+      </thead>
+      <tbody id="table-body">
+        <!-- rows injected by JS -->
+      </tbody>
+    </table>
+  </div>
+</main>
+
+<footer>
+  <p>
+    Token 需具備 <code>actions: write</code> 權限（此 repo）。
+    僅儲存於 sessionStorage（關閉頁面即清除）。
+    · <a href="https://github.com/itemhsu/tech-rebalance/actions" target="_blank">查看 Actions</a>
+    · <a href="https://github.com/itemhsu/tech-rebalance/settings/secrets/actions" target="_blank">管理 Secrets</a>
+  </p>
+</footer>
+
+<div id="toast"></div>
+
+<script>
+'use strict';
+
+// ── 設定：帳戶與策略定義 ────────────────────────────────────────────────────
+const REPO   = 'itemhsu/tech-rebalance';
+const OWNER  = 'itemhsu';
+const REPO_NAME = 'tech-rebalance';
+
+const STRATEGIES = [
+  {
+    id:       'top10',
+    label:    'TOP10 科技',
+    color:    '#3b82f6',
+    // workflow file for account N: just one file, account injected via env
+    workflowFn: (acctId) => 'daily_rebalance.yml',
+    dashboardFn:(acctId) => `https://itemhsu.github.io/tech-rebalance-dashboard/top10/${acctId}/dashboard.html`,
+    stateFn:    (acctId) => `data/${acctId}/portfolio_state.json`,
+  },
+  {
+    id:       'd2p2t6',
+    label:    'D2P2T6',
+    color:    '#f97316',
+    workflowFn: (acctId) => 'd2p2t6_daily.yml',
+    dashboardFn:(acctId) => `https://itemhsu.github.io/tech-rebalance-dashboard/d2p2t6/${acctId}/dashboard.html`,
+    stateFn:    (acctId) => `d2p2t6/data/${acctId}/portfolio_state.json`,
+  },
+];
+
+const ACCOUNTS = [
+  { id: '1', label: '帳戶 #1（主帳）' },
+  // 新增帳戶：{ id: '2', label: '帳戶 #2' },
+];
+
+// ── Token ───────────────────────────────────────────────────────────────────
+function saveToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) return toast('請輸入 Token', 'err');
+  sessionStorage.setItem('gh_token', t);
+  document.getElementById('token-input').value = '';
+  document.getElementById('token-status').textContent = '✅ 已儲存（本分頁有效）';
+  toast('Token 已儲存至 sessionStorage', 'ok');
+  loadAllStatuses();
+}
+function getToken() { return sessionStorage.getItem('gh_token') || ''; }
+
+// ── GitHub API helpers ───────────────────────────────────────────────────────
+async function ghFetch(path, opts = {}) {
+  const token = getToken();
+  const headers = {
+    'Accept': 'application/vnd.github+json',
+    'X-GitHub-Api-Version': '2022-11-28',
+    ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+    ...(opts.headers || {}),
+  };
+  const res = await fetch(`https://api.github.com${path}`, { ...opts, headers });
+  if (!res.ok) {
+    const body = await res.text().catch(() => '');
+    throw new Error(`HTTP ${res.status}: ${body.slice(0, 120)}`);
+  }
+  if (res.status === 204) return {};
+  return res.json();
+}
+
+async function getWorkflowStatus(workflow) {
+  const data = await ghFetch(`/repos/${REPO}/actions/workflows/${workflow}`);
+  return data.state; // 'active' | 'disabled_manually' | 'disabled_inactivity'
+}
+
+async function enableWorkflow(workflow) {
+  await ghFetch(`/repos/${REPO}/actions/workflows/${workflow}/enable`, { method: 'PUT' });
+}
+async function disableWorkflow(workflow) {
+  await ghFetch(`/repos/${REPO}/actions/workflows/${workflow}/disable`, { method: 'PUT' });
+}
+async function triggerWorkflow(workflow, inputs = {}) {
+  await ghFetch(`/repos/${REPO}/actions/workflows/${workflow}/dispatches`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ ref: 'main', inputs }),
+  });
+}
+
+// ── Load portfolio_state.json via GitHub raw ─────────────────────────────────
+async function loadState(path) {
+  // Use GitHub Contents API (works even for private repos with token)
+  try {
+    const data = await ghFetch(`/repos/${REPO}/contents/${path}`);
+    const json = JSON.parse(atob(data.content));
+    return json;
+  } catch { return null; }
+}
+
+// ── Render ───────────────────────────────────────────────────────────────────
+function cellId(acctId, stratId) { return `cell-${acctId}-${stratId}`; }
+
+function renderTable() {
+  const tbody = document.getElementById('table-body');
+  tbody.innerHTML = '';
+  for (const acct of ACCOUNTS) {
+    const tr = document.createElement('tr');
+    // Account column
+    const tdAcct = document.createElement('td');
+    tdAcct.className = 'account-col';
+    tdAcct.innerHTML = `
+      <div class="acct-id">#${acct.id}</div>
+      <div class="acct-label">${acct.label}</div>`;
+    tr.appendChild(tdAcct);
+
+    // Strategy columns
+    for (const strat of STRATEGIES) {
+      const td = document.createElement('td');
+      td.className = 'cell';
+      td.id = cellId(acct.id, strat.id);
+      td.innerHTML = renderCellLoading(acct, strat);
+      tr.appendChild(td);
+    }
+    tbody.appendChild(tr);
+  }
+}
+
+function renderCellLoading(acct, strat) {
+  return `
+    <div class="cell-header">
+      <span class="status-badge unknown"><span class="dot"></span> 載入中…</span>
+    </div>
+    <div class="nav-line">NAV —</div>
+    <div class="btn-row">
+      <button class="btn btn-enable"  disabled>啟用</button>
+      <button class="btn btn-disable" disabled>停用</button>
+      <button class="btn btn-run"     disabled>立即執行</button>
+      <button class="btn btn-dash"    disabled>Dashboard</button>
+    </div>`;
+}
+
+function renderCell(acct, strat, status, state) {
+  const wf     = strat.workflowFn(acct.id);
+  const dashUrl= strat.dashboardFn(acct.id);
+  const isActive = status === 'active';
+
+  let navHtml = '<div class="nav-line">NAV —</div>';
+  if (state) {
+    const nav  = state.nav || 0;
+    const hist = (state.history || []);
+    const prev = hist.length >= 2 ? hist[hist.length - 2].nav : nav;
+    const chg  = nav - prev;
+    const pct  = prev ? (chg / prev * 100) : 0;
+    const sign = chg >= 0 ? '+' : '';
+    const cls  = chg >= 0 ? 'pos' : 'neg';
+    navHtml = `
+      <div class="nav-line">
+        NAV <strong>$${nav.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2})}</strong>
+        <span class="nav-change ${cls}">${sign}${pct.toFixed(2)}%</span>
+      </div>
+      <div class="last-run">最後更新：${state.date || '—'}</div>`;
+  }
+
+  return `
+    <div class="cell-header">
+      <span class="status-badge ${isActive ? 'enabled' : 'disabled'}">
+        <span class="dot"></span> ${isActive ? '執行中' : '已停用'}
+      </span>
+    </div>
+    ${navHtml}
+    <div class="btn-row">
+      <button class="btn btn-enable"
+        onclick="doEnable('${wf}','${acct.id}','${strat.id}')"
+        ${isActive ? 'disabled' : ''}>啟用</button>
+      <button class="btn btn-disable"
+        onclick="doDisable('${wf}','${acct.id}','${strat.id}')"
+        ${!isActive ? 'disabled' : ''}>停用</button>
+      <button class="btn btn-run"
+        onclick="doRun('${wf}','${acct.id}','${strat.id}')">立即執行</button>
+      <button class="btn btn-dash"
+        onclick="window.open('${dashUrl}','_blank')">Dashboard</button>
+    </div>`;
+}
+
+// ── Load all cell statuses ───────────────────────────────────────────────────
+async function loadAllStatuses() {
+  for (const acct of ACCOUNTS) {
+    for (const strat of STRATEGIES) {
+      loadCellStatus(acct, strat);
+    }
+  }
+}
+
+async function loadCellStatus(acct, strat) {
+  const el = document.getElementById(cellId(acct.id, strat.id));
+  if (!el) return;
+  try {
+    const wf     = strat.workflowFn(acct.id);
+    const statePath = strat.stateFn(acct.id);
+    const [status, state] = await Promise.all([
+      getWorkflowStatus(wf).catch(() => 'unknown'),
+      loadState(statePath).catch(() => null),
+    ]);
+    el.innerHTML = renderCell(acct, strat, status, state);
+  } catch (e) {
+    el.innerHTML = `<div class="nav-line" style="color:var(--red)">錯誤：${e.message}</div>`;
+  }
+}
+
+// ── Actions ──────────────────────────────────────────────────────────────────
+async function doEnable(wf, acctId, stratId) {
+  if (!getToken()) return toast('請先儲存 GitHub Token', 'err');
+  try {
+    await enableWorkflow(wf);
+    toast(`✅ ${wf} 已啟用`, 'ok');
+    const acct  = ACCOUNTS.find(a => a.id === acctId);
+    const strat = STRATEGIES.find(s => s.id === stratId);
+    setTimeout(() => loadCellStatus(acct, strat), 1500);
+  } catch (e) { toast(`啟用失敗：${e.message}`, 'err'); }
+}
+
+async function doDisable(wf, acctId, stratId) {
+  if (!getToken()) return toast('請先儲存 GitHub Token', 'err');
+  if (!confirm(`確定要停用 ${wf}？`)) return;
+  try {
+    await disableWorkflow(wf);
+    toast(`🔴 ${wf} 已停用`, 'ok');
+    const acct  = ACCOUNTS.find(a => a.id === acctId);
+    const strat = STRATEGIES.find(s => s.id === stratId);
+    setTimeout(() => loadCellStatus(acct, strat), 1500);
+  } catch (e) { toast(`停用失敗：${e.message}`, 'err'); }
+}
+
+async function doRun(wf, acctId, stratId) {
+  if (!getToken()) return toast('請先儲存 GitHub Token', 'err');
+  const dry = !confirm(`立即觸發 ${wf}？\n\n按「確定」= LIVE 執行，按「取消」= DRY RUN`);
+  try {
+    await triggerWorkflow(wf, { dry_run: dry ? 'true' : 'false' });
+    toast(`🚀 ${wf} 已觸發（${dry ? 'DRY RUN' : 'LIVE'}）`, 'ok');
+  } catch (e) { toast(`觸發失敗：${e.message}`, 'err'); }
+}
+
+// ── Toast ─────────────────────────────────────────────────────────────────────
+let _toastTimer;
+function toast(msg, type = 'ok') {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = `show ${type}`;
+  clearTimeout(_toastTimer);
+  _toastTimer = setTimeout(() => { el.className = ''; }, 4000);
+}
+
+// ── Init ─────────────────────────────────────────────────────────────────────
+renderTable();
+if (getToken()) {
+  document.getElementById('token-status').textContent = '✅ 已儲存（本分頁有效）';
+  loadAllStatuses();
+} else {
+  document.getElementById('token-status').textContent = '未儲存';
+}
+</script>
+</body>
+</html>
