@@ -1,0 +1,168 @@
+{
+  "initial_nav": 100000.0,
+  "start_date": "2026-05-05",
+  "history": [
+    {
+      "date": "2026-05-05",
+      "nav": 99988.04,
+      "cash": 1620.35,
+      "top10": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "GOOGL",
+        "TSM",
+        "AVGO",
+        "META",
+        "V",
+        "AMD"
+      ],
+      "trades_count": 10
+    },
+    {
+      "date": "2026-05-06",
+      "nav": 102591.34,
+      "cash": 1620.35,
+      "top10": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "GOOGL",
+        "TSM",
+        "AVGO",
+        "META",
+        "AMD",
+        "V"
+      ],
+      "trades_count": 0
+    },
+    {
+      "date": "2026-05-07",
+      "nav": 102999.23,
+      "cash": 1620.35,
+      "top10": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "GOOGL",
+        "TSM",
+        "AVGO",
+        "META",
+        "AMD",
+        "V"
+      ],
+      "trades_count": 0
+    },
+    {
+      "date": "2026-05-08",
+      "nav": 104076.25,
+      "cash": 1620.35,
+      "top10": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "GOOGL",
+        "TSM",
+        "AVGO",
+        "META",
+        "AMD",
+        "V"
+      ],
+      "trades_count": 0
+    },
+    {
+      "date": "2026-05-11",
+      "nav": 104724.54,
+      "cash": 1620.35,
+      "top10": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "GOOGL",
+        "TSM",
+        "AVGO",
+        "META",
+        "AMD",
+        "V"
+      ],
+      "trades_count": 0
+    },
+    {
+      "date": "2026-05-12",
+      "nav": 103434.49,
+      "cash": 1620.35,
+      "top10": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "GOOGL",
+        "TSM",
+        "AVGO",
+        "META",
+        "AMD",
+        "V"
+      ],
+      "trades_count": 0
+    },
+    {
+      "date": "2026-05-13",
+      "nav": 103995.41,
+      "cash": 1620.35,
+      "top10": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "GOOGL",
+        "TSM",
+        "AVGO",
+        "META",
+        "AMD",
+        "V"
+      ],
+      "trades_count": 0
+    },
+    {
+      "date": "2026-05-14",
+      "nav": 105746.1,
+      "cash": 1620.35,
+      "top10": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "GOOGL",
+        "TSM",
+        "AVGO",
+        "META",
+        "AMD",
+        "V"
+      ],
+      "trades_count": 0
+    },
+    {
+      "date": "2026-05-15",
+      "nav": 104537.69,
+      "cash": 1620.35,
+      "top10": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "GOOGL",
+        "TSM",
+        "AVGO",
+        "META",
+        "AMD",
+        "V"
+      ],
+      "trades_count": 0
+    }
+  ]
+}
