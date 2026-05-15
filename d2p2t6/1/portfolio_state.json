@@ -1,97 +1,97 @@
 {
   "date": "2026-05-15",
-  "nav": 101257.91,
+  "nav": 100734.59,
   "cash": 1609.73,
   "positions": [
     {
       "symbol": "AAPL",
       "qty": 33.0,
       "avg_entry_price": 295.323939,
-      "current_price": 302.29,
-      "market_value": 9975.57,
-      "unrealized_pl": 229.880013,
-      "unrealized_plpc": 0.023587864307877866
+      "current_price": 300.08,
+      "market_value": 9902.64,
+      "unrealized_pl": 156.950013,
+      "unrealized_plpc": 0.01610455629199772
     },
     {
       "symbol": "AMZN",
       "qty": 37.0,
       "avg_entry_price": 263.971351,
-      "current_price": 262.515,
-      "market_value": 9713.055,
-      "unrealized_pl": -53.884987,
-      "unrealized_plpc": -0.005517079768251062
+      "current_price": 262.96,
+      "market_value": 9729.52,
+      "unrealized_pl": -37.419987,
+      "unrealized_plpc": -0.0038312907676106103
     },
     {
       "symbol": "AVGO",
       "qty": 23.0,
       "avg_entry_price": 415.77,
-      "current_price": 427.1299,
-      "market_value": 9823.9877,
-      "unrealized_pl": 261.2777,
-      "unrealized_plpc": 0.027322558145128316
+      "current_price": 424.71,
+      "market_value": 9768.33,
+      "unrealized_pl": 205.62,
+      "unrealized_plpc": 0.021502272891261998
     },
     {
       "symbol": "GOOGL",
       "qty": 25.0,
       "avg_entry_price": 386.8608,
-      "current_price": 396.945,
-      "market_value": 9923.625,
-      "unrealized_pl": 252.105,
-      "unrealized_plpc": 0.026066740284877658
+      "current_price": 396.0412,
+      "market_value": 9901.03,
+      "unrealized_pl": 229.51,
+      "unrealized_plpc": 0.02373049944579549
     },
     {
       "symbol": "JNJ",
       "qty": 44.0,
       "avg_entry_price": 226.837273,
-      "current_price": 228.4199,
-      "market_value": 10050.4756,
-      "unrealized_pl": 69.635588,
-      "unrealized_plpc": 0.00697692658296064
+      "current_price": 227.3756,
+      "market_value": 10004.5264,
+      "unrealized_pl": 23.686388,
+      "unrealized_plpc": 0.0023731858211855686
     },
     {
       "symbol": "LLY",
       "qty": 10.0,
       "avg_entry_price": 994.296,
-      "current_price": 1007.33,
-      "market_value": 10073.3,
-      "unrealized_pl": 130.34,
-      "unrealized_plpc": 0.013108772437986273
+      "current_price": 1003.5215,
+      "market_value": 10035.215,
+      "unrealized_pl": 92.255,
+      "unrealized_plpc": 0.009278424131244618
     },
     {
       "symbol": "LMT",
       "qty": 19.0,
       "avg_entry_price": 514.304211,
-      "current_price": 515.76,
-      "market_value": 9799.44,
-      "unrealized_pl": 27.659991,
-      "unrealized_plpc": 0.0028305990284804416
+      "current_price": 516.01,
+      "market_value": 9804.19,
+      "unrealized_pl": 32.409991,
+      "unrealized_plpc": 0.003316692656829131
     },
     {
       "symbol": "MSFT",
       "qty": 24.0,
       "avg_entry_price": 402.25,
-      "current_price": 422.1,
-      "market_value": 10130.4,
-      "unrealized_pl": 476.4,
-      "unrealized_plpc": 0.04934742075823493
+      "current_price": 420.71,
+      "market_value": 10097.04,
+      "unrealized_pl": 443.04,
+      "unrealized_plpc": 0.04589185829707893
     },
     {
       "symbol": "NVDA",
       "qty": 45.0,
       "avg_entry_price": 225.505333,
-      "current_price": 228.685,
-      "market_value": 10290.825,
-      "unrealized_pl": 143.085015,
-      "unrealized_plpc": 0.014100185382312001
+      "current_price": 225.1798,
+      "market_value": 10133.091,
+      "unrealized_pl": -14.648985,
+      "unrealized_plpc": -0.0014435711815294408
     },
     {
       "symbol": "RTX",
       "qty": 57.0,
       "avg_entry_price": 178.001579,
-      "current_price": 173.26,
-      "market_value": 9875.82,
-      "unrealized_pl": -270.270003,
-      "unrealized_plpc": -0.0266378479710003
+      "current_price": 171.04,
+      "market_value": 9749.28,
+      "unrealized_pl": -396.810003,
+      "unrealized_plpc": -0.03910964744868921
     }
   ],
   "top10": [
@@ -110,122 +110,122 @@
   "ranked_stocks": [
     {
       "symbol": "RTX",
-      "close_price": 173.4,
-      "market_cap": 233300000000.0,
+      "close_price": 171.15,
+      "market_cap": 230500000000.0,
       "rank": 1
     },
     {
       "symbol": "LMT",
-      "close_price": 515.83,
-      "market_cap": 118900000000.0,
+      "close_price": 516.11,
+      "market_cap": 119000000000.0,
       "rank": 2
     },
     {
       "symbol": "GD",
-      "close_price": 337.57,
-      "market_cap": 91200000000.0,
+      "close_price": 334.45,
+      "market_cap": 90500000000.0,
       "rank": 3
     },
     {
       "symbol": "NOC",
-      "close_price": 542.69,
-      "market_cap": 77100000000.0,
+      "close_price": 540.43,
+      "market_cap": 76800000000.0,
       "rank": 4
     },
     {
       "symbol": "TDG",
-      "close_price": 1154.08,
-      "market_cap": 64500000000.0,
+      "close_price": 1149.08,
+      "market_cap": 64300000000.0,
       "rank": 5
     },
     {
       "symbol": "LLY",
-      "close_price": 1007.38,
-      "market_cap": 898300000000.0,
+      "close_price": 1004.7,
+      "market_cap": 896100000000.0,
       "rank": 1
     },
     {
       "symbol": "JNJ",
-      "close_price": 228.31,
-      "market_cap": 549600000000.0,
+      "close_price": 226.75,
+      "market_cap": 545700000000.00006,
       "rank": 2
     },
     {
       "symbol": "MRK",
-      "close_price": 111.07,
-      "market_cap": 274300000000.0,
+      "close_price": 111.35,
+      "market_cap": 275100000000.0,
       "rank": 3
     },
     {
       "symbol": "AMGN",
-      "close_price": 327.12,
-      "market_cap": 176900000000.0,
+      "close_price": 326.31,
+      "market_cap": 176200000000.0,
       "rank": 4
     },
     {
       "symbol": "GILD",
-      "close_price": 129.5,
-      "market_cap": 160800000000.0,
+      "close_price": 129.59,
+      "market_cap": 160900000000.0,
       "rank": 5
     },
     {
       "symbol": "NVDA",
-      "close_price": 228.39,
-      "market_cap": 5536000000000.0,
+      "close_price": 225.14,
+      "market_cap": 5457400000000.0,
       "rank": 1
     },
     {
       "symbol": "GOOGL",
-      "close_price": 396.92,
-      "market_cap": 4809300000000.0,
+      "close_price": 396.01,
+      "market_cap": 4807200000000.0,
       "rank": 2
     },
     {
       "symbol": "AAPL",
-      "close_price": 302.28,
-      "market_cap": 4439700000000.0,
+      "close_price": 300.0,
+      "market_cap": 4409600000000.0,
       "rank": 3
     },
     {
       "symbol": "MSFT",
-      "close_price": 422.13,
-      "market_cap": 3135900000000.0,
+      "close_price": 420.8,
+      "market_cap": 3134200000000.0,
       "rank": 4
     },
     {
       "symbol": "AMZN",
-      "close_price": 262.51,
-      "market_cap": 2823900000000.0,
+      "close_price": 264.22,
+      "market_cap": 2841400000000.0,
       "rank": 5
     },
     {
       "symbol": "AVGO",
-      "close_price": 427.05,
-      "market_cap": 2022400000000.0,
+      "close_price": 425.03,
+      "market_cap": 2013100000000.0,
       "rank": 6
     },
     {
       "symbol": "TSLA",
-      "close_price": 426.6,
-      "market_cap": 1602500000000.0,
+      "close_price": 422.27,
+      "market_cap": 1585800000000.0,
       "rank": 7
     },
     {
       "symbol": "META",
-      "close_price": 613.31,
-      "market_cap": 1557100000000.0,
+      "close_price": 614.38,
+      "market_cap": 1559200000000.0,
       "rank": 8
     },
     {
       "symbol": "AMD",
-      "close_price": 434.9,
-      "market_cap": 709600000000.0,
+      "close_price": 424.18,
+      "market_cap": 691500000000.0,
       "rank": 9
     },
     {
       "symbol": "ORCL",
-      "close_price": 193.3,
-      "market_cap": 555900000000.0,
+      "close_price": 192.47,
+      "market_cap": 554900000000.0,
       "rank": 10
     }
   ]
