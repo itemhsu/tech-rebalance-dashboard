@@ -1,0 +1,6 @@
+{
+  "accounts": [
+    { "id": "1", "strategy": "top10",  "label": "帳戶 #1 (TOP10)" },
+    { "id": "2", "strategy": "d2p2t6", "label": "帳戶 #2 (D2P2T6)" }
+  ]
+}
