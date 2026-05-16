@@ -51,7 +51,9 @@
         <h1 id="title" class="text-xl font-bold text-white">載入中…</h1>
         <p id="subtitle" class="text-sm text-slate-400 mt-1"></p>
       </div>
-      <div class="flex items-center gap-3">
+      <div class="flex items-center gap-3 flex-wrap">
+        <!-- 日期選擇器 -->
+        <div id="date-picker"></div>
         <!-- 帳戶切換下拉 -->
         <div id="account-switcher"></div>
         <div id="status-badge"></div>
@@ -113,8 +115,11 @@
 
     <!-- 回撤圖 -->
     <div class="card">
-      <h2 class="text-sm font-semibold text-slate-400 uppercase tracking-wide mb-4">回撤對比</h2>
-      <canvas id="drawdown-chart" height="100"></canvas>
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-sm font-semibold text-slate-400 uppercase tracking-wide">回撤對比</h2>
+        <div id="drawdown-toggles" class="flex gap-4 text-xs"></div>
+      </div>
+      <canvas id="drawdown-chart" height="110"></canvas>
     </div>
 
     <!-- 持倉表 -->
@@ -172,11 +177,11 @@ const BASE_URL = "./";   // 相對於 dashboard.html 所在目錄
 // ══════════════════════════════════════════════════════════════════════════════
 function getParams() {
   const p = new URLSearchParams(location.search);
-  return { accountId: p.get("a"), strategy: p.get("s") };
+  return { accountId: p.get("a"), dateParam: p.get("d") };
 }
 
 async function main() {
-  const { accountId, strategy } = getParams();
+  const { accountId, dateParam } = getParams();
 
   // 1. 載入 accounts.json
   let accounts;
@@ -204,30 +209,45 @@ async function main() {
     account = accounts[0];
   }
 
-  // 3. 載入 {id}/data.json
+  // 3. 載入 {id}/index.json 取可用日期清單
+  let availableDates = [];
+  try {
+    const res = await fetch(`${BASE_URL}${account.id}/index.json`);
+    if (res.ok) {
+      const idx = await res.json();
+      availableDates = idx.dates || [];
+    }
+  } catch(e) { /* 沒有 index.json 時 fallback 到 data.json */ }
+
+  // 4. 決定要載入哪個日期的資料
+  const targetDate = (dateParam && availableDates.includes(dateParam)) ? dateParam : null;
+  const dataUrl = targetDate
+    ? `${BASE_URL}${account.id}/${targetDate}.json`
+    : `${BASE_URL}${account.id}/data.json`;
+
   let data;
   try {
-    const res = await fetch(`${BASE_URL}${account.id}/data.json`);
-    if (!res.ok) throw new Error(`${account.id}/data.json HTTP ` + res.status);
+    const res = await fetch(dataUrl);
+    if (!res.ok) throw new Error(`${dataUrl.replace(BASE_URL,"")} HTTP ` + res.status);
     data = await res.json();
   } catch(e) {
     showError("無法載入帳戶資料：" + e.message);
     return;
   }
 
-  // 4. Schema 版本確認
+  // 5. Schema 版本確認
   if (data.meta.schema_version !== SUPPORTED_SCHEMA_VERSION) {
     document.getElementById("version-banner").style.display = "block";
   }
 
-  // 5. 渲染
-  render(data, accounts, account);
+  // 6. 渲染
+  render(data, accounts, account, availableDates, targetDate);
 }
 
 // ══════════════════════════════════════════════════════════════════════════════
 //  主渲染函式
 // ══════════════════════════════════════════════════════════════════════════════
-function render(d, allAccounts, currentAccount) {
+function render(d, allAccounts, currentAccount, availableDates = [], selectedDate = null) {
   const meta    = d.meta;
   const summary = d.summary;
   const accent  = meta.accent_color || "#38bdf8";
@@ -245,8 +265,9 @@ function render(d, allAccounts, currentAccount) {
   document.getElementById("trading-date").textContent = meta.trading_date;
   document.getElementById("generated-at").textContent = meta.generated_at.replace("T", " ").replace("Z", " UTC");
 
-  // 帳戶切換選單
+  // 帳戶切換選單 + 日期選擇器
   renderAccountSwitcher(allAccounts, currentAccount, meta.strategy, accent);
+  renderDatePicker(availableDates, selectedDate, currentAccount.id);
 
   // Status badge
   const badgeEl = document.getElementById("status-badge");
@@ -285,6 +306,42 @@ function render(d, allAccounts, currentAccount) {
 // ══════════════════════════════════════════════════════════════════════════════
 //  帳戶切換選單
 // ══════════════════════════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════════════════════════
+//  Date Picker
+// ══════════════════════════════════════════════════════════════════════════════
+function renderDatePicker(availableDates, selectedDate, accountId) {
+  const el = document.getElementById("date-picker");
+  if (!el) return;
+
+  // 沒有歷史資料時隱藏
+  if (!availableDates || availableDates.length === 0) {
+    el.innerHTML = "";
+    return;
+  }
+
+  const SEL_STYLE = [
+    "background:#1e293b", "color:#e2e8f0",
+    "border:1px solid #475569", "border-radius:8px",
+    "padding:4px 12px", "font-size:0.8rem", "cursor:pointer",
+  ].join(";");
+
+  const options = availableDates.map(d => {
+    const isLatest  = d === availableDates[0];
+    const label     = isLatest ? `${d} ★` : d;
+    const isSelected = selectedDate ? d === selectedDate : isLatest;
+    return `<option value="${d}" ${isSelected ? "selected" : ""}>${label}</option>`;
+  }).join("");
+
+  el.innerHTML =
+    `<select style="${SEL_STYLE}" title="選擇歷史日期"
+       onchange="
+         const d = this.value;
+         const latest = '${availableDates[0]}';
+         const base = '?a=${accountId}';
+         location.href = (d === latest) ? base : base + '&d=' + d;
+       ">${options}</select>`;
+}
+
 function renderAccountSwitcher(allAccounts, current, currentStrategy, accent) {
   const el = document.getElementById("account-switcher");
 
@@ -420,25 +477,64 @@ function renderDrawdownChart(dd, accent) {
   const ctx = document.getElementById("drawdown-chart").getContext("2d");
   if (ddChartInst) ddChartInst.destroy();
 
+  const hasNasdaq = dd.nasdaq && dd.nasdaq.some(v => v !== null);
+  const hasSP500  = dd.sp500  && dd.sp500.some(v => v !== null);
+
   const datasets = [
-    { label:"投組", data: dd.portfolio, borderColor: accent, fill: true, backgroundColor: accent+"22", tension:0.3 },
+    { label:"投組", data: dd.portfolio, borderColor: accent,    fill:true, backgroundColor: accent+"22", tension:0.3, borderWidth:2 },
   ];
-  if (dd.nasdaq && dd.nasdaq.some(v => v !== null))
-    datasets.push({ label:"NASDAQ(QQQ)", data: dd.nasdaq, borderColor:"#a78bfa", fill:false, tension:0.3, borderDash:[4,2] });
-  if (dd.sp500 && dd.sp500.some(v => v !== null))
-    datasets.push({ label:"S&P500(SPY)", data: dd.sp500, borderColor:"#fb923c", fill:false, tension:0.3, borderDash:[4,2] });
+  if (hasNasdaq)
+    datasets.push({ label:"NASDAQ", data: dd.nasdaq, borderColor:"#a78bfa", fill:false, tension:0.3, borderDash:[4,3], borderWidth:1.5 });
+  if (hasSP500)
+    datasets.push({ label:"S&P500", data: dd.sp500,  borderColor:"#fb923c", fill:false, tension:0.3, borderDash:[4,3], borderWidth:1.5 });
 
   ddChartInst = new Chart(ctx, {
     type: "line",
     data: { labels: dd.dates, datasets },
     options: {
       responsive: true,
-      plugins: { legend: { labels: { color:"#94a3b8" } } },
+      plugins: {
+        legend: { display: false },   // 用自製勾選框取代內建 legend
+        tooltip: {
+          callbacks: { label: ctx => ` ${ctx.dataset.label}: ${ctx.parsed.y.toFixed(2)}%` }
+        }
+      },
       scales: {
         x: { ticks: { color:"#64748b", maxTicksLimit:8 }, grid: { color:"#1e293b" } },
         y: { ticks: { color:"#64748b", callback: v => v.toFixed(1)+"%" }, grid: { color:"#334155" } }
       }
     }
+  });
+
+  // ── 建立勾選框 ───────────────────────────────────────────────────────────
+  const toggleEl = document.getElementById("drawdown-toggles");
+  if (!toggleEl) return;
+  toggleEl.innerHTML = "";
+
+  datasets.forEach((ds, i) => {
+    const id = "dd-toggle-" + i;
+    const wrap = document.createElement("label");
+    wrap.style.cssText = "display:flex;align-items:center;gap:4px;cursor:pointer;user-select:none;";
+
+    const cb = document.createElement("input");
+    cb.type = "checkbox";
+    cb.checked = true;
+    cb.id = id;
+    cb.style.accentColor = ds.borderColor;
+    cb.addEventListener("change", () => {
+      ddChartInst.setDatasetVisibility(i, cb.checked);
+      ddChartInst.update();
+    });
+
+    const dot = document.createElement("span");
+    dot.style.cssText = `display:inline-block;width:10px;height:10px;border-radius:2px;background:${ds.borderColor};flex-shrink:0;`;
+
+    const txt = document.createElement("span");
+    txt.textContent = ds.label;
+    txt.style.color = "#94a3b8";
+
+    wrap.append(cb, dot, txt);
+    toggleEl.appendChild(wrap);
   });
 }
 
