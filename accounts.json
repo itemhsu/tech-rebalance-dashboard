@@ -2,7 +2,7 @@
   "accounts": [
     { "id": "1", "strategy": "top10",  "label": "帳戶 #1 (TOP10)" },
     { "id": "2", "strategy": "d2p2t6", "label": "帳戶 #2 (D2P2T6)" },
-    { "id": "3", "strategy": "top9psq", "label": "帳戶 #3 (TOP9+PSQ Live)" },
+    { "id": "3", "strategy": "top10",   "label": "帳戶 #3 (Monthly TOP10 Live)" },
     { "id": "4", "strategy": "weekly_top10", "label": "帳戶 #4 (Weekly Top10)"  }
   ]
 }
