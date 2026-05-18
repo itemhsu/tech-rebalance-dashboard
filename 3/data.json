@@ -4,13 +4,13 @@
     "strategy": "top9psq",
     "account_id": "3",
     "account_label": "帳戶 #3 (TOP9+PSQ Live)",
-    "generated_at": "2026-05-18T03:28:21Z",
+    "generated_at": "2026-05-18T05:47:03Z",
     "trading_date": "2026-05-18",
     "dry_run": false,
     "strategy_status": "active",
     "strategy_start_date": "2026-05-18",
     "previous_strategy": null,
-    "accent_color": "#a855f7",
+    "accent_color": "#3b82f6",
     "same_strategy_accounts": [
       {
         "id": "3",
@@ -41,17 +41,17 @@
     "paused_since": null
   },
   "portfolio": {
-    "label": "TOP9+PSQ 持股",
+    "label": "Monthly TOP10 持股",
     "symbols": [
-      "AAPL",
       "AMD",
       "AMZN",
       "AVGO",
       "GOOGL",
+      "INTC",
       "META",
       "MSFT",
       "NVDA",
-      "PSQ",
+      "ORCL",
       "TSM"
     ],
     "rebalance_count": 0
@@ -83,15 +83,15 @@
       "nav": 19975.0,
       "trades_count": 0,
       "portfolio": [
-        "AAPL",
         "AMD",
         "AMZN",
         "AVGO",
         "GOOGL",
+        "INTC",
         "META",
         "MSFT",
         "NVDA",
-        "PSQ",
+        "ORCL",
         "TSM"
       ],
       "orders": []
@@ -119,14 +119,6 @@
       },
       {
         "rank": 3,
-        "symbol": "AAPL",
-        "price": 300.0,
-        "change_pct": 0,
-        "market_cap_b": 4409.6,
-        "in_portfolio": true
-      },
-      {
-        "rank": 4,
         "symbol": "MSFT",
         "price": 420.8,
         "change_pct": 0,
@@ -134,7 +126,7 @@
         "in_portfolio": true
       },
       {
-        "rank": 5,
+        "rank": 4,
         "symbol": "AMZN",
         "price": 264.22,
         "change_pct": 0,
@@ -142,7 +134,7 @@
         "in_portfolio": true
       },
       {
-        "rank": 6,
+        "rank": 5,
         "symbol": "TSM",
         "price": 403.61,
         "change_pct": 0,
@@ -150,7 +142,7 @@
         "in_portfolio": true
       },
       {
-        "rank": 7,
+        "rank": 6,
         "symbol": "AVGO",
         "price": 425.03,
         "change_pct": 0,
@@ -158,7 +150,7 @@
         "in_portfolio": true
       },
       {
-        "rank": 8,
+        "rank": 7,
         "symbol": "META",
         "price": 614.38,
         "change_pct": 0,
@@ -166,7 +158,7 @@
         "in_portfolio": true
       },
       {
-        "rank": 9,
+        "rank": 8,
         "symbol": "AMD",
         "price": 424.18,
         "change_pct": 0,
@@ -174,23 +166,23 @@
         "in_portfolio": true
       },
       {
-        "rank": 10,
+        "rank": 9,
         "symbol": "ORCL",
         "price": 192.47,
         "change_pct": 0,
         "market_cap_b": 554.9,
-        "in_portfolio": false
+        "in_portfolio": true
       },
       {
-        "rank": 11,
+        "rank": 10,
         "symbol": "INTC",
         "price": 108.08,
         "change_pct": 0,
         "market_cap_b": 546.7,
-        "in_portfolio": false
+        "in_portfolio": true
       },
       {
-        "rank": 12,
+        "rank": 11,
         "symbol": "NFLX",
         "price": 86.81,
         "change_pct": 0,
@@ -198,7 +190,7 @@
         "in_portfolio": false
       },
       {
-        "rank": 13,
+        "rank": 12,
         "symbol": "PLTR",
         "price": 133.79,
         "change_pct": 0,
@@ -206,7 +198,7 @@
         "in_portfolio": false
       },
       {
-        "rank": 14,
+        "rank": 13,
         "symbol": "TXN",
         "price": 302.69,
         "change_pct": 0,
@@ -214,18 +206,26 @@
         "in_portfolio": false
       },
       {
-        "rank": 15,
+        "rank": 14,
         "symbol": "QCOM",
         "price": 200.27,
         "change_pct": 0,
         "market_cap_b": 212.4,
+        "in_portfolio": false
+      },
+      {
+        "rank": 15,
+        "symbol": "UBER",
+        "price": 75.1,
+        "change_pct": 0,
+        "market_cap_b": 152.9,
         "in_portfolio": false
       }
     ]
   },
   "events": [],
   "email": {
-    "subject": "[TOP9+PSQ #3] 2026-05-18 NAV $19,975 (+0.00%)",
+    "subject": "[Monthly TOP10 #3] 2026-05-18 NAV $19,975 (+0.00%)",
     "preheader": "帳戶 #3 · 2026-05-18 · NAV $19,975",
     "dashboard_url": "https://itemhsu.github.io/tech-rebalance-dashboard/3/dashboard.html",
     "sections_rendered": [
