@@ -131,6 +131,7 @@
             <tr class="text-xs text-slate-500 border-b border-slate-700">
               <th class="py-2 px-3 text-left">#</th>
               <th class="py-2 px-3 text-left">股票</th>
+              <th class="py-2 px-3 text-right">股數</th>
               <th class="py-2 px-3 text-right">股價</th>
               <th class="py-2 px-3 text-right">均價</th>
               <th class="py-2 px-3 text-right">市值</th>
@@ -558,6 +559,7 @@ function renderPositions(positions, portfolioSymbols) {
       <td class="py-2 px-3 font-bold font-mono" style="color:#38bdf8">
         ${p.symbol}${inPort ? ' <span style="color:#22c55e;font-size:10px">●</span>' : ""}
       </td>
+      <td class="py-2 px-3 text-right text-slate-300">${Math.round(p.qty)}</td>
       <td class="py-2 px-3 text-right">\$${p.current_price.toFixed(2)}</td>
       <td class="py-2 px-3 text-right text-slate-400">\$${p.avg_entry_price.toFixed(2)}</td>
       <td class="py-2 px-3 text-right">\$${p.market_value.toLocaleString("en-US",{minimumFractionDigits:0,maximumFractionDigits:0})}</td>
