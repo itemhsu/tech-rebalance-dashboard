@@ -101,6 +101,41 @@
       </div>
     </div>
 
+    <!-- 策略描述卡片 -->
+    <div class="card" id="strategy-card-section" style="display:none">
+      <div class="flex items-start justify-between flex-wrap gap-2 mb-3">
+        <div>
+          <div id="sc-name" class="text-base font-bold text-white"></div>
+          <div id="sc-desc" class="text-sm text-slate-400 mt-1 leading-relaxed"></div>
+        </div>
+        <button onclick="document.getElementById('sc-detail').classList.toggle('hidden')"
+          class="text-xs text-slate-500 hover:text-slate-300 border border-slate-700
+                 rounded px-2 py-1 flex-shrink-0">詳情 ▾</button>
+      </div>
+      <!-- Tags -->
+      <div id="sc-tags" class="flex flex-wrap gap-1 mb-3"></div>
+      <!-- 基本資訊（始終顯示） -->
+      <div id="sc-info" class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-1 text-sm mb-3"></div>
+      <!-- 詳情（點擊展開） -->
+      <div id="sc-detail" class="hidden mt-3 border-t border-slate-700 pt-3">
+        <!-- 風控亮點 -->
+        <div id="sc-risk-wrap" class="mb-3 hidden">
+          <div class="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">風控</div>
+          <div id="sc-risk" class="flex flex-wrap gap-1"></div>
+        </div>
+        <!-- 排名因子 -->
+        <div id="sc-factors-wrap" class="mb-3 hidden">
+          <div class="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">排名因子</div>
+          <div id="sc-factors" class="grid grid-cols-2 sm:grid-cols-3 gap-1"></div>
+        </div>
+        <!-- 過濾條件 -->
+        <div id="sc-filters-wrap" class="hidden">
+          <div class="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">篩選條件</div>
+          <div id="sc-filters"></div>
+        </div>
+      </div>
+    </div>
+
     <!-- 組合 Badges -->
     <div class="card" id="portfolio-section">
       <h2 id="portfolio-label" class="text-sm font-semibold text-slate-400 uppercase tracking-wide mb-3">組合</h2>
@@ -287,6 +322,9 @@ function render(d, allAccounts, currentAccount, availableDates = [], selectedDat
   // Portfolio badges
   renderPortfolioBadges(d.portfolio, accent);
 
+  // Strategy card
+  renderStrategyCard(d.strategy_card, accent);
+
   // Charts
   renderNavChart(d.nav_history, accent);
   renderDrawdownChart(d.drawdown, accent);
@@ -467,6 +505,83 @@ function renderNavChart(history, accent) {
       }
     }
   });
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════════════════════════
+//  Strategy Card
+// ══════════════════════════════════════════════════════════════════════════════
+function renderStrategyCard(sc, accent) {
+  const sec = document.getElementById("strategy-card-section");
+  if (!sc || !sec) return;
+  sec.style.display = "";
+
+  const $ = id => document.getElementById(id);
+
+  $("sc-name").textContent = sc.name || "";
+  $("sc-desc").textContent = sc.description || "";
+
+  // Tags
+  const tagsEl = $("sc-tags");
+  tagsEl.innerHTML = (sc.tags || []).map(t =>
+    `<span style="background:${accent}22;color:${accent};border:1px solid ${accent}55;
+      border-radius:12px;font-size:11px;font-weight:600;padding:2px 10px">${t}</span>`
+  ).join("");
+
+  // 基本資訊
+  const infoEl = $("sc-info");
+  const infoRows = [
+    ["宇宙",   sc.universe_summary],
+    ["選股",   sc.selection_summary],
+    ["再平衡", sc.rebalancing_summary],
+    ["基準",   sc.benchmark],
+  ];
+  infoEl.innerHTML = infoRows.filter(([,v]) => v).map(([k,v]) =>
+    `<div><span class="text-slate-500 text-xs font-semibold">${k}　</span>
+     <span class="text-slate-300 text-xs">${v}</span></div>`
+  ).join("");
+
+  // 風控
+  const riskItems = sc.risk_highlights || [];
+  const riskWrap = $("sc-risk-wrap");
+  if (riskItems.length) {
+    riskWrap.classList.remove("hidden");
+    $("sc-risk").innerHTML = riskItems.map(r =>
+      `<span style="background:#fef3c722;color:#fbbf24;border:1px solid #fbbf2444;
+        border-radius:8px;font-size:11px;padding:2px 8px">⚠ ${r}</span>`
+    ).join("");
+  }
+
+  // 排名因子
+  const factors = sc.ranking_factors || [];
+  const factorsWrap = $("sc-factors-wrap");
+  if (factors.length) {
+    factorsWrap.classList.remove("hidden");
+    $("sc-factors").innerHTML = factors.slice(0,8).map(f =>
+      `<div class="flex justify-between text-xs py-1 border-b border-slate-700">
+         <span class="text-slate-300">${f.direction} ${f.name}</span>
+         <span style="color:${accent};font-weight:700">${f.weight}</span>
+       </div>`
+    ).join("");
+  }
+
+  // 篩選條件
+  const fs = sc.filter_summary || {};
+  const filtersWrap = $("sc-filters-wrap");
+  if (Object.keys(fs).length) {
+    filtersWrap.classList.remove("hidden");
+    const labelMap = { fundamental: "基本面", technical: "技術面" };
+    $("sc-filters").innerHTML = Object.entries(fs).map(([key, items]) =>
+      `<div class="mb-2">
+         <span class="text-xs text-slate-500 font-semibold">${labelMap[key]||key}　</span>
+         ${items.map(c =>
+           `<span style="display:inline-block;background:#1e293b;color:#94a3b8;
+             border:1px solid #334155;border-radius:6px;font-size:11px;
+             padding:2px 7px;margin:2px 3px 2px 0">${c}</span>`
+         ).join("")}
+       </div>`
+    ).join("");
+  }
 }
 
 // ══════════════════════════════════════════════════════════════════════════════

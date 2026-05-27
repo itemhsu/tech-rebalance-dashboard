@@ -4,7 +4,7 @@
     "strategy": "d2p2t6",
     "account_id": "2",
     "account_label": "帳戶 #2 (D2P2T6)",
-    "generated_at": "2026-05-27T09:49:09Z",
+    "generated_at": "2026-05-27T13:01:00Z",
     "trading_date": "2026-05-27",
     "dry_run": false,
     "strategy_status": "active",
@@ -39,6 +39,27 @@
     "total_paused_days": 0,
     "is_paused": false,
     "paused_since": null
+  },
+  "strategy_card": {
+    "name": "D2P2T6",
+    "description": "軍火×2 + 醫藥×2 + 科技×6 = 10 檔等權重，每日再平衡",
+    "tags": [
+      "多元分散",
+      "軍火",
+      "醫藥",
+      "科技",
+      "美股"
+    ],
+    "benchmark": "QQQ",
+    "universe_summary": "🛡️ 軍火 + 💊 醫藥 + 💻 科技",
+    "selection_summary": "defense ×2，pharma ×2，tech ×6，合計 10 檔，等權重",
+    "rebalancing_summary": "每日",
+    "risk_highlights": [
+      "NAV 下跌 15.0% 熔斷",
+      "單倉上限 20%"
+    ],
+    "ranking_factors": [],
+    "filter_summary": {}
   },
   "portfolio": {
     "label": "D2P2T6 組合",
@@ -602,6 +623,7 @@
     "sections_rendered": [
       "header",
       "kpi",
+      "strategy_card",
       "portfolio_badges",
       "positions_table",
       "rankings",

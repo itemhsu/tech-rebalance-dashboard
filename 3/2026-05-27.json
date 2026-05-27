@@ -4,7 +4,7 @@
     "strategy": "top9psq",
     "account_id": "3",
     "account_label": "帳戶 #3 (Monthly TOP10 Live)",
-    "generated_at": "2026-05-27T09:49:09Z",
+    "generated_at": "2026-05-27T13:01:00Z",
     "trading_date": "2026-05-27",
     "dry_run": false,
     "strategy_status": "active",
@@ -39,6 +39,25 @@
     "total_paused_days": 0,
     "is_paused": false,
     "paused_since": null
+  },
+  "strategy_card": {
+    "name": "Monthly TOP10",
+    "description": "前10大市值科技股（100%），每月再平衡",
+    "tags": [
+      "科技",
+      "市值",
+      "美股"
+    ],
+    "benchmark": "QQQ",
+    "universe_summary": "custom universe",
+    "selection_summary": "依市值排名前 10 檔，等權重",
+    "rebalancing_summary": "每月",
+    "risk_highlights": [
+      "NAV 下跌 15.0% 熔斷",
+      "單倉上限 15%"
+    ],
+    "ranking_factors": [],
+    "filter_summary": {}
   },
   "portfolio": {
     "label": "Monthly TOP10 持股",
@@ -498,6 +517,7 @@
     "sections_rendered": [
       "header",
       "kpi",
+      "strategy_card",
       "portfolio_badges",
       "positions_table",
       "rankings",
