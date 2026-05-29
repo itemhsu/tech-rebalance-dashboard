@@ -1,0 +1,1 @@
+{"ts": "2026-05-29T22:08:18Z", "type": "REBALANCE_SKIP", "account": "1", "strategy": "top10", "reason_code": "not_first_trading_day_of_month", "reason_human": "今日（2026-05-29）非本月第一個交易日，月度策略跳過", "today": "2026-05-29"}
