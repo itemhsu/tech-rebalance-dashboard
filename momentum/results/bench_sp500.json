@@ -1,11 +1,11 @@
 {
   "schema_version": "v3",
   "meta": {
-    "id": "SP500",
+    "id": "bench_sp500",
     "label": "S&P 500",
     "color": "#64748b",
     "group": "benchmark",
-    "generated_at": "2026-05-29T03:51:27Z",
+    "generated_at": "2026-05-29T08:28:27Z",
     "order": 901,
     "enabled": true,
     "description": "SPY buy & hold"

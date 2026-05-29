@@ -1,48 +1,67 @@
 {
-  "generated_at": "2026-05-29T03:52:01Z",
+  "generated_at": "2026-05-29T08:28:28Z",
+  "source_dir": "/Users/miniaicar/Downloads/tradecopy/strategies",
   "strategies": [
     {
-      "id": "MOM-6m-T10",
+      "id": "mom_6m_t20",
+      "label": "MOM-6m-T20",
+      "color": "#3b82f6",
+      "group": "momentum",
+      "file": "mom_6m_t20.json",
+      "enabled": true,
+      "order": 100
+    },
+    {
+      "id": "toprank_ma_momentum",
+      "label": "TopRank MA Momentum",
+      "color": "#8b5cf6",
+      "group": "momentum",
+      "file": "toprank_ma_momentum.json",
+      "enabled": true,
+      "order": 100
+    },
+    {
+      "id": "mom_6m_t10",
       "label": "MOM-6m-T10",
       "color": "#f59e0b",
       "group": "momentum",
-      "file": "MOM-6m-T10.json",
+      "file": "mom_6m_t10.json",
       "enabled": true,
       "order": 101
     },
     {
-      "id": "MOM-3m-T10",
+      "id": "mom_3m_t10",
       "label": "MOM-3m-T10",
       "color": "#3b82f6",
       "group": "momentum",
-      "file": "MOM-3m-T10.json",
+      "file": "mom_3m_t10.json",
       "enabled": true,
       "order": 102
     },
     {
-      "id": "MOM-12m-T5",
+      "id": "mom_12m_t5",
       "label": "MOM-12m-T5",
       "color": "#a855f7",
       "group": "momentum",
-      "file": "MOM-12m-T5.json",
+      "file": "mom_12m_t5.json",
       "enabled": true,
       "order": 103
     },
     {
-      "id": "SP500",
+      "id": "bench_sp500",
       "label": "S&P 500",
       "color": "#64748b",
       "group": "benchmark",
-      "file": "SP500.json",
+      "file": "bench_sp500.json",
       "enabled": true,
       "order": 901
     },
     {
-      "id": "NASDAQ",
+      "id": "bench_nasdaq100",
       "label": "NASDAQ-100",
       "color": "#94a3b8",
       "group": "benchmark",
-      "file": "NASDAQ.json",
+      "file": "bench_nasdaq100.json",
       "enabled": true,
       "order": 902
     }

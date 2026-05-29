@@ -1,11 +1,11 @@
 {
   "schema_version": "v3",
   "meta": {
-    "id": "NASDAQ",
+    "id": "bench_nasdaq100",
     "label": "NASDAQ-100",
     "color": "#94a3b8",
     "group": "benchmark",
-    "generated_at": "2026-05-29T03:51:29Z",
+    "generated_at": "2026-05-29T08:28:28Z",
     "order": 902,
     "enabled": true,
     "description": "QQQ buy & hold"

@@ -1,11 +1,11 @@
 {
   "schema_version": "v3",
   "meta": {
-    "id": "MOM-12m-T5",
+    "id": "mom_12m_t5",
     "label": "MOM-12m-T5",
     "color": "#a855f7",
     "group": "momentum",
-    "generated_at": "2026-05-29T03:52:01Z",
+    "generated_at": "2026-05-29T08:28:27Z",
     "order": 103,
     "enabled": true,
     "description": "Top-5 momentum, 12m lookback, monthly rebalance"
