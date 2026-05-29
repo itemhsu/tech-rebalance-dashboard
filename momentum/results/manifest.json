@@ -1,0 +1,50 @@
+{
+  "generated_at": "2026-05-29T03:52:01Z",
+  "strategies": [
+    {
+      "id": "MOM-6m-T10",
+      "label": "MOM-6m-T10",
+      "color": "#f59e0b",
+      "group": "momentum",
+      "file": "MOM-6m-T10.json",
+      "enabled": true,
+      "order": 101
+    },
+    {
+      "id": "MOM-3m-T10",
+      "label": "MOM-3m-T10",
+      "color": "#3b82f6",
+      "group": "momentum",
+      "file": "MOM-3m-T10.json",
+      "enabled": true,
+      "order": 102
+    },
+    {
+      "id": "MOM-12m-T5",
+      "label": "MOM-12m-T5",
+      "color": "#a855f7",
+      "group": "momentum",
+      "file": "MOM-12m-T5.json",
+      "enabled": true,
+      "order": 103
+    },
+    {
+      "id": "SP500",
+      "label": "S&P 500",
+      "color": "#64748b",
+      "group": "benchmark",
+      "file": "SP500.json",
+      "enabled": true,
+      "order": 901
+    },
+    {
+      "id": "NASDAQ",
+      "label": "NASDAQ-100",
+      "color": "#94a3b8",
+      "group": "benchmark",
+      "file": "NASDAQ.json",
+      "enabled": true,
+      "order": 902
+    }
+  ]
+}
