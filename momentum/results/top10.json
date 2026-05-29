@@ -5,7 +5,7 @@
     "label": "Top10 (mcap)",
     "color": "#10b981",
     "group": "diversified",
-    "generated_at": "2026-05-29T12:13:16Z",
+    "generated_at": "2026-05-29T13:04:43Z",
     "order": 201,
     "enabled": true,
     "description": "前 10 大市值科技股，每日等權重再平衡"

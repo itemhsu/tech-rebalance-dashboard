@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-29T12:16:14Z",
+  "generated_at": "2026-05-29T13:08:02Z",
   "source_dir": "/Users/miniaicar/Downloads/tradecopy/strategies",
   "strategies": [
     {
@@ -82,6 +82,15 @@
       "file": "top9psq.json",
       "enabled": true,
       "order": 203
+    },
+    {
+      "id": "d2p2t6_mom6m",
+      "label": "D2P2T6 + 6m 動能",
+      "color": "#22d3ee",
+      "group": "diversified",
+      "file": "d2p2t6_mom6m.json",
+      "enabled": true,
+      "order": 204
     },
     {
       "id": "weekly_top10",

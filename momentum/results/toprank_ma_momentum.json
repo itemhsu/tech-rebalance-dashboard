@@ -5,7 +5,7 @@
     "label": "TopRank MA+Mom",
     "color": "#8b5cf6",
     "group": "momentum",
-    "generated_at": "2026-05-29T12:11:02Z",
+    "generated_at": "2026-05-29T13:02:50Z",
     "order": 104,
     "enabled": true,
     "description": "多因子加權百分位數選股 + MA/MACD 進場訊號 + ATR 停損追蹤，每週再平衡"

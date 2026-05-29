@@ -5,7 +5,7 @@
     "label": "Mom-Factor (monthly)",
     "color": "#06b6d4",
     "group": "momentum",
-    "generated_at": "2026-05-29T12:12:15Z",
+    "generated_at": "2026-05-29T13:04:13Z",
     "order": 106,
     "enabled": true,
     "description": "動態 universe：40% 3m 動能 + 30% 12m 動能 + 30% 市值，月初取前 10，等權重再平衡"

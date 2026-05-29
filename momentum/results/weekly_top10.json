@@ -5,7 +5,7 @@
     "label": "Top10 (weekly)",
     "color": "#ec4899",
     "group": "weekly",
-    "generated_at": "2026-05-29T12:15:17Z",
+    "generated_at": "2026-05-29T13:07:03Z",
     "order": 301,
     "enabled": true,
     "description": "前 10 大市值科技股，每週五等權重再平衡（與 top10 同邏輯，差別僅頻率）"

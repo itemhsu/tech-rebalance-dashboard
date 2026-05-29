@@ -5,7 +5,7 @@
     "label": "Mom-Factor (weekly)",
     "color": "#ec4899",
     "group": "weekly",
-    "generated_at": "2026-05-29T12:16:10Z",
+    "generated_at": "2026-05-29T13:07:58Z",
     "order": 401,
     "enabled": true,
     "description": "動態 universe：40% 3m 動能 + 30% 12m 動能 + 30% 市值，每週五取前 10，等權重再平衡"
