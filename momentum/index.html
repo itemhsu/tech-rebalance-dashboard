@@ -441,15 +441,18 @@ function updateActiveTags() {
 // ────────────────────────────────────────────────
 // 圖表繪製
 // ────────────────────────────────────────────────
-const LAYOUT_DARK = {
-  paper_bgcolor:'#0a0f1e', plot_bgcolor:'#0a0f1e',
-  font:{color:'#94a3b8',size:11,family:'Segoe UI,system-ui'},
-  margin:{t:30,r:20,b:50,l:60},
-  xaxis:{gridcolor:'#1e293b',linecolor:'#334155'},
-  yaxis:{gridcolor:'#1e293b',linecolor:'#334155'},
-  legend:{orientation:'h',y:-0.18},
-  hovermode:'x unified',
-};
+// 每次回傳全新物件 — Plotly 會內部突變共用 xaxis/yaxis 參考（log vs date vs category 混用會錯）
+function newLayout() {
+  return {
+    paper_bgcolor:'#0a0f1e', plot_bgcolor:'#0a0f1e',
+    font:{color:'#94a3b8',size:11,family:'Segoe UI,system-ui'},
+    margin:{t:30,r:20,b:50,l:60},
+    xaxis:{gridcolor:'#1e293b',linecolor:'#334155'},
+    yaxis:{gridcolor:'#1e293b',linecolor:'#334155'},
+    legend:{orientation:'h',y:-0.18},
+    hovermode:'x unified',
+  };
+}
 const PLOT_CFG = {responsive:true, displayModeBar:false};
 
 function strategiesFor(chartId) {
@@ -474,7 +477,7 @@ function drawNAV() {
     return {x:f.dates, y:f.nav, name:s.label, type:'scatter', mode:'lines',
             line:{color:s.color,width:2}};
   });
-  const lay = {...LAYOUT_DARK, title:'', yaxis:{...LAYOUT_DARK.yaxis,title:'NAV ($)',type:'log'}};
+  const lay = newLayout(); lay.yaxis.title='NAV ($)'; lay.yaxis.type='log'; lay.xaxis.type='date';
   Plotly.react('nav-all', traces, lay, PLOT_CFG);
 }
 
@@ -487,7 +490,7 @@ function drawDD() {
     return {x:f.dates, y:dd, name:s.label, type:'scatter', mode:'lines',
             fill:'tozeroy', line:{color:s.color,width:1.4}, opacity:0.75};
   });
-  const lay = {...LAYOUT_DARK, yaxis:{...LAYOUT_DARK.yaxis,title:'Drawdown (%)'}};
+  const lay = newLayout(); lay.yaxis.title='Drawdown (%)'; lay.xaxis.type='date';
   Plotly.react('dd-all', traces, lay, PLOT_CFG);
 }
 
@@ -509,7 +512,7 @@ function drawAnnual() {
     }),
     name: s.label, type:'bar', marker:{color:s.color},
   }));
-  const lay = {...LAYOUT_DARK, barmode:'group', yaxis:{...LAYOUT_DARK.yaxis,title:'年報酬率 (%)'}};
+  const lay = newLayout(); lay.barmode='group'; lay.yaxis.title='年報酬率 (%)'; lay.xaxis.type='category';
   Plotly.react('annual-all', traces, lay, PLOT_CFG);
 }
 
@@ -528,11 +531,8 @@ function drawRR() {
     marker:{color:col, size:14, line:{color:'#fff',width:1}},
     textfont:{size:10},
   }];
-  const lay = {...LAYOUT_DARK,
-    xaxis:{...LAYOUT_DARK.xaxis,title:'波動率 (%)'},
-    yaxis:{...LAYOUT_DARK.yaxis,title:'CAGR (%)'},
-    showlegend:false,
-  };
+  const lay = newLayout(); lay.xaxis.title='波動率 (%)'; lay.xaxis.type='linear';
+  lay.yaxis.title='CAGR (%)'; lay.yaxis.type='linear'; lay.showlegend=false;
   Plotly.react('rr-chart', traces, lay, PLOT_CFG);
 }
 
@@ -616,7 +616,7 @@ function drawHeatmaps(filt) {
       z, x:months, y:years, type:'heatmap',
       colorscale:[[0,'#7f1d1d'],[0.5,'#0a0f1e'],[1,'#14532d']],
       zmid:0, hovertemplate:'%{y}-%{x}: %{z:.2f}%<extra></extra>',
-    }], {...LAYOUT_DARK, margin:{t:10,r:20,b:40,l:50}}, PLOT_CFG);
+    }], (()=>{const l=newLayout();l.margin={t:10,r:20,b:40,l:50};l.xaxis.type='category';l.yaxis.type='category';return l;})(), PLOT_CFG);
     any = true;
   });
   if (!any) wrap.innerHTML = '<div class="empty">未選任何策略</div>';
