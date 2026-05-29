@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>📋 Trade Events Log</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:#020617;color:#e2e8f0;font-family:'Segoe UI',system-ui,sans-serif;font-size:13px;}
+
+header{background:#0a0f1e;border-bottom:1px solid #1e293b;padding:14px 22px;
+       display:flex;align-items:center;gap:18px;flex-wrap:wrap;position:sticky;top:0;z-index:50;}
+header h1{font-size:15px;color:#3b82f6;font-weight:800;}
+header .pill{background:#0f172a;border:1px solid #1e3a5f;color:#94a3b8;padding:5px 12px;
+   border-radius:14px;font-size:11px;}
+header select,header input{background:#0f172a;border:1px solid #334155;color:#e2e8f0;
+   padding:6px 10px;border-radius:5px;font-size:12px;cursor:pointer;}
+header .stat{color:#64748b;font-size:11px;margin-left:auto;}
+
+main{padding:18px 22px 60px;}
+
+.empty{text-align:center;padding:80px 0;color:#475569;font-size:14px;}
+
+table{width:100%;border-collapse:collapse;font-size:11.5px;background:#0a0f1e;
+   border:1px solid #1e293b;border-radius:8px;overflow:hidden;}
+th{background:#0f172a;color:#64748b;padding:9px 10px;text-align:left;
+   font-size:10px;text-transform:uppercase;letter-spacing:.5px;
+   border-bottom:1px solid #1e293b;position:sticky;top:54px;}
+td{padding:7px 10px;border-bottom:1px solid #0d1526;vertical-align:top;}
+tr:hover td{background:#0c1220;}
+
+.type-tag{display:inline-block;padding:2px 8px;border-radius:10px;font-size:10px;
+   font-weight:700;letter-spacing:.3px;}
+.t-trigger{background:#3b82f622;color:#3b82f6;border:1px solid #3b82f6;}
+.t-skip   {background:#64748b22;color:#94a3b8;border:1px solid #64748b;}
+.t-plan   {background:#a855f722;color:#a855f7;border:1px solid #a855f7;}
+.t-submit {background:#06b6d422;color:#06b6d4;border:1px solid #06b6d4;}
+.t-fill   {background:#10b98122;color:#10b981;border:1px solid #10b981;}
+.t-reject {background:#ef444422;color:#ef4444;border:1px solid #ef4444;}
+.t-summary{background:#f59e0b22;color:#f59e0b;border:1px solid #f59e0b;}
+
+.act-buy {color:#10b981;font-weight:700;}
+.act-sell{color:#f87171;font-weight:700;}
+.symbol  {font-weight:800;color:#e2e8f0;}
+.muted   {color:#64748b;}
+.fail    {color:#ef4444;font-weight:700;}
+.ok      {color:#86efac;font-weight:700;}
+
+.reason{font-size:10px;background:#1e293b;border:1px solid #334155;
+   padding:1px 8px;border-radius:8px;color:#cbd5e1;}
+
+.weight-arrow{color:#64748b;font-size:10px;}
+
+details summary{cursor:pointer;color:#94a3b8;font-size:11px;list-style:none;}
+details summary::-webkit-details-marker{display:none;}
+details pre{background:#020617;border:1px solid #1e293b;padding:10px;
+   border-radius:5px;font-size:10px;color:#94a3b8;max-height:200px;overflow:auto;
+   margin-top:6px;}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>📋 Trade Events Log</h1>
+  <span class="pill" id="account-pill">帳戶 #1</span>
+  <select id="account-sel" onchange="reload()">
+    <option value="1">帳戶 #1</option>
+    <option value="2">帳戶 #2</option>
+    <option value="3">帳戶 #3</option>
+    <option value="4">帳戶 #4</option>
+  </select>
+  <select id="type-filter" onchange="render()">
+    <option value="">全部事件</option>
+    <option value="REBALANCE_TRIGGER">🎯 觸發</option>
+    <option value="REBALANCE_SKIP">⏭️ 跳過</option>
+    <option value="ORDER_PLANNED">📝 計劃下單</option>
+    <option value="ORDER_SUBMITTED">📤 已送出</option>
+    <option value="ORDER_FILLED">✅ 已成交</option>
+    <option value="ORDER_REJECTED">❌ 被拒</option>
+    <option value="REBALANCE_SUMMARY">📊 總結</option>
+  </select>
+  <input id="symbol-filter" placeholder="🔍 篩選 symbol" oninput="render()" style="width:140px">
+  <input id="date-from" type="date" onchange="render()">
+  <input id="date-to" type="date" onchange="render()">
+  <span class="stat" id="stat">載入中…</span>
+</header>
+
+<main>
+  <div id="content"></div>
+</main>
+
+<script>
+let EVENTS = [];
+
+function getAccount() {
+  const params = new URLSearchParams(location.search);
+  return params.get('account') || document.getElementById('account-sel').value || '1';
+}
+
+async function reload() {
+  const acc = getAccount();
+  document.getElementById('account-sel').value = acc;
+  document.getElementById('account-pill').textContent = `帳戶 #${acc}`;
+  // 同步到 URL
+  const u = new URL(location.href);
+  u.searchParams.set('account', acc);
+  history.replaceState(null, '', u);
+
+  // 從 mvp_data/<id>/trade_events.jsonl 抓
+  const url = `../mvp_data/${acc}/trade_events.jsonl?_=${Date.now()}`;
+  try {
+    const r = await fetch(url, {cache:'no-store'});
+    if (!r.ok) throw new Error(r.status);
+    const text = await r.text();
+    EVENTS = text.split('\n').filter(l=>l.trim()).map(l=>{
+      try { return JSON.parse(l); } catch { return null; }
+    }).filter(Boolean);
+  } catch (e) {
+    EVENTS = [];
+    document.getElementById('stat').textContent = `載入失敗：${url}`;
+  }
+  render();
+}
+
+function render() {
+  const tf = document.getElementById('type-filter').value;
+  const sf = document.getElementById('symbol-filter').value.trim().toUpperCase();
+  const df = document.getElementById('date-from').value;
+  const dt = document.getElementById('date-to').value;
+
+  const filt = EVENTS.filter(e => {
+    if (tf && e.type !== tf) return false;
+    if (sf && (e.symbol || '').toUpperCase().indexOf(sf) === -1) return false;
+    const day = (e.ts || '').slice(0, 10);
+    if (df && day < df) return false;
+    if (dt && day > dt) return false;
+    return true;
+  }).reverse();   // 新到舊
+
+  document.getElementById('stat').textContent =
+    `${filt.length} 筆事件 / 共 ${EVENTS.length}`;
+
+  const wrap = document.getElementById('content');
+  if (!filt.length) {
+    wrap.innerHTML = '<div class="empty">📭 沒有符合條件的事件</div>';
+    return;
+  }
+
+  let html = '<table><thead><tr>'
+    + '<th>時間 (UTC)</th><th>類型</th><th>策略</th><th>標的 / 動作</th>'
+    + '<th>數量</th><th>權重變化</th><th>理由</th><th>觸發</th><th>詳細</th>'
+    + '</tr></thead><tbody>';
+
+  for (const e of filt) {
+    html += renderRow(e);
+  }
+  html += '</tbody></table>';
+  wrap.innerHTML = html;
+}
+
+function renderRow(e) {
+  const ts = (e.ts || '').replace('T',' ').replace('Z','');
+  const tag = typeTag(e.type);
+  const strat = e.strategy || '—';
+  const sym = e.symbol ? `<span class="symbol">${e.symbol}</span>` : '<span class="muted">—</span>';
+  const act = e.action === 'BUY' ? '<span class="act-buy">BUY</span>'
+            : e.action === 'SELL' ? '<span class="act-sell">SELL</span>'
+            : '<span class="muted">—</span>';
+  const qty = (e.qty != null) ? Math.round(e.qty).toLocaleString() : '—';
+  const symAct = `${sym} ${act !== '<span class="muted">—</span>' ? '· '+act : ''}`;
+  const weight = renderWeight(e);
+  const reason = e.reason ? `<span class="reason">${e.reason}</span>` : '—';
+  const trig = e.trigger || (e.type === 'REBALANCE_TRIGGER' ? '—' : '—');
+  const detail = renderDetail(e);
+
+  return `<tr>
+    <td class="muted">${ts}</td>
+    <td>${tag}</td>
+    <td class="muted">${strat}</td>
+    <td>${symAct}</td>
+    <td>${qty}</td>
+    <td>${weight}</td>
+    <td>${reason}</td>
+    <td class="muted">${trig}</td>
+    <td>${detail}</td>
+  </tr>`;
+}
+
+function typeTag(t) {
+  const map = {
+    REBALANCE_TRIGGER: ['t-trigger','🎯 觸發'],
+    REBALANCE_SKIP:    ['t-skip','⏭️ 跳過'],
+    ORDER_PLANNED:     ['t-plan','📝 計劃'],
+    ORDER_SUBMITTED:   ['t-submit','📤 送出'],
+    ORDER_FILLED:      ['t-fill','✅ 成交'],
+    ORDER_REJECTED:    ['t-reject','❌ 拒'],
+    REBALANCE_SUMMARY: ['t-summary','📊 總結'],
+  };
+  const [cls, label] = map[t] || ['t-skip', t];
+  return `<span class="type-tag ${cls}">${label}</span>`;
+}
+
+function renderWeight(e) {
+  if (e.current_weight == null || e.target_weight == null) return '<span class="muted">—</span>';
+  const cw = (e.current_weight * 100).toFixed(1);
+  const tw = (e.target_weight * 100).toFixed(1);
+  return `${cw}%<span class="weight-arrow"> → </span>${tw}%`;
+}
+
+function renderDetail(e) {
+  // 不顯示已單獨欄位
+  const skip = new Set(['ts','type','account','strategy','symbol','action','qty',
+                        'reason','trigger','pre_qty','post_qty','current_weight','target_weight']);
+  const rest = {};
+  for (const k of Object.keys(e)) if (!skip.has(k)) rest[k] = e[k];
+  if (e.type === 'REBALANCE_SUMMARY') {
+    const ok = e.minimum_swap_check;
+    return `<details><summary>${ok?'<span class="ok">✓ 守則通過</span>':'<span class="fail">⚠️ 違反</span>'}
+            cont=${e.continuing||0} exit=${e.exit||0} new=${e.new_entrant||0}</summary>
+            <pre>${escapeHtml(JSON.stringify(rest,null,2))}</pre></details>`;
+  }
+  if (e.type === 'ORDER_PLANNED' && (e.pre_qty != null)) {
+    return `<details><summary class="muted">${e.pre_qty} → ${e.post_qty} 股</summary>
+            <pre>${escapeHtml(JSON.stringify(rest,null,2))}</pre></details>`;
+  }
+  if (Object.keys(rest).length === 0) return '<span class="muted">—</span>';
+  return `<details><summary class="muted">展開</summary>
+          <pre>${escapeHtml(JSON.stringify(rest,null,2))}</pre></details>`;
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+document.addEventListener('DOMContentLoaded', reload);
+</script>
+</body>
+</html>
