@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-29T09:59:35Z",
+  "generated_at": "2026-05-29T11:32:51Z",
   "source_dir": "/Users/miniaicar/Downloads/tradecopy/strategies",
   "strategies": [
     {
@@ -76,7 +76,7 @@
     },
     {
       "id": "weekly_top10",
-      "label": "Weekly Top10",
+      "label": "Top10 (weekly)",
       "color": "#ec4899",
       "group": "weekly",
       "file": "weekly_top10.json",

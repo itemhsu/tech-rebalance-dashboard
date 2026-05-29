@@ -5,7 +5,7 @@
     "label": "S&P 500",
     "color": "#64748b",
     "group": "benchmark",
-    "generated_at": "2026-05-29T09:59:32Z",
+    "generated_at": "2026-05-29T11:32:49Z",
     "order": 901,
     "enabled": true,
     "description": "SPY buy & hold 基準"
