@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-29T11:32:51Z",
+  "generated_at": "2026-05-29T11:54:18Z",
   "source_dir": "/Users/miniaicar/Downloads/tradecopy/strategies",
   "strategies": [
     {
@@ -48,6 +48,15 @@
       "order": 105
     },
     {
+      "id": "mom_factor_monthly",
+      "label": "Mom-Factor (monthly)",
+      "color": "#06b6d4",
+      "group": "momentum",
+      "file": "mom_factor_monthly.json",
+      "enabled": true,
+      "order": 106
+    },
+    {
       "id": "top10",
       "label": "Top10 (mcap)",
       "color": "#10b981",
@@ -82,6 +91,15 @@
       "file": "weekly_top10.json",
       "enabled": true,
       "order": 301
+    },
+    {
+      "id": "mom_factor_weekly",
+      "label": "Mom-Factor (weekly)",
+      "color": "#ec4899",
+      "group": "weekly",
+      "file": "mom_factor_weekly.json",
+      "enabled": true,
+      "order": 401
     },
     {
       "id": "bench_sp500",

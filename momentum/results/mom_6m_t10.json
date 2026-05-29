@@ -5,7 +5,7 @@
     "label": "MOM-6m-T10",
     "color": "#f59e0b",
     "group": "momentum",
-    "generated_at": "2026-05-29T11:28:08Z",
+    "generated_at": "2026-05-29T11:47:10Z",
     "order": 101,
     "enabled": true,
     "description": "動態 universe（51 檔）：每月以 point-in-time 市值取前 20，再依6m動能取前 10。含已退場/縮水代表股，降低 survivorship bias。"
