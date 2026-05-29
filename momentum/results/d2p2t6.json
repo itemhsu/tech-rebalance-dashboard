@@ -5,7 +5,7 @@
     "label": "D2P2T6",
     "color": "#06b6d4",
     "group": "diversified",
-    "generated_at": "2026-05-29T11:52:10Z",
+    "generated_at": "2026-05-29T12:14:13Z",
     "order": 202,
     "enabled": true,
     "description": "軍火×2 + 醫藥×2 + 科技×6 = 10 檔等權重，每日再平衡"
@@ -29188,5 +29188,57 @@
         "AVGO": 0.1
       }
     }
+  ],
+  "spec_summary": {
+    "name": "D2P2T6",
+    "description": "軍火×2 + 醫藥×2 + 科技×6 = 10 檔等權重，每日再平衡",
+    "benchmark": "QQQ",
+    "universe_size": 30,
+    "selection_method": "top_n_per_group",
+    "selection_method_zh": "分組各取 N 檔",
+    "target_n": 10,
+    "max_weight_pct": 30.0,
+    "factors": [
+      {
+        "name": "市值",
+        "weight_pct": 100
+      }
+    ],
+    "groups": [
+      {
+        "id": "defense",
+        "label": "🛡️ 軍火",
+        "size": 10,
+        "quota": 2
+      },
+      {
+        "id": "pharma",
+        "label": "💊 醫藥",
+        "size": 10,
+        "quota": 2
+      },
+      {
+        "id": "tech",
+        "label": "💻 科技",
+        "size": 10,
+        "quota": 6
+      }
+    ],
+    "rebalance_frequency": "daily",
+    "rebalance_frequency_zh": "每日",
+    "watchlist_top_n": null,
+    "start_date": "2010-01-01"
+  },
+  "next_picks": [
+    "RTX",
+    "LMT",
+    "LLY",
+    "JNJ",
+    "NVDA",
+    "GOOGL",
+    "AAPL",
+    "MSFT",
+    "AMZN",
+    "AVGO"
   ]
 }

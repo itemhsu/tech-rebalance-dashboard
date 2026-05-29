@@ -5,7 +5,7 @@
     "label": "Top10 (weekly)",
     "color": "#ec4899",
     "group": "weekly",
-    "generated_at": "2026-05-29T11:53:06Z",
+    "generated_at": "2026-05-29T12:15:17Z",
     "order": 301,
     "enabled": true,
     "description": "前 10 大市值科技股，每週五等權重再平衡（與 top10 同邏輯，差別僅頻率）"
@@ -29188,5 +29188,38 @@
         "INTC": 0.1
       }
     }
+  ],
+  "spec_summary": {
+    "name": "週度 TOP10 市值",
+    "description": "前 10 大市值科技股，每週五等權重再平衡（與 top10 同邏輯，差別僅頻率）",
+    "benchmark": "QQQ",
+    "universe_size": 20,
+    "selection_method": "top_n_by_metric",
+    "selection_method_zh": "依單一指標排序取前 N",
+    "target_n": 10,
+    "max_weight_pct": 15.0,
+    "factors": [
+      {
+        "name": "市值",
+        "weight_pct": 100
+      }
+    ],
+    "groups": [],
+    "rebalance_frequency": "weekly",
+    "rebalance_frequency_zh": "每週（週五）",
+    "watchlist_top_n": null,
+    "start_date": "2010-01-01"
+  },
+  "next_picks": [
+    "NVDA",
+    "GOOGL",
+    "AAPL",
+    "MSFT",
+    "AMZN",
+    "TSM",
+    "AVGO",
+    "META",
+    "AMD",
+    "INTC"
   ]
 }

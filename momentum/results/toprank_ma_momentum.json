@@ -5,7 +5,7 @@
     "label": "TopRank MA+Mom",
     "color": "#8b5cf6",
     "group": "momentum",
-    "generated_at": "2026-05-29T11:49:28Z",
+    "generated_at": "2026-05-29T12:11:02Z",
     "order": 104,
     "enabled": true,
     "description": "多因子加權百分位數選股 + MA/MACD 進場訊號 + ATR 停損追蹤，每週再平衡"
@@ -27532,5 +27532,87 @@
         "META": 0.125
       }
     }
+  ],
+  "spec_summary": {
+    "name": "TopRank MA Momentum",
+    "description": "多因子加權百分位數選股 + MA/MACD 進場訊號 + ATR 停損追蹤，每週再平衡",
+    "benchmark": "SPY",
+    "universe_size": 25,
+    "selection_method": "weighted_percentile",
+    "selection_method_zh": "百分位加權（含 watchlist 篩選）",
+    "target_n": 8,
+    "max_weight_pct": 15.0,
+    "factors": [
+      {
+        "name": "momentum_90d",
+        "weight_pct": 18,
+        "direction": "由大到小"
+      },
+      {
+        "name": "momentum_60d",
+        "weight_pct": 8,
+        "direction": "由大到小"
+      },
+      {
+        "name": "ma_gap_50",
+        "weight_pct": 12,
+        "direction": "由大到小"
+      },
+      {
+        "name": "ma_slope_20_5d",
+        "weight_pct": 10,
+        "direction": "由大到小"
+      },
+      {
+        "name": "ma_slope_50_10d",
+        "weight_pct": 8,
+        "direction": "由大到小"
+      },
+      {
+        "name": "macd_histogram",
+        "weight_pct": 8,
+        "direction": "由大到小"
+      },
+      {
+        "name": "adx_14",
+        "weight_pct": 8,
+        "direction": "由大到小"
+      },
+      {
+        "name": "volume_ratio_20d",
+        "weight_pct": 7,
+        "direction": "由大到小"
+      },
+      {
+        "name": "roe",
+        "weight_pct": 8,
+        "direction": "由大到小"
+      },
+      {
+        "name": "revenue_growth_yoy",
+        "weight_pct": 8,
+        "direction": "由大到小"
+      },
+      {
+        "name": "pe_ratio",
+        "weight_pct": 5,
+        "direction": "由小到大"
+      }
+    ],
+    "groups": [],
+    "rebalance_frequency": "weekly",
+    "rebalance_frequency_zh": "每週（週五）",
+    "watchlist_top_n": 20,
+    "start_date": "2018-01-01"
+  },
+  "next_picks": [
+    "NVDA",
+    "GOOGL",
+    "AAPL",
+    "MSFT",
+    "AMZN",
+    "TSM",
+    "AVGO",
+    "META"
   ]
 }

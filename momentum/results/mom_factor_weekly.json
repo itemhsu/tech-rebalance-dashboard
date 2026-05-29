@@ -5,7 +5,7 @@
     "label": "Mom-Factor (weekly)",
     "color": "#ec4899",
     "group": "weekly",
-    "generated_at": "2026-05-29T11:54:11Z",
+    "generated_at": "2026-05-29T12:16:10Z",
     "order": 401,
     "enabled": true,
     "description": "動態 universe：40% 3m 動能 + 30% 12m 動能 + 30% 市值，每週五取前 10，等權重再平衡"
@@ -27415,5 +27415,46 @@
         "CRWD": 0.1
       }
     }
+  ],
+  "spec_summary": {
+    "name": "週度動能因子 TOP10",
+    "description": "動態 universe：40% 3m 動能 + 30% 12m 動能 + 30% 市值，每週五取前 10，等權重再平衡",
+    "benchmark": "QQQ",
+    "universe_size": 51,
+    "selection_method": "factor_score",
+    "selection_method_zh": "多因子分數加權",
+    "target_n": 10,
+    "max_weight_pct": 15,
+    "factors": [
+      {
+        "name": "3 個月動能",
+        "weight_pct": 40
+      },
+      {
+        "name": "12 個月動能",
+        "weight_pct": 30
+      },
+      {
+        "name": "市值",
+        "weight_pct": 30
+      }
+    ],
+    "groups": [],
+    "rebalance_frequency": "weekly",
+    "rebalance_frequency_zh": "每週（週五）",
+    "watchlist_top_n": null,
+    "start_date": "2010-01-01"
+  },
+  "next_picks": [
+    "INTC",
+    "MU",
+    "AMD",
+    "DELL",
+    "WDC",
+    "CSCO",
+    "NOK",
+    "QCOM",
+    "GOOG",
+    "AVGO"
   ]
 }

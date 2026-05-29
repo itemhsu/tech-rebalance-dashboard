@@ -5,7 +5,7 @@
     "label": "MOM-3m-T10",
     "color": "#3b82f6",
     "group": "momentum",
-    "generated_at": "2026-05-29T11:48:08Z",
+    "generated_at": "2026-05-29T12:08:58Z",
     "order": 102,
     "enabled": true,
     "description": "動態 universe（51 檔）：每月以 point-in-time 市值取前 20，再依3m動能取前 10。含已退場/縮水代表股，降低 survivorship bias。"
@@ -19355,5 +19355,39 @@
         "AMZN": 0.1
       }
     }
+  ],
+  "spec_summary": {
+    "name": "MOM-3m-T10",
+    "description": "動態 universe（51 檔）：每月以 point-in-time 市值取前 20，再依3m動能取前 10。含已退場/縮水代表股，降低 survivorship bias。",
+    "benchmark": "QQQ",
+    "universe_size": 51,
+    "selection_method": "weighted_percentile",
+    "selection_method_zh": "百分位加權（含 watchlist 篩選）",
+    "target_n": 10,
+    "max_weight_pct": 10,
+    "factors": [
+      {
+        "name": "3 個月動能",
+        "weight_pct": 100,
+        "direction": "由大到小"
+      }
+    ],
+    "groups": [],
+    "rebalance_frequency": "monthly",
+    "rebalance_frequency_zh": "月初第一個交易日",
+    "watchlist_top_n": 20,
+    "start_date": "2010-01-01"
+  },
+  "next_picks": [
+    "INTC",
+    "DELL",
+    "AMD",
+    "MU",
+    "WDC",
+    "QCOM",
+    "CSCO",
+    "TXN",
+    "ORCL",
+    "AVGO"
   ]
 }

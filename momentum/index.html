@@ -281,7 +281,9 @@ function buildSidebar() {
       html += `<label class="s-row">
         <input type="checkbox" ${SIDEBAR_ON[s.id]?'checked':''} onchange="onSidebarChange('${s.id}',this.checked)">
         <span class="dot" style="background:${s.color}"></span>
-        <span class="lbl" style="color:${s.color}">${s.label}</span>
+        <span class="lbl" style="color:${s.color};cursor:help"
+          onmouseenter="showSpecTip(event,'${s.id}')"
+          onmouseleave="hideSpecTip()">${s.label}</span>
       </label>`;
     });
     html += `</div>`;
@@ -433,9 +435,110 @@ function updateActiveTags() {
   let html = '';
   MANIFEST.strategies.forEach(s => {
     if (!SIDEBAR_ON[s.id]) return;
-    html += `<span class="tag" style="color:${s.color};border-color:${s.color}">${s.label}</span>`;
+    html += `<span class="tag" style="color:${s.color};border-color:${s.color};cursor:help;"
+      data-sid="${s.id}"
+      onmouseenter="showSpecTip(event,'${s.id}')"
+      onmouseleave="hideSpecTip()">${s.label}</span>`;
   });
   wrap.innerHTML = html || '<span style="font-size:10px;color:#475569">未選任何策略</span>';
+}
+
+// ────────────────────────────────────────────────
+// Spec tooltip — hover 顯示中文摘要 + next_picks
+// ────────────────────────────────────────────────
+function _ensureTip() {
+  let tip = document.getElementById('spec-tip');
+  if (!tip) {
+    tip = document.createElement('div');
+    tip.id = 'spec-tip';
+    tip.style.cssText = `position:fixed;z-index:9999;background:#0f172a;
+      border:1px solid #334155;border-radius:8px;padding:12px 14px;
+      max-width:360px;font-size:11px;color:#cbd5e1;line-height:1.55;
+      box-shadow:0 10px 30px rgba(0,0,0,0.6);pointer-events:none;
+      display:none;`;
+    document.body.appendChild(tip);
+  }
+  return tip;
+}
+
+function showSpecTip(ev, sid) {
+  const j = STORE[sid];
+  if (!j) return;
+  const s = MANIFEST.strategies.find(x => x.id === sid) || {};
+  const sp = j.spec_summary || {};
+  const picks = j.next_picks || [];
+
+  // 因子列表
+  let factorsHtml = '';
+  if (sp.factors && sp.factors.length) {
+    factorsHtml = sp.factors.map(f => {
+      const dir = f.direction ? ` <span style="color:#64748b">(${f.direction})</span>` : '';
+      return `<div style="display:flex;justify-content:space-between;gap:10px;">
+        <span>· ${f.name}${dir}</span>
+        <span style="color:${s.color};font-weight:700">${f.weight_pct}%</span>
+      </div>`;
+    }).join('');
+  }
+
+  // 分組（d2p2t6）
+  let groupsHtml = '';
+  if (sp.groups && sp.groups.length) {
+    groupsHtml = '<div style="margin-top:6px;color:#64748b">分組配額：</div>' +
+      sp.groups.map(g => `<div style="display:flex;justify-content:space-between;gap:10px;">
+        <span>· ${g.label}（${g.size} 檔池）</span>
+        <span style="color:${s.color};font-weight:700">取 ${g.quota}</span>
+      </div>`).join('');
+  }
+
+  // next picks
+  let picksHtml = '<div style="color:#64748b;margin-top:8px;">下次可能選股：<span style="color:#475569">(無資料)</span></div>';
+  if (picks.length) {
+    picksHtml = `<div style="color:#64748b;margin-top:10px;border-top:1px solid #1e293b;padding-top:8px;">
+      🎯 下次可能選股（前 ${picks.length}）：
+    </div><div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:5px;">
+      ${picks.map(t => `<span style="background:${s.color}22;color:${s.color};
+        border:1px solid ${s.color};padding:2px 7px;border-radius:10px;
+        font-size:10px;font-weight:700;">${t}</span>`).join('')}
+    </div>`;
+  }
+
+  const watchlist = sp.watchlist_top_n ? `<div>·  Watchlist：先取市值前 ${sp.watchlist_top_n}</div>` : '';
+  const maxW = sp.max_weight_pct != null ? ` · 單檔上限 ${sp.max_weight_pct}%` : '';
+  const benchmark = sp.benchmark ? `<div>·  基準：<b style="color:#e2e8f0">${sp.benchmark}</b></div>` : '';
+
+  const tip = _ensureTip();
+  tip.innerHTML = `
+    <div style="font-size:13px;font-weight:800;color:${s.color};margin-bottom:6px;">
+      ${sp.name || s.label}
+    </div>
+    <div style="color:#94a3b8;margin-bottom:8px;font-size:10.5px;line-height:1.5">
+      ${sp.description || ''}
+    </div>
+    <div>·  選股方法：<b style="color:#e2e8f0">${sp.selection_method_zh || '?'}</b></div>
+    <div>·  Universe：<b style="color:#e2e8f0">${sp.universe_size || 0} 檔</b> · 取前 <b style="color:#e2e8f0">${sp.target_n || '?'}</b>${maxW}</div>
+    <div>·  再平衡：<b style="color:#e2e8f0">${sp.rebalance_frequency_zh || '?'}</b></div>
+    ${watchlist}
+    ${benchmark}
+    ${factorsHtml ? `<div style="margin-top:6px;color:#64748b">因子權重：</div>${factorsHtml}` : ''}
+    ${groupsHtml}
+    ${picksHtml}
+  `;
+
+  // 定位（避開右邊界）
+  tip.style.display = 'block';
+  const r = ev.target.getBoundingClientRect();
+  const tw = tip.offsetWidth, th = tip.offsetHeight;
+  let left = r.left;
+  let top = r.bottom + 8;
+  if (left + tw > window.innerWidth - 8) left = window.innerWidth - tw - 8;
+  if (top + th > window.innerHeight - 8) top = r.top - th - 8;
+  tip.style.left = left + 'px';
+  tip.style.top = top + 'px';
+}
+
+function hideSpecTip() {
+  const tip = document.getElementById('spec-tip');
+  if (tip) tip.style.display = 'none';
 }
 
 // ────────────────────────────────────────────────

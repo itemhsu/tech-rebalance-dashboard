@@ -5,7 +5,7 @@
     "label": "Top9-PSQ",
     "color": "#f97316",
     "group": "diversified",
-    "generated_at": "2026-05-29T11:52:35Z",
+    "generated_at": "2026-05-29T12:14:39Z",
     "order": 203,
     "enabled": true,
     "description": "前10大市值科技股（100%），每月再平衡"
@@ -19648,5 +19648,38 @@
         "INTC": 0.1
       }
     }
+  ],
+  "spec_summary": {
+    "name": "Monthly TOP10",
+    "description": "前10大市值科技股（100%），每月再平衡",
+    "benchmark": "QQQ",
+    "universe_size": 20,
+    "selection_method": "top_n_by_metric",
+    "selection_method_zh": "依單一指標排序取前 N",
+    "target_n": 10,
+    "max_weight_pct": 20.0,
+    "factors": [
+      {
+        "name": "市值",
+        "weight_pct": 100
+      }
+    ],
+    "groups": [],
+    "rebalance_frequency": "monthly",
+    "rebalance_frequency_zh": "月初第一個交易日",
+    "watchlist_top_n": null,
+    "start_date": "2010-01-01"
+  },
+  "next_picks": [
+    "NVDA",
+    "GOOGL",
+    "AAPL",
+    "MSFT",
+    "AMZN",
+    "TSM",
+    "AVGO",
+    "META",
+    "AMD",
+    "INTC"
   ]
 }

@@ -5,7 +5,7 @@
     "label": "S&P 500",
     "color": "#64748b",
     "group": "benchmark",
-    "generated_at": "2026-05-29T11:54:14Z",
+    "generated_at": "2026-05-29T12:16:12Z",
     "order": 901,
     "enabled": true,
     "description": "SPY buy & hold 基準"
@@ -16790,5 +16790,24 @@
         "SPY": 1.0
       }
     }
+  ],
+  "spec_summary": {
+    "name": "S&P 500",
+    "description": "SPY buy & hold 基準",
+    "benchmark": "SPY",
+    "universe_size": 1,
+    "selection_method": "buy_and_hold",
+    "selection_method_zh": "買入持有",
+    "target_n": 1,
+    "max_weight_pct": 100,
+    "factors": [],
+    "groups": [],
+    "rebalance_frequency": "none",
+    "rebalance_frequency_zh": "不再平衡（買入持有）",
+    "watchlist_top_n": null,
+    "start_date": "2010-01-01"
+  },
+  "next_picks": [
+    "SPY"
   ]
 }
