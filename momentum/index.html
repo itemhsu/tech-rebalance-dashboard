@@ -560,20 +560,68 @@ function drawKPI(filt) {
 // ────────────────────────────────────────────────
 // Table
 // ────────────────────────────────────────────────
+// 表格排序狀態（跨重繪保留）
+let TABLE_SORT = { key: 'cagr', dir: 'desc' };
+
+window.sortTable = function(key) {
+  if (TABLE_SORT.key === key) {
+    TABLE_SORT.dir = (TABLE_SORT.dir === 'desc') ? 'asc' : 'desc';
+  } else {
+    TABLE_SORT.key = key;
+    // 「策略」欄預設升冪（字母序）；數字欄預設降冪（大值優先）
+    TABLE_SORT.dir = (key === 'label') ? 'asc' : 'desc';
+  }
+  // 重新繪製（不重算 filterSeries — 用快取的 _lastFilt）
+  if (window._lastFilt) drawTable(window._lastFilt);
+};
+
 function drawTable(filt) {
+  window._lastFilt = filt;
   const ids = Object.keys(filt);
   if (!ids.length) {
     document.getElementById('metrics-table-wrap').innerHTML = '<div class="empty">未選任何策略</div>';
     return;
   }
-  let html = '<table><thead><tr>'
-    + '<th>策略</th><th>CAGR</th><th>總報酬</th><th>波動率</th><th>Sharpe</th>'
-    + '<th>MaxDD</th><th>Calmar</th><th>終值</th></tr></thead><tbody>';
+
+  // 計算所有要顯示策略的 row 資料
+  const rows = [];
   MANIFEST.strategies.forEach(s => {
     if (!filt[s.id]) return;
     const m = recomputeMetrics(filt[s.id]);
-    const fmt = (v, pct=true, dp=2) => v==null?'—':(pct?(v*100).toFixed(dp)+'%':v.toFixed(dp));
-    const cls = v => v==null?'':v>=0?'cg':'cr';
+    rows.push({ s, m, label: s.label });
+  });
+
+  // 排序
+  const k = TABLE_SORT.key;
+  const dir = TABLE_SORT.dir === 'asc' ? 1 : -1;
+  rows.sort((a, b) => {
+    let va, vb;
+    if (k === 'label') { va = a.label; vb = b.label; return va.localeCompare(vb) * dir; }
+    va = a.m[k]; vb = b.m[k];
+    if (va == null && vb == null) return 0;
+    if (va == null) return 1;       // null 永遠排最後
+    if (vb == null) return -1;
+    return (va - vb) * dir;
+  });
+
+  const arr = d => TABLE_SORT.key === d
+    ? (TABLE_SORT.dir === 'desc' ? ' ▼' : ' ▲') : '';
+
+  let html = '<table><thead><tr>'
+    + `<th onclick="sortTable('label')">策略${arr('label')}</th>`
+    + `<th onclick="sortTable('cagr')">CAGR${arr('cagr')}</th>`
+    + `<th onclick="sortTable('total_return')">總報酬${arr('total_return')}</th>`
+    + `<th onclick="sortTable('volatility')">波動率${arr('volatility')}</th>`
+    + `<th onclick="sortTable('sharpe')">Sharpe${arr('sharpe')}</th>`
+    + `<th onclick="sortTable('max_drawdown')">MaxDD${arr('max_drawdown')}</th>`
+    + `<th onclick="sortTable('calmar')">Calmar${arr('calmar')}</th>`
+    + `<th onclick="sortTable('final_value')">終值${arr('final_value')}</th>`
+    + '</tr></thead><tbody>';
+
+  const fmt = (v, pct=true, dp=2) => v==null?'—':(pct?(v*100).toFixed(dp)+'%':v.toFixed(dp));
+  const cls = v => v==null?'':v>=0?'cg':'cr';
+
+  rows.forEach(({s, m}) => {
     html += `<tr>
       <td style="color:${s.color}">${s.label}</td>
       <td class="${cls(m.cagr)}">${fmt(m.cagr)}</td>
