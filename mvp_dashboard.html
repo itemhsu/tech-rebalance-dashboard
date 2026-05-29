@@ -144,7 +144,10 @@
 
     <!-- NAV 折線圖 -->
     <div class="card">
-      <h2 class="text-sm font-semibold text-slate-400 uppercase tracking-wide mb-4">NAV 走勢</h2>
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-sm font-semibold text-slate-400 uppercase tracking-wide">NAV 走勢</h2>
+        <div id="nav-toggles" class="flex gap-4 text-xs"></div>
+      </div>
       <canvas id="nav-chart" height="120"></canvas>
     </div>
 
@@ -326,7 +329,7 @@ function render(d, allAccounts, currentAccount, availableDates = [], selectedDat
   renderStrategyCard(d.strategy_card, accent);
 
   // Charts
-  renderNavChart(d.nav_history, accent);
+  renderNavChart(d.nav_history, d.benchmark_nav, accent);
   renderDrawdownChart(d.drawdown, accent);
 
   // Positions
@@ -459,40 +462,68 @@ function renderPortfolioBadges(portfolio, accent) {
 //  NAV Chart
 // ══════════════════════════════════════════════════════════════════════════════
 let navChartInst = null;
-function renderNavChart(history, accent) {
+function renderNavChart(history, benchmarkNav, accent) {
   if (!history || history.length === 0) return;
   const labels = history.map(p => p.date);
   const navs   = history.map(p => p.nav);
 
-  // 事件標記點
-  const pointRadii = history.map(p => p.event ? 6 : 3);
+  // 事件標記點（僅投組主線）
+  const pointRadii    = history.map(p => p.event ? 6 : 2);
   const pointBgColors = history.map(p => p.event ? "#f59e0b" : accent);
+
+  const datasets = [{
+    label: "投組 NAV",
+    data:  navs,
+    borderColor:       accent,
+    backgroundColor:   accent + "22",
+    fill:              true,
+    tension:           0.3,
+    borderWidth:       2,
+    pointRadius:       pointRadii,
+    pointBackgroundColor: pointBgColors,
+  }];
+
+  const hasSP500  = benchmarkNav?.sp500?.some(v => v !== null);
+  const hasNasdaq = benchmarkNav?.nasdaq?.some(v => v !== null);
+
+  if (hasSP500)
+    datasets.push({
+      label:       "S&P500",
+      data:        benchmarkNav.sp500,
+      borderColor: "#fb923c",
+      fill:        false,
+      tension:     0.3,
+      borderDash:  [5, 3],
+      borderWidth: 1.5,
+      pointRadius: 0,
+    });
+
+  if (hasNasdaq)
+    datasets.push({
+      label:       "NASDAQ",
+      data:        benchmarkNav.nasdaq,
+      borderColor: "#a78bfa",
+      fill:        false,
+      tension:     0.3,
+      borderDash:  [5, 3],
+      borderWidth: 1.5,
+      pointRadius: 0,
+    });
 
   const ctx = document.getElementById("nav-chart").getContext("2d");
   if (navChartInst) navChartInst.destroy();
   navChartInst = new Chart(ctx, {
     type: "line",
-    data: {
-      labels,
-      datasets: [{
-        label: "NAV",
-        data: navs,
-        borderColor: accent,
-        backgroundColor: accent + "22",
-        fill: true,
-        tension: 0.3,
-        pointRadius: pointRadii,
-        pointBackgroundColor: pointBgColors,
-      }]
-    },
+    data: { labels, datasets },
     options: {
       responsive: true,
       plugins: {
         legend: { display: false },
         tooltip: {
           callbacks: {
-            afterBody: ctx => {
-              const idx = ctx[0].dataIndex;
+            label: c => ` ${c.dataset.label}: $${c.parsed.y.toLocaleString("en-US", {minimumFractionDigits:0, maximumFractionDigits:0})}`,
+            afterBody: c => {
+              const idx = c[0].dataIndex;
               const evt = history[idx]?.event;
               return evt ? ["⚡ " + evt.label] : [];
             }
@@ -504,6 +535,35 @@ function renderNavChart(history, accent) {
         y: { ticks: { color:"#64748b", callback: v => "$" + v.toLocaleString() }, grid: { color:"#334155" } }
       }
     }
+  });
+
+  // ── 勾選框（與 drawdown 圖同樣風格）────────────────────────────────────────
+  const toggleEl = document.getElementById("nav-toggles");
+  if (!toggleEl) return;
+  toggleEl.innerHTML = "";
+
+  datasets.forEach((ds, i) => {
+    const wrap = document.createElement("label");
+    wrap.style.cssText = "display:flex;align-items:center;gap:4px;cursor:pointer;user-select:none;";
+
+    const cb = document.createElement("input");
+    cb.type = "checkbox";
+    cb.checked = true;
+    cb.style.accentColor = ds.borderColor;
+    cb.addEventListener("change", () => {
+      navChartInst.setDatasetVisibility(i, cb.checked);
+      navChartInst.update();
+    });
+
+    const dot = document.createElement("span");
+    dot.style.cssText = `display:inline-block;width:10px;height:10px;border-radius:2px;background:${ds.borderColor};flex-shrink:0;`;
+
+    const txt = document.createElement("span");
+    txt.textContent = ds.label;
+    txt.style.color = "#94a3b8";
+
+    wrap.append(cb, dot, txt);
+    toggleEl.appendChild(wrap);
   });
 }
 

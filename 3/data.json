@@ -4,7 +4,7 @@
     "strategy": "top9psq",
     "account_id": "3",
     "account_label": "帳戶 #3 (Monthly TOP10 Live)",
-    "generated_at": "2026-05-28T22:09:50Z",
+    "generated_at": "2026-05-29T12:54:03Z",
     "trading_date": "2026-05-28",
     "dry_run": false,
     "strategy_status": "active",
@@ -259,7 +259,7 @@
       -0.37,
       0.0,
       0.0,
-      null
+      0.0
     ]
   },
   "trade_log": [
@@ -557,6 +557,28 @@
       "trades",
       "cta",
       "footer"
+    ]
+  },
+  "benchmark_nav": {
+    "sp500": [
+      19820.37,
+      19688.0,
+      19900.48,
+      19934.61,
+      20008.91,
+      20131.13,
+      20134.45,
+      20250.3
+    ],
+    "nasdaq": [
+      19820.37,
+      19653.23,
+      19956.83,
+      19974.1,
+      20012.75,
+      20249.93,
+      20264.02,
+      20448.42
     ]
   }
 }
