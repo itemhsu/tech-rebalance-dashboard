@@ -1,25 +1,7 @@
 {
-  "generated_at": "2026-05-29T08:28:28Z",
+  "generated_at": "2026-05-29T09:19:58Z",
   "source_dir": "/Users/miniaicar/Downloads/tradecopy/strategies",
   "strategies": [
-    {
-      "id": "mom_6m_t20",
-      "label": "MOM-6m-T20",
-      "color": "#3b82f6",
-      "group": "momentum",
-      "file": "mom_6m_t20.json",
-      "enabled": true,
-      "order": 100
-    },
-    {
-      "id": "toprank_ma_momentum",
-      "label": "TopRank MA Momentum",
-      "color": "#8b5cf6",
-      "group": "momentum",
-      "file": "toprank_ma_momentum.json",
-      "enabled": true,
-      "order": 100
-    },
     {
       "id": "mom_6m_t10",
       "label": "MOM-6m-T10",
@@ -46,6 +28,60 @@
       "file": "mom_12m_t5.json",
       "enabled": true,
       "order": 103
+    },
+    {
+      "id": "toprank_ma_momentum",
+      "label": "TopRank MA+Mom",
+      "color": "#8b5cf6",
+      "group": "momentum",
+      "file": "toprank_ma_momentum.json",
+      "enabled": true,
+      "order": 104
+    },
+    {
+      "id": "mom_6m_t20",
+      "label": "MOM-6m-T20",
+      "color": "#3b82f6",
+      "group": "momentum",
+      "file": "mom_6m_t20.json",
+      "enabled": true,
+      "order": 105
+    },
+    {
+      "id": "top10",
+      "label": "Top10 (mcap)",
+      "color": "#10b981",
+      "group": "diversified",
+      "file": "top10.json",
+      "enabled": true,
+      "order": 201
+    },
+    {
+      "id": "d2p2t6",
+      "label": "D2P2T6",
+      "color": "#06b6d4",
+      "group": "diversified",
+      "file": "d2p2t6.json",
+      "enabled": true,
+      "order": 202
+    },
+    {
+      "id": "top9psq",
+      "label": "Top9-PSQ",
+      "color": "#f97316",
+      "group": "diversified",
+      "file": "top9psq.json",
+      "enabled": true,
+      "order": 203
+    },
+    {
+      "id": "weekly_top10",
+      "label": "Weekly Top10",
+      "color": "#ec4899",
+      "group": "weekly",
+      "file": "weekly_top10.json",
+      "enabled": true,
+      "order": 301
     },
     {
       "id": "bench_sp500",
