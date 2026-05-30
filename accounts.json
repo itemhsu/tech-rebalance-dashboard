@@ -9,7 +9,10 @@
       "environment": "paper",
       "secret_prefix": "ACC1",
       "alpaca_secret_prefix": "ACC1",
-      "data_dir": "data/1"
+      "data_dir": "data/1",
+      "email_recipients": [
+        "itemhsu@gmail.com"
+      ]
     },
     {
       "id": "2",
@@ -21,7 +24,10 @@
       "secret_prefix": "ACC2",
       "alpaca_secret_prefix": "ACC2",
       "data_dir": "d2p2t6/data/1",
-      "runner_sub_id": "1"
+      "runner_sub_id": "1",
+      "email_recipients": [
+        "itemhsu@gmail.com"
+      ]
     },
     {
       "id": "3",
@@ -32,7 +38,10 @@
       "environment": "paper",
       "secret_prefix": "ACC3",
       "alpaca_secret_prefix": "ACC3",
-      "data_dir": "data/3"
+      "data_dir": "data/3",
+      "email_recipients": [
+        "itemhsu@gmail.com"
+      ]
     },
     {
       "id": "4",
@@ -43,7 +52,10 @@
       "environment": "paper",
       "secret_prefix": "ACC4",
       "alpaca_secret_prefix": "ACC4",
-      "data_dir": "weekly_top10/data/4"
+      "data_dir": "weekly_top10/data/4",
+      "email_recipients": [
+        "itemhsu@gmail.com"
+      ]
     },
     {
       "id": "5",
@@ -54,7 +66,10 @@
       "environment": "paper",
       "secret_prefix": "ACC5",
       "alpaca_secret_prefix": "ACC5",
-      "data_dir": "data/5"
+      "data_dir": "data/5",
+      "email_recipients": [
+        "itemhsu@gmail.com"
+      ]
     }
   ]
 }
