@@ -304,34 +304,37 @@ cd tech-rebalance</pre>
   </table>
 
   <div class="box info">
-    <strong>📋 SMTP 只需 1 個 Secret：<code>SMTP_URL</code>（URI 格式）</strong>
-<pre><span class="c"># 格式：smtp://USER:PASS@HOST:PORT  (TLS，預設 port 587)
-#       smtps://USER:PASS@HOST:PORT (SSL，預設 port 465)</span>
+    <strong>📋 SMTP 只需 1 個 Secret：<code>SMTP_URL</code></strong>
+    <p style="margin-top:6px;color:#94a3b8">已知供應商用「短碼」即可，host/port 系統內建。</p>
+<pre><span class="c"># 已知供應商：provider:email:password（最常用）</span>
+gmail:you@gmail.com:abcdEFGHijklMNOP
+outlook:you@outlook.com:YOUR_PASSWORD
+yahoo:you@yahoo.com:YOUR_PASSWORD
+icloud:you@icloud.com:YOUR_PASSWORD
 
-<span class="c"># Gmail TLS（推薦）</span>
-smtp://you%40gmail.com:abcdEFGHijklMNOP@smtp.gmail.com:587
+<span class="c"># 更短：省略 email（系統用 EMAIL_SENDER）</span>
+gmail:abcdEFGHijklMNOP
 
-<span class="c"># Gmail SSL</span>
-smtps://you%40gmail.com:abcdEFGHijklMNOP@smtp.gmail.com:465
-
-<span class="c"># Outlook</span>
-smtp://you%40outlook.com:YOUR_APP_PASSWORD@smtp-mail.outlook.com:587
-
-<span class="c"># Yahoo</span>
-smtps://you%40yahoo.com:YOUR_APP_PASSWORD@smtp.mail.yahoo.com:465</pre>
+<span class="c"># 自架 / 不在已知清單 → 用完整 URI</span>
+smtp://user:pass@your-server.com:587
+smtps://user:pass@your-server.com:465</pre>
   </div>
 
-  <div class="box warn">
-    <strong>⚠️ Email 與密碼必須 URL-encode</strong>
-    特殊字元（<code>@ : / ? # &amp; %</code>）會破壞 URI 解析，要先編碼：
-    <ul style="margin-top:6px;">
-      <li><code>@</code> → <code>%40</code>（e.g. email 地址）</li>
-      <li><code>:</code> → <code>%3A</code></li>
-      <li><code>/</code> → <code>%2F</code></li>
-      <li><code>!</code> → <code>%21</code></li>
-    </ul>
-    Gmail App Password（16 個小寫字母）通常沒特殊字元，可直接貼。
-    用 Python 編碼：<code>python3 -c "from urllib.parse import quote; print(quote('p@ss!', safe=''))"</code>
+  <table>
+    <thead><tr><th>provider 短碼</th><th>映射的 SMTP server</th><th>port</th><th>模式</th></tr></thead>
+    <tbody>
+      <tr><td><code>gmail</code></td><td>smtp.gmail.com</td><td>587</td><td>TLS</td></tr>
+      <tr><td><code>outlook</code> / <code>hotmail</code></td><td>smtp-mail.outlook.com</td><td>587</td><td>TLS</td></tr>
+      <tr><td><code>yahoo</code></td><td>smtp.mail.yahoo.com</td><td>465</td><td>SSL</td></tr>
+      <tr><td><code>icloud</code></td><td>smtp.mail.me.com</td><td>587</td><td>TLS</td></tr>
+      <tr><td><code>office365</code></td><td>smtp.office365.com</td><td>587</td><td>TLS</td></tr>
+    </tbody>
+  </table>
+
+  <div class="box tip">
+    <strong>💡 簡化原則</strong>
+    Gmail / Outlook / Yahoo / iCloud 用戶 <b>不需要記 host 跟 port</b>，
+    只要寫 <code>provider:email:password</code> 即可。系統知道 smtp.gmail.com / 587 / TLS 這些細節。
   </div>
 
   <h3>選項 B：SendGrid（HTTP API，更穩定）</h3>
@@ -421,13 +424,14 @@ smtps://you%40yahoo.com:YOUR_APP_PASSWORD@smtp.mail.yahoo.com:465</pre>
     <tbody>
       <tr>
         <td><code>SMTP_URL</code></td>
-        <td><code style="font-size:10px">smtp://you%40gmail.com:abcdEFGHijklMNOP@smtp.gmail.com:587</code></td>
+        <td><code>gmail:you@gmail.com:abcdEFGHijklMNOP</code></td>
       </tr>
     </tbody>
   </table>
   <p style="color:#94a3b8;font-size:12px;">
-    URI 格式自帶 user/pass/host/port/SSL 資訊。<code>smtps://</code> = SSL、<code>smtp://</code> = TLS。<br>
-    email 中的 <code>@</code> 必須改成 <code>%40</code>（URL-encode）。
+    格式：<code>provider:email:password</code>。供應商短碼自帶 host/port/SSL 設定。<br>
+    支援 <code>gmail / outlook / hotmail / yahoo / icloud / office365</code>。
+    自架 server 改用完整 URI：<code>smtp://user:pass@host:port</code>。
   </p>
 
   <h4>選項 B：SendGrid</h4>
@@ -470,8 +474,8 @@ gh secret set EMAIL_SENDER       --body "you@gmail.com"
 gh secret set EMAIL_RECIPIENT    --body "you@gmail.com"
 gh secret set DASHBOARD_PUSH_TOKEN --body "github_pat_xxx"
 
-<span class="c"># 選項 A：SMTP（一行搞定）</span>
-gh secret set SMTP_URL --body "smtp://you%40gmail.com:abcdEFGHijklMNOP@smtp.gmail.com:587"
+<span class="c"># 選項 A：SMTP（一行搞定，已知供應商用短碼）</span>
+gh secret set SMTP_URL --body "gmail:you@gmail.com:abcdEFGHijklMNOP"
 
 <span class="c"># 選項 B：SendGrid（A、B 二選一即可）</span>
 gh secret set SENDGRID_API_KEY --body "SG.xxx..."</pre>
