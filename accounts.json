@@ -5,6 +5,9 @@
       "strategy": "top10",
       "label": "帳戶 #1 (TOP10 Daily)",
       "enabled": true,
+      "broker": "alpaca",
+      "environment": "paper",
+      "secret_prefix": "ACC1",
       "alpaca_secret_prefix": "ACC1",
       "data_dir": "data/1"
     },
@@ -13,6 +16,9 @@
       "strategy": "d2p2t6",
       "label": "帳戶 #2 (D2P2T6)",
       "enabled": true,
+      "broker": "alpaca",
+      "environment": "paper",
+      "secret_prefix": "ACC2",
       "alpaca_secret_prefix": "ACC2",
       "data_dir": "d2p2t6/data/1",
       "runner_sub_id": "1"
@@ -22,6 +28,9 @@
       "strategy": "mom_6m_t20",
       "label": "帳戶 #3 (MOM-6m-T20 月度動能)",
       "enabled": true,
+      "broker": "alpaca",
+      "environment": "paper",
+      "secret_prefix": "ACC3",
       "alpaca_secret_prefix": "ACC3",
       "data_dir": "data/3"
     },
@@ -30,6 +39,9 @@
       "strategy": "weekly_top10",
       "label": "帳戶 #4 (Weekly Top10)",
       "enabled": true,
+      "broker": "alpaca",
+      "environment": "paper",
+      "secret_prefix": "ACC4",
       "alpaca_secret_prefix": "ACC4",
       "data_dir": "weekly_top10/data/4"
     },
@@ -38,6 +50,9 @@
       "strategy": "mom_6m_t20",
       "label": "帳戶 #5 (MOM-6m-T20 月度動能)",
       "enabled": false,
+      "broker": "alpaca",
+      "environment": "paper",
+      "secret_prefix": "ACC5",
       "alpaca_secret_prefix": "ACC5",
       "data_dir": "data/5"
     }
