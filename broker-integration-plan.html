@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>卷商整合 — 發展計劃書 + 測試計劃</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:#020617;color:#e2e8f0;font-family:'Segoe UI',system-ui,sans-serif;font-size:14px;line-height:1.65;}
+a{color:#3b82f6;text-decoration:none;}
+
+.sidebar{position:fixed;top:0;left:0;width:240px;height:100vh;background:#0a0f1e;
+   border-right:1px solid #1e293b;overflow-y:auto;padding:14px 0;z-index:50;}
+.sidebar h1{font-size:13px;color:#3b82f6;padding:0 16px 12px;border-bottom:1px solid #1e293b;font-weight:800;}
+.sidebar h1 small{display:block;font-size:10px;color:#475569;margin-top:2px;font-weight:400;}
+.sidebar h3{font-size:9px;color:#475569;text-transform:uppercase;letter-spacing:1.4px;padding:14px 16px 4px;}
+.sidebar a{display:block;padding:5px 16px;font-size:12px;color:#64748b;border-left:3px solid transparent;transition:all .12s;}
+.sidebar a:hover,.sidebar a.active{color:#3b82f6;border-color:#3b82f6;background:rgba(59,130,246,.07);}
+
+main{margin-left:240px;padding:32px 5% 80px;max-width:1200px;}
+
+.hero{background:linear-gradient(135deg,#0c1628 0%,#0d1f3c 60%,#0c1628 100%);
+   padding:32px 38px;border-radius:14px;margin-bottom:24px;border:1px solid #1e3a5f;}
+.hero .badge{display:inline-block;background:#1e293b;border:1px solid #334155;color:#94a3b8;
+   padding:3px 11px;border-radius:14px;font-size:10px;margin-right:6px;}
+.hero h1{font-size:28px;font-weight:900;color:#3b82f6;margin:12px 0 8px;letter-spacing:-0.5px;}
+.hero h1 span{color:#a855f7;}
+.hero p{color:#94a3b8;font-size:13px;}
+
+section{background:#0a0f1e;border:1px solid #1e293b;border-radius:12px;padding:24px 28px;margin-bottom:18px;}
+section h2{font-size:18px;font-weight:800;color:#e2e8f0;margin-bottom:6px;}
+section h2 .num{display:inline-block;background:#3b82f6;color:#fff;font-size:11px;
+   padding:3px 9px;border-radius:12px;font-weight:700;margin-right:8px;}
+section .meta{color:#475569;font-size:11px;margin-bottom:14px;}
+section h3{font-size:14px;font-weight:700;color:#93c5fd;margin:18px 0 6px;}
+section h4{font-size:11px;font-weight:700;color:#475569;margin:14px 0 5px;text-transform:uppercase;letter-spacing:.8px;}
+p{color:#94a3b8;margin-bottom:8px;}
+ul,ol{color:#94a3b8;padding-left:22px;margin-bottom:9px;}
+li{margin-bottom:3px;}
+b,strong{color:#e2e8f0;}
+
+code{background:#0f172a;border:1px solid #1e293b;border-radius:3px;padding:1px 6px;
+   font-size:11.5px;color:#93c5fd;font-family:'Menlo','Courier New',monospace;}
+pre{background:#020617;border:1px solid #1e293b;border-radius:8px;padding:13px 17px;
+   overflow-x:auto;font-size:11.5px;line-height:1.55;margin:9px 0;
+   font-family:'Menlo','Courier New',monospace;color:#cbd5e1;}
+.k{color:#93c5fd;}.s{color:#86efac;}.n{color:#fb923c;}.c{color:#475569;font-style:italic;}
+
+.box{border-radius:8px;padding:11px 15px;margin:10px 0;border:1px solid;}
+.box.warn  {background:#190e00;border-color:#92400e;color:#fcd34d;}
+.box.info  {background:#080f1a;border-color:#1e3a5f;color:#93c5fd;}
+.box.ok    {background:#081308;border-color:#14532d;color:#86efac;}
+.box.tip   {background:#1c0d23;border-color:#581c87;color:#c4b5fd;}
+.box.danger{background:#190808;border-color:#7f1d1d;color:#fca5a5;}
+
+table{width:100%;border-collapse:collapse;font-size:11.5px;margin:9px 0;}
+th{background:#0f172a;color:#475569;padding:8px 10px;text-align:left;
+   border-bottom:1px solid #1e293b;font-size:10px;text-transform:uppercase;letter-spacing:.5px;}
+td{padding:7px 10px;border-bottom:1px solid #0d1526;color:#cbd5e1;vertical-align:top;}
+tr:hover td{background:#0c1220;}
+td code{font-size:10.5px;}
+
+.phase-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:11px;margin:13px 0;}
+.phase-card{background:#0f172a;border:1px solid #1e293b;border-radius:9px;padding:14px;position:relative;}
+.phase-card .pn{position:absolute;top:8px;right:12px;font-size:36px;font-weight:900;color:#1e293b;line-height:1;}
+.phase-card h4{font-size:12px;font-weight:700;color:#3b82f6;margin:0 0 8px;text-transform:none;letter-spacing:0;}
+.phase-card ul{font-size:11px;color:#94a3b8;padding-left:14px;margin:0 0 8px;}
+.phase-card .dur{font-size:10px;color:#fcd34d;font-weight:700;border-top:1px solid #1e293b;padding-top:6px;}
+
+.test-pyramid{display:flex;flex-direction:column;align-items:center;margin:18px 0;}
+.test-pyramid > div{padding:9px 18px;text-align:center;color:#e2e8f0;font-weight:700;font-size:12px;margin-bottom:2px;}
+.pyramid-top   {background:#7f1d1d;width:25%;border-radius:6px 6px 0 0;}
+.pyramid-mid   {background:#92400e;width:55%;}
+.pyramid-base  {background:#14532d;width:85%;border-radius:0 0 6px 6px;}
+
+.tid{display:inline-block;background:#0f172a;border:1px solid #334155;color:#3b82f6;
+   font-family:monospace;font-size:10px;padding:1px 6px;border-radius:4px;font-weight:700;}
+
+.checklist{list-style:none;padding-left:0;}
+.checklist li{padding:4px 0 4px 24px;position:relative;color:#cbd5e1;font-size:12px;}
+.checklist li::before{content:'☐';position:absolute;left:6px;color:#475569;font-size:13px;}
+
+.severity-h{color:#f87171;font-weight:700;}
+.severity-m{color:#fcd34d;font-weight:700;}
+.severity-l{color:#86efac;font-weight:700;}
+
+footer{text-align:center;color:#1e293b;font-size:11px;padding:36px 0 18px;}
+</style>
+</head>
+<body>
+
+<nav class="sidebar">
+  <h1>🛠 卷商整合計劃書<small>含詳細測試計劃</small></h1>
+
+  <h3>🎯 概覽</h3>
+  <a href="#summary">執行摘要</a>
+  <a href="#scope">範圍與目標</a>
+  <a href="#prerequisites">前置條件</a>
+
+  <h3>🛠 工程計劃</h3>
+  <a href="#phases">4 階段概覽</a>
+  <a href="#phase1">Phase 1：抽象層 + Alpaca</a>
+  <a href="#phase2">Phase 2：第 2 家 broker</a>
+  <a href="#phase3">Phase 3：accounts.json</a>
+  <a href="#phase4">Phase 4：擴充</a>
+
+  <h3>🧪 測試計劃</h3>
+  <a href="#test-strategy">測試策略</a>
+  <a href="#test-unit">單元測試</a>
+  <a href="#test-schema">Schema 驗證</a>
+  <a href="#test-integration">整合測試</a>
+  <a href="#test-e2e">端對端測試</a>
+  <a href="#test-security">安全測試</a>
+  <a href="#test-performance">效能測試</a>
+  <a href="#test-acceptance">驗收測試</a>
+  <a href="#test-cd">CI/CD 整合</a>
+
+  <h3>🚨 風控</h3>
+  <a href="#go-live">Go-Live Gate</a>
+  <a href="#rollback">Rollback 計劃</a>
+</nav>
+
+<main>
+
+<div class="hero">
+  <div>
+    <span class="badge">v1 draft</span>
+    <span class="badge">2026-05-30</span>
+    <span class="badge">含 56 個測試案例</span>
+  </div>
+  <h1>🛠 卷商整合 <span>發展計劃書</span></h1>
+  <p>把現有綁定 Alpaca 的架構抽象化，未來可選任一卷商。
+  分 4 個階段、含完整測試矩陣（單元/Schema/整合/端對端/安全/效能/驗收 — 共 <b>56 個具名測試案例</b>），
+  確保抽象層 bug 不會誤觸實單。</p>
+</div>
+
+<!-- ══════════════════════════════════════════════════ -->
+<section id="summary">
+  <h2>📋 執行摘要</h2>
+
+  <table>
+    <tr><th>項目</th><th>內容</th></tr>
+    <tr><td>專案名稱</td><td>Multi-broker abstraction layer</td></tr>
+    <tr><td>總時程</td><td>~10 個工作日（4 phases）</td></tr>
+    <tr><td>測試案例總數</td><td><b>56 個</b>（單元 16 + Schema 8 + 整合 12 + E2E 10 + 安全 6 + 效能 4）</td></tr>
+    <tr><td>Go-Live 條件</td><td>所有測試 PASS + sandbox 4 週實測 + 100 訂單無誤</td></tr>
+    <tr><td>影響面</td><td>main.py / portfolio.py / trader.py / momentum_runner.py / v3_runner.py</td></tr>
+    <tr><td>不影響</td><td>strategy JSON / SpecEngine / 回測 dashboard</td></tr>
+  </table>
+
+  <div class="box info">
+    <strong>📖 配套文件</strong>
+    本計劃書配合 <a href="broker-schema-analysis.html">卷商 Schema 分析報告</a> 一同閱讀。
+    分析報告解釋「為何」與「what」，本計劃書解釋「how」與「測試怎麼確保品質」。
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════ -->
+<section id="scope">
+  <h2>🎯 範圍與目標</h2>
+
+  <h3>In Scope</h3>
+  <ul>
+    <li>抽象 <code>BrokerClient</code> 介面 + 共用 dataclasses</li>
+    <li>Alpaca client refactor（從 trader.py 搬出）</li>
+    <li>broker-schema-v1 JSON schema</li>
+    <li>brokers/*.json 描述檔（先做 Alpaca + Tradier 兩家）</li>
+    <li>accounts.json 升級加 broker / environment 欄位</li>
+    <li>策略執行流程 (main.py 等) 改用 BrokerClient 介面</li>
+    <li>完整測試套件（56 個 cases）</li>
+    <li>使用者文件更新</li>
+  </ul>
+
+  <h3>Out of Scope</h3>
+  <ul>
+    <li>Phase 1-3 不實作 TradeStation / Public / Shioaji（Phase 4 才做）</li>
+    <li>不改動策略 JSON schema（v3 不動）</li>
+    <li>不改動 tool_v2 回測引擎</li>
+    <li>不改動 dashboard 前端</li>
+  </ul>
+</section>
+
+<!-- ══════════════════════════════════════════════════ -->
+<section id="prerequisites">
+  <h2>📦 前置條件</h2>
+
+  <h4>環境</h4>
+  <ul class="checklist">
+    <li>Python 3.11+</li>
+    <li>pytest 7.4+ / pytest-mock / responses（HTTP mock）</li>
+    <li>jsonschema 4.0+</li>
+    <li>vcrpy（錄製 HTTP 互動，避免測試呼叫真實 API）</li>
+  </ul>
+
+  <h4>測試帳號</h4>
+  <ul class="checklist">
+    <li>Alpaca Paper Trading 帳號（已有）</li>
+    <li>Tradier Sandbox 帳號（Phase 2 申請）</li>
+    <li>每家測試帳號獨立 secret prefix</li>
+  </ul>
+
+  <h4>同意風險</h4>
+  <ul class="checklist">
+    <li>了解此抽象層 bug 可能造成實單錯誤</li>
+    <li>所有新 broker live 前需 4 週 sandbox 實測</li>
+    <li>Rollback 計劃明確 — 隨時可切回原版</li>
+  </ul>
+</section>
+
+<!-- ══════════════════════════════════════════════════ -->
+<section id="phases">
+  <h2>🛠 工程計劃 — 4 階段</h2>
+
+  <div class="phase-grid">
+    <div class="phase-card">
+      <div class="pn">1</div>
+      <h4>抽象層 + Alpaca</h4>
+      <ul>
+        <li>BrokerClient ABC</li>
+        <li>brokers/alpaca_client.py</li>
+        <li>brokers/alpaca.json</li>
+        <li>main.py 改用介面</li>
+      </ul>
+      <div class="dur">📅 3 天</div>
+    </div>
+    <div class="phase-card">
+      <div class="pn">2</div>
+      <h4>第 2 家 broker</h4>
+      <ul>
+        <li>brokers/tradier_client.py</li>
+        <li>brokers/tradier.json</li>
+        <li>Tradier sandbox 測試</li>
+      </ul>
+      <div class="dur">📅 2 天</div>
+    </div>
+    <div class="phase-card">
+      <div class="pn">3</div>
+      <h4>accounts.json 升級</h4>
+      <ul>
+        <li>+ broker / environment</li>
+        <li>向下相容</li>
+        <li>workflow 改動</li>
+      </ul>
+      <div class="dur">📅 1 天</div>
+    </div>
+    <div class="phase-card">
+      <div class="pn">4</div>
+      <h4>擴充其他家</h4>
+      <ul>
+        <li>tastytrade（選擇權）</li>
+        <li>Shioaji（TW）</li>
+        <li>TradeStation（期貨）</li>
+      </ul>
+      <div class="dur">📅 每家 ~2 天</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════ -->
+<section id="phase1">
+  <h2><span class="num">P1</span>Phase 1：抽象層 + Alpaca 重構</h2>
+  <div class="meta">⏱️ 3 天 · 不影響現有帳戶運作</div>
+
+  <h3>交付物</h3>
+  <table>
+    <tr><th>檔案</th><th>用途</th></tr>
+    <tr><td><code>brokers/__init__.py</code></td><td>package marker</td></tr>
+    <tr><td><code>brokers/base.py</code></td><td>BrokerClient ABC + dataclasses (AccountBalance, Position, OrderResult)</td></tr>
+    <tr><td><code>brokers/registry.py</code></td><td>load_broker_spec(id), build_client(spec, env, prefix)</td></tr>
+    <tr><td><code>brokers/alpaca_client.py</code></td><td>實作 BrokerClient（搬 trader.py 邏輯）</td></tr>
+    <tr><td><code>brokers/alpaca.json</code></td><td>broker spec</td></tr>
+    <tr><td><code>brokers/broker-schema-v1.json</code></td><td>JSON Schema 驗證 *.json</td></tr>
+    <tr><td><code>main.py</code> (modified)</td><td>改用 BrokerClient 介面</td></tr>
+    <tr><td><code>tests/brokers/test_base.py</code></td><td>ABC + dataclass 測試（單元）</td></tr>
+    <tr><td><code>tests/brokers/test_alpaca_client.py</code></td><td>HTTP mock 整合測試</td></tr>
+  </table>
+
+  <h3>實作順序</h3>
+  <ol>
+    <li>Day 1 上午：BrokerClient ABC + dataclasses + 單元測試</li>
+    <li>Day 1 下午：broker-schema-v1.json + schema 驗證測試</li>
+    <li>Day 2 上午：alpaca.json + alpaca_client.py（搬程式碼）</li>
+    <li>Day 2 下午：alpaca_client 整合測試（HTTP mock）</li>
+    <li>Day 3 上午：main.py refactor + 端對端 dry-run 測試</li>
+    <li>Day 3 下午：跑既有 portfolio 測試 (49 個) 確認 regression 0</li>
+  </ol>
+
+  <h3>驗收條件</h3>
+  <ul class="checklist">
+    <li>既有 49 個 portfolio/rebalance 測試全 PASS</li>
+    <li>新 16 個單元 + 8 個 schema 測試 PASS</li>
+    <li>新 12 個整合測試（mock）PASS</li>
+    <li>Paper trading 帳戶 #1 連續 5 個交易日 dry-run 與舊版輸出相同</li>
+  </ul>
+</section>
+
+<!-- ══════════════════════════════════════════════════ -->
+<section id="phase2">
+  <h2><span class="num">P2</span>Phase 2：加入第 2 家 broker (Tradier)</h2>
+  <div class="meta">⏱️ 2 天 · 證明抽象層真的「broker-agnostic」</div>
+
+  <h3>交付物</h3>
+  <ul>
+    <li><code>brokers/tradier_client.py</code></li>
+    <li><code>brokers/tradier.json</code></li>
+    <li><code>tests/brokers/test_tradier_client.py</code></li>
+    <li>vcrpy cassettes for Tradier sandbox</li>
+  </ul>
+
+  <h3>驗收條件</h3>
+  <ul class="checklist">
+    <li>Tradier sandbox 帳戶用 mom_6m_t20 策略連跑 5 個工作日</li>
+    <li>capabilities 表 fractional=false 被策略正確處理（全用整股）</li>
+    <li>order_id 正確 round-trip（submit → get → cancel）</li>
+  </ul>
+</section>
+
+<!-- ══════════════════════════════════════════════════ -->
+<section id="phase3">
+  <h2><span class="num">P3</span>Phase 3：accounts.json 升級</h2>
+  <div class="meta">⏱️ 1 天 · 向下相容遷移</div>
+
+  <h3>變更</h3>
+  <pre><span class="c">// 新增欄位（保留舊欄位以向下相容）</span>
+{
+  <span class="s">"id"</span>: <span class="s">"1"</span>,
+  <span class="s">"strategy"</span>: <span class="s">"top10"</span>,
+  <span class="s">"broker"</span>:        <span class="s">"alpaca"</span>,           <span class="c">// 新</span>
+  <span class="s">"environment"</span>:   <span class="s">"paper"</span>,            <span class="c">// 新</span>
+  <span class="s">"secret_prefix"</span>: <span class="s">"ACC1"</span>,             <span class="c">// 新（取代 alpaca_secret_prefix）</span>
+  <span class="s">"alpaca_secret_prefix"</span>: <span class="s">"ACC1"</span>,        <span class="c">// 舊（暫保留）</span>
+  ...
+}</pre>
+
+  <h3>解析優先順序</h3>
+  <ol>
+    <li>有 <code>broker</code> 欄位 → 用新邏輯</li>
+    <li>沒 <code>broker</code> 但有 <code>alpaca_secret_prefix</code> → 預設 broker=alpaca</li>
+    <li>都沒有 → 報錯</li>
+  </ol>
+
+  <h3>驗收條件</h3>
+  <ul class="checklist">
+    <li>不改 accounts.json，舊系統行為完全不變</li>
+    <li>改 accounts.json 加 broker=alpaca、environment=paper，行為相同</li>
+    <li>改 accounts.json 加 broker=tradier，能跑 Tradier sandbox</li>
+  </ul>
+</section>
+
+<!-- ══════════════════════════════════════════════════ -->
+<section id="phase4">
+  <h2><span class="num">P4</span>Phase 4：擴充其他卷商</h2>
+  <div class="meta">⏱️ 每家 ~2 天 · 隨需求添加</div>
+
+  <table>
+    <tr><th>卷商</th><th>觸發加入時機</th><th>新增挑戰</th></tr>
+    <tr><td>tastytrade</td><td>想做選擇權策略</td><td>OAuth refresh token rotation</td></tr>
+    <tr><td>Shioaji</td><td>想做台股策略</td><td>SDK 模式 + CA 憑證 + TW 市場時區</td></tr>
+    <tr><td>TradeStation</td><td>想做期貨策略</td><td>OAuth + access_token 20 分鐘短效</td></tr>
+    <tr><td>Public</td><td>API 成熟後</td><td>沒 sandbox，要直接跑 live 小額</td></tr>
+  </table>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════════════ -->
+<!--                                                                          -->
+<!--                            測試計劃                                       -->
+<!--                                                                          -->
+<!-- ══════════════════════════════════════════════════════════════════════ -->
+
+<section id="test-strategy">
+  <h2><span class="num">🧪</span>測試策略總覽</h2>
+
+  <h3>測試金字塔</h3>
+  <div class="test-pyramid">
+    <div class="pyramid-top">E2E 10 + 驗收 6（真實 API 跑通整個流程）</div>
+    <div class="pyramid-mid">整合 12（HTTP mock）+ 安全 6 + 效能 4</div>
+    <div class="pyramid-base">單元 16 + Schema 8（純邏輯 + JSON 驗證）</div>
+  </div>
+
+  <h3>測試類別與職責</h3>
+  <table>
+    <thead><tr><th>類別</th><th>數量</th><th>跑得快？</th><th>需網路？</th><th>檢查什麼</th></tr></thead>
+    <tbody>
+      <tr><td>🔧 單元 (Unit)</td><td>16</td><td>✅ &lt; 1s/個</td><td>❌</td><td>純函式邏輯（ABC、dataclass、URL 組裝）</td></tr>
+      <tr><td>📐 Schema</td><td>8</td><td>✅</td><td>❌</td><td>broker JSON 符合 v1 schema</td></tr>
+      <tr><td>🔗 整合 (Integration)</td><td>12</td><td>✅ &lt; 2s/個</td><td>❌ HTTP mock</td><td>client 對 mock 回應正確處理</td></tr>
+      <tr><td>🎯 端對端 (E2E)</td><td>10</td><td>⚠️ &lt; 30s/個</td><td>✅ Sandbox</td><td>整個 main.py 流程跑通</td></tr>
+      <tr><td>🛡 安全 (Security)</td><td>6</td><td>✅</td><td>❌</td><td>密鑰不外洩、URL 不帶 secret、log 過濾</td></tr>
+      <tr><td>⚡ 效能 (Performance)</td><td>4</td><td>⚠️</td><td>❌</td><td>rate limit、timeout、retry</td></tr>
+      <tr><td>✅ 驗收 (Acceptance)</td><td>6</td><td>❌ &lt; 4 週</td><td>✅ Live sandbox</td><td>真實環境跑滿一段時間</td></tr>
+    </tbody>
+  </table>
+
+  <div class="box info">
+    <strong>CI 跑哪些</strong>：單元 + Schema + 整合 + 安全 + 效能（前 5 類，~50 秒內跑完，每次 push 都跑）。
+    E2E 跑在 nightly workflow，驗收屬手動 sign-off。
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════ -->
+<section id="test-unit">
+  <h2>🔧 單元測試 (16 cases)</h2>
+  <div class="meta">純邏輯，不碰網路。對應 <code>tests/brokers/test_base.py</code> + <code>test_alpaca_client.py</code></div>
+
+  <h3>BrokerClient ABC 行為</h3>
+  <table>
+    <thead><tr><th>ID</th><th>名稱</th><th>輸入</th><th>期望</th></tr></thead>
+    <tbody>
+      <tr><td><span class="tid">U-01</span></td><td>test_base_engine_abstract</td><td><code>BrokerClient()</code></td><td>raises TypeError（abstract methods）</td></tr>
+      <tr><td><span class="tid">U-02</span></td><td>test_dataclass_account_balance</td><td>建立 AccountBalance(nav=1000, cash=200)</td><td>正確初始化 + repr 不含密鑰字串</td></tr>
+      <tr><td><span class="tid">U-03</span></td><td>test_dataclass_position</td><td>Position(symbol='AAPL', qty=10, ...)</td><td>market_value = qty × current_price 自動算對</td></tr>
+      <tr><td><span class="tid">U-04</span></td><td>test_dataclass_order_result</td><td>OrderResult(id='abc', status='new')</td><td>filled_avg_price 預設 0.0</td></tr>
+      <tr><td><span class="tid">U-05</span></td><td>test_capabilities_check_fractional</td><td>spec.capabilities.fractional_shares=False, qty=0.5</td><td>place_order 應拒絕（ValueError）</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Spec 解析 & registry</h3>
+  <table>
+    <thead><tr><th>ID</th><th>名稱</th><th>檢查</th></tr></thead>
+    <tbody>
+      <tr><td><span class="tid">U-06</span></td><td>test_load_broker_spec_alpaca</td><td>load_broker_spec('alpaca') 回 dict 且 id 對</td></tr>
+      <tr><td><span class="tid">U-07</span></td><td>test_load_broker_spec_unknown</td><td>load_broker_spec('foo') → FileNotFoundError</td></tr>
+      <tr><td><span class="tid">U-08</span></td><td>test_resolve_env_vars</td><td>required_env=['{PREFIX}_API_KEY'], prefix='ACC1' → 找 ACC1_API_KEY</td></tr>
+      <tr><td><span class="tid">U-09</span></td><td>test_resolve_env_vars_missing</td><td>缺環境變數 → raise EnvironmentError 含明確訊息</td></tr>
+      <tr><td><span class="tid">U-10</span></td><td>test_build_client_returns_correct_class</td><td>spec id=alpaca → 拿到 AlpacaClient 實例</td></tr>
+      <tr><td><span class="tid">U-11</span></td><td>test_environment_selection</td><td>env='paper' → base_url 是 paper-api.alpaca.markets</td></tr>
+      <tr><td><span class="tid">U-12</span></td><td>test_environment_invalid</td><td>env='dev' (不在 spec.environments) → ValueError</td></tr>
+    </tbody>
+  </table>
+
+  <h3>URL 與 header 組裝</h3>
+  <table>
+    <thead><tr><th>ID</th><th>名稱</th><th>檢查</th></tr></thead>
+    <tbody>
+      <tr><td><span class="tid">U-13</span></td><td>test_build_headers_alpaca</td><td>產出 dict 含 APCA-API-KEY-ID 與 -SECRET-KEY</td></tr>
+      <tr><td><span class="tid">U-14</span></td><td>test_build_url_no_params</td><td>endpoints.account 拼成 {base}/v2/account</td></tr>
+      <tr><td><span class="tid">U-15</span></td><td>test_build_url_with_path_param</td><td>endpoints.order_by_id 含 {order_id} 正確 substitute</td></tr>
+      <tr><td><span class="tid">U-16</span></td><td>test_headers_no_log_leak</td><td>str(headers) 不能直接看到 secret 全文（mask 處理）</td></tr>
+    </tbody>
+  </table>
+
+  <h3>範例</h3>
+  <pre><span class="k">def</span> <span class="n">test_capabilities_check_fractional</span>():
+    <span class="c"># 模擬 Tradier spec：fractional_shares=False</span>
+    spec = {<span class="s">"capabilities"</span>: {<span class="s">"fractional_shares"</span>: <span class="k">False</span>}}
+    client = MockBrokerClient(spec, env={})
+    <span class="k">with</span> pytest.raises(ValueError, match=<span class="s">"fractional"</span>):
+        client.place_order(<span class="s">"AAPL"</span>, qty=<span class="s">0.5</span>, side=<span class="s">"buy"</span>)</pre>
+</section>
+
+<!-- ══════════════════════════════════════════════════ -->
+<section id="test-schema">
+  <h2>📐 Schema 驗證 (8 cases)</h2>
+  <div class="meta">確保所有 brokers/*.json 符合 broker-schema-v1.json</div>
+
+  <table>
+    <thead><tr><th>ID</th><th>名稱</th><th>驗證</th></tr></thead>
+    <tbody>
+      <tr><td><span class="tid">S-01</span></td><td>test_all_brokers_match_schema</td><td>遍歷 brokers/*.json，逐個 jsonschema.validate()</td></tr>
+      <tr><td><span class="tid">S-02</span></td><td>test_required_top_level_keys</td><td>每個 broker JSON 必有：id, version, integration, auth, environments, endpoints, capabilities</td></tr>
+      <tr><td><span class="tid">S-03</span></td><td>test_auth_method_enum</td><td>auth.method 必在 [api_key_secret, oauth_bearer, oauth_refresh, session_login, sdk_login]</td></tr>
+      <tr><td><span class="tid">S-04</span></td><td>test_integration_type_enum</td><td>integration.type 必為 'rest' 或 'sdk'</td></tr>
+      <tr><td><span class="tid">S-05</span></td><td>test_environments_unique_base_url</td><td>同 broker 內各 env 的 base_url 不重複</td></tr>
+      <tr><td><span class="tid">S-06</span></td><td>test_capabilities_arrays_not_empty</td><td>order_types / time_in_force / asset_classes 至少一筆</td></tr>
+      <tr><td><span class="tid">S-07</span></td><td>test_broker_id_matches_filename</td><td>brokers/alpaca.json 內 id 必須是 'alpaca'</td></tr>
+      <tr><td><span class="tid">S-08</span></td><td>test_required_env_uses_prefix_template</td><td>required_env 內字串必含 <code>{PREFIX}</code></td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ══════════════════════════════════════════════════ -->
+<section id="test-integration">
+  <h2>🔗 整合測試 (12 cases)</h2>
+  <div class="meta">用 <code>responses</code> mock HTTP，測 client 對各種回應的處理</div>
+
+  <h3>Alpaca client（10 cases）</h3>
+  <table>
+    <thead><tr><th>ID</th><th>名稱</th><th>Mock 場景</th><th>期望</th></tr></thead>
+    <tbody>
+      <tr><td><span class="tid">I-01</span></td><td>test_get_account_balance_ok</td><td>GET /v2/account → 200 + JSON</td><td>回傳 AccountBalance(nav, cash)</td></tr>
+      <tr><td><span class="tid">I-02</span></td><td>test_get_positions_empty</td><td>GET /v2/positions → 200 []</td><td>回傳 []</td></tr>
+      <tr><td><span class="tid">I-03</span></td><td>test_get_positions_multiple</td><td>GET /v2/positions → 200 [3 stocks]</td><td>回傳 list of Position，欄位對應</td></tr>
+      <tr><td><span class="tid">I-04</span></td><td>test_place_market_order_ok</td><td>POST /v2/orders → 200 + order_id</td><td>OrderResult(id=..., status='new')</td></tr>
+      <tr><td><span class="tid">I-05</span></td><td>test_place_order_insufficient_funds</td><td>POST → 403 "insufficient buying power"</td><td>raise BrokerError 含明確訊息</td></tr>
+      <tr><td><span class="tid">I-06</span></td><td>test_place_order_rate_limit</td><td>POST → 429 → 200 retry</td><td>自動 retry 1 次後成功</td></tr>
+      <tr><td><span class="tid">I-07</span></td><td>test_cancel_all_orders</td><td>DELETE /v2/orders → 207 multi-status</td><td>回傳取消的訂單數</td></tr>
+      <tr><td><span class="tid">I-08</span></td><td>test_is_trading_day_true</td><td>GET /v2/calendar → 含 today</td><td>True</td></tr>
+      <tr><td><span class="tid">I-09</span></td><td>test_is_trading_day_false</td><td>GET /v2/calendar → 空</td><td>False</td></tr>
+      <tr><td><span class="tid">I-10</span></td><td>test_get_latest_prices_batch</td><td>GET /v2/stocks/bars/latest?symbols=A,B → 200</td><td>dict {A: price, B: price}</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Tradier client（2 cases，Phase 2 才寫）</h3>
+  <table>
+    <tbody>
+      <tr><td><span class="tid">I-11</span></td><td>test_tradier_account_url_includes_account_id</td><td>確認 URL path 含 account_id</td></tr>
+      <tr><td><span class="tid">I-12</span></td><td>test_tradier_fractional_rejected_locally</td><td>傳 qty=0.5 → 不送 API 就 reject</td></tr>
+    </tbody>
+  </table>
+
+  <h3>範例</h3>
+  <pre><span class="k">import</span> responses
+
+@responses.activate
+<span class="k">def</span> <span class="n">test_place_order_rate_limit</span>():
+    <span class="c"># 第一次 429，第二次成功</span>
+    responses.add(responses.POST, <span class="s">"https://paper-api.alpaca.markets/v2/orders"</span>,
+                  status=<span class="s">429</span>, json={<span class="s">"message"</span>: <span class="s">"too many requests"</span>})
+    responses.add(responses.POST, <span class="s">"https://paper-api.alpaca.markets/v2/orders"</span>,
+                  status=<span class="s">200</span>, json={<span class="s">"id"</span>: <span class="s">"abc"</span>, <span class="s">"status"</span>: <span class="s">"new"</span>})
+
+    client = AlpacaClient(spec, env)
+    result = client.place_order(<span class="s">"AAPL"</span>, qty=<span class="s">1</span>, side=<span class="s">"buy"</span>)
+    <span class="k">assert</span> result.order_id == <span class="s">"abc"</span>
+    <span class="k">assert</span> len(responses.calls) == <span class="s">2</span></pre>
+</section>
+
+<!-- ══════════════════════════════════════════════════ -->
+<section id="test-e2e">
+  <h2>🎯 端對端測試 (10 cases)</h2>
+  <div class="meta">用真實 sandbox 帳號跑整個 main.py 流程。在 nightly workflow 跑</div>
+
+  <table>
+    <thead><tr><th>ID</th><th>名稱</th><th>場景</th></tr></thead>
+    <tbody>
+      <tr><td><span class="tid">E-01</span></td><td>test_alpaca_paper_full_rebalance_dry</td><td>main.py 跑帳戶 #1 dry_run=true，產出訂單但不下單</td></tr>
+      <tr><td><span class="tid">E-02</span></td><td>test_alpaca_paper_account_balance</td><td>直接呼叫 client.get_account_balance() 取 paper 帳戶 NAV</td></tr>
+      <tr><td><span class="tid">E-03</span></td><td>test_alpaca_paper_get_positions</td><td>取得實際持倉清單</td></tr>
+      <tr><td><span class="tid">E-04</span></td><td>test_alpaca_paper_market_order_roundtrip</td><td>下 1 股 SPY market order → 等成交 → 確認 OrderResult.status='filled'</td></tr>
+      <tr><td><span class="tid">E-05</span></td><td>test_alpaca_paper_cancel_all</td><td>下單後立即 cancel_all_open_orders，確認 0 個 open</td></tr>
+      <tr><td><span class="tid">E-06</span></td><td>test_tradier_sandbox_full_rebalance_dry</td><td>Phase 2：Tradier sandbox 跑完整 dry-run</td></tr>
+      <tr><td><span class="tid">E-07</span></td><td>test_tradier_sandbox_integer_qty_only</td><td>策略要求 1.5 股 → 自動 floor 到 1 股下單</td></tr>
+      <tr><td><span class="tid">E-08</span></td><td>test_switch_broker_same_strategy</td><td>同策略換 broker，輸出訂單清單一致（除去 fractional 差異）</td></tr>
+      <tr><td><span class="tid">E-09</span></td><td>test_legacy_accounts_json_still_works</td><td>不改 accounts.json 結構，跑舊 Alpaca 流程</td></tr>
+      <tr><td><span class="tid">E-10</span></td><td>test_new_accounts_json_runs_alpaca</td><td>新格式 accounts.json with broker=alpaca，跑通整個流程</td></tr>
+    </tbody>
+  </table>
+
+  <div class="box warn">
+    <strong>⚠️ E2E 跑在哪</strong>：建立 nightly workflow <code>.github/workflows/e2e_brokers.yml</code>，
+    用獨立 Alpaca paper 帳戶 + Tradier sandbox 帳戶。<b>絕不</b> 跑 live API。
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════ -->
+<section id="test-security">
+  <h2>🛡 安全測試 (6 cases)</h2>
+  <div class="meta">確保密鑰不外洩、URL 不帶 secret、log 過濾正確</div>
+
+  <table>
+    <thead><tr><th>ID</th><th>名稱</th><th>檢查</th><th>嚴重度</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><span class="tid">SEC-01</span></td>
+        <td>test_secrets_never_in_logs</td>
+        <td>所有 log 內容不可包含 API_SECRET / refresh_token 全文</td>
+        <td class="severity-h">🔴 高</td>
+      </tr>
+      <tr>
+        <td><span class="tid">SEC-02</span></td>
+        <td>test_repr_masks_secrets</td>
+        <td>client.__repr__() 不可印出 secret，應為 "AlpacaClient(key=PK***...)"</td>
+        <td class="severity-h">🔴 高</td>
+      </tr>
+      <tr>
+        <td><span class="tid">SEC-03</span></td>
+        <td>test_url_no_secret_in_query</td>
+        <td>建出的 URL query string 不可含 secret（必須走 header）</td>
+        <td class="severity-h">🔴 高</td>
+      </tr>
+      <tr>
+        <td><span class="tid">SEC-04</span></td>
+        <td>test_traceback_no_secret</td>
+        <td>強制 raise exception，stack trace 內不能有 secret</td>
+        <td class="severity-m">🟡 中</td>
+      </tr>
+      <tr>
+        <td><span class="tid">SEC-05</span></td>
+        <td>test_broker_json_no_secret</td>
+        <td>brokers/*.json 不可意外包含 API key / OAuth secret 樣本</td>
+        <td class="severity-m">🟡 中</td>
+      </tr>
+      <tr>
+        <td><span class="tid">SEC-06</span></td>
+        <td>test_oauth_refresh_token_rotation_persistence</td>
+        <td>refresh_token rotate 後正確寫回 GitHub Secret（mock gh CLI）</td>
+        <td class="severity-h">🔴 高</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>實作範例</h3>
+  <pre><span class="k">def</span> <span class="n">test_secrets_never_in_logs</span>(caplog):
+    <span class="k">with</span> caplog.at_level(logging.DEBUG):
+        client = AlpacaClient(spec={<span class="s">"id"</span>:<span class="s">"alpaca"</span>, ...},
+                              env={<span class="s">"ACC1_API_SECRET"</span>: <span class="s">"SUPER_SECRET_xyz"</span>})
+        <span class="k">try</span>:
+            client.get_account_balance()
+        <span class="k">except</span>:
+            <span class="k">pass</span>
+
+    <span class="k">for</span> record <span class="k">in</span> caplog.records:
+        <span class="k">assert</span> <span class="s">"SUPER_SECRET_xyz"</span> <span class="k">not</span> <span class="k">in</span> record.message
+        <span class="k">assert</span> <span class="s">"SUPER_SECRET_xyz"</span> <span class="k">not</span> <span class="k">in</span> str(record.args)</pre>
+</section>
+
+<!-- ══════════════════════════════════════════════════ -->
+<section id="test-performance">
+  <h2>⚡ 效能測試 (4 cases)</h2>
+  <div class="meta">確保抽象層沒引入大量 overhead，rate limit / timeout 正確</div>
+
+  <table>
+    <thead><tr><th>ID</th><th>名稱</th><th>檢查</th></tr></thead>
+    <tbody>
+      <tr><td><span class="tid">P-01</span></td><td>test_client_init_under_100ms</td><td>AlpacaClient 初始化（含 spec 解析）&lt; 100ms</td></tr>
+      <tr><td><span class="tid">P-02</span></td><td>test_50_orders_under_5s</td><td>連續 place_order 50 次（mock，含 retry 邏輯）&lt; 5s</td></tr>
+      <tr><td><span class="tid">P-03</span></td><td>test_429_retry_backoff</td><td>連續 5 個 429 → 指數 backoff 總耗時 1+2+4+8+16=31s 內</td></tr>
+      <tr><td><span class="tid">P-04</span></td><td>test_timeout_enforced</td><td>mock server 30s 不回 → client 在 timeout (15s) 後 raise</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ══════════════════════════════════════════════════ -->
+<section id="test-acceptance">
+  <h2>✅ 驗收測試 (6 cases) — 上線前必過</h2>
+  <div class="meta">真實環境連續跑滿一段時間，無大規模 regression</div>
+
+  <table>
+    <thead><tr><th>ID</th><th>名稱</th><th>跑多久</th><th>通過條件</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><span class="tid">A-01</span></td>
+        <td>4-week paper trading on Alpaca</td>
+        <td>4 週</td>
+        <td>新舊版本對同一策略產出的訂單清單 100% 相同</td>
+      </tr>
+      <tr>
+        <td><span class="tid">A-02</span></td>
+        <td>4-week sandbox trading on Tradier</td>
+        <td>4 週</td>
+        <td>無重複下單、無漏下單、所有訂單成交</td>
+      </tr>
+      <tr>
+        <td><span class="tid">A-03</span></td>
+        <td>100+ orders without manual intervention</td>
+        <td>數週</td>
+        <td>累積至少 100 筆成交 + 0 次需人工介入</td>
+      </tr>
+      <tr>
+        <td><span class="tid">A-04</span></td>
+        <td>rollback test</td>
+        <td>1 天</td>
+        <td>可在 5 分鐘內回到舊版且帳戶持倉不變</td>
+      </tr>
+      <tr>
+        <td><span class="tid">A-05</span></td>
+        <td>multi-broker concurrent run</td>
+        <td>1 週</td>
+        <td>同時跑 Alpaca + Tradier 帳戶不互相干擾</td>
+      </tr>
+      <tr>
+        <td><span class="tid">A-06</span></td>
+        <td>weekend / holiday handling</td>
+        <td>跨週末</td>
+        <td>is_trading_day 正確跳過週末/假日</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="box danger">
+    <strong>🚨 Live 上線 Gate</strong>
+    A-01 到 A-06 必須<b>全部</b>通過，且 sandbox 跑 4 週無重大事件，
+    才能把 GitHub Secret 中的 <code>ACC*_BASE_URL</code> 從 paper 改 live。
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════ -->
+<section id="test-cd">
+  <h2>🤖 CI/CD 整合</h2>
+
+  <h3>新增 workflows</h3>
+  <table>
+    <tr><th>檔案</th><th>觸發</th><th>跑什麼</th></tr>
+    <tr><td><code>.github/workflows/test_brokers_unit.yml</code></td><td>每次 push</td><td>單元 + Schema + 整合 + 安全 + 效能（46 個）</td></tr>
+    <tr><td><code>.github/workflows/test_brokers_e2e.yml</code></td><td>nightly 02:00 UTC</td><td>E2E 10 個（用 sandbox 帳號）</td></tr>
+    <tr><td><code>.github/workflows/test_brokers_acceptance.yml</code></td><td>weekly 週日</td><td>產出 4 週累積報告</td></tr>
+  </table>
+
+  <h3>pytest 標記</h3>
+  <pre><span class="c"># pytest.ini</span>
+[pytest]
+markers =
+    unit:        快速單元測試（無網路）
+    schema:      JSON Schema 驗證
+    integration: HTTP mock 整合
+    e2e:         sandbox 端對端
+    security:    密鑰外洩檢測
+    performance: 效能
+    acceptance:  驗收長跑
+
+<span class="c"># 跑法</span>
+pytest -m "unit or schema or integration or security or performance"   <span class="c"># CI 用</span>
+pytest -m "e2e"                                                          <span class="c"># nightly</span>
+pytest -m "acceptance"                                                   <span class="c"># 手動觸發</span></pre>
+
+  <h3>覆蓋率目標</h3>
+  <table>
+    <tr><th>模組</th><th>目標</th></tr>
+    <tr><td><code>brokers/base.py</code></td><td>≥ 95%</td></tr>
+    <tr><td><code>brokers/registry.py</code></td><td>≥ 95%</td></tr>
+    <tr><td><code>brokers/alpaca_client.py</code></td><td>≥ 90%</td></tr>
+    <tr><td><code>brokers/tradier_client.py</code></td><td>≥ 85%</td></tr>
+    <tr><td><code>main.py</code></td><td>≥ 70%（整合測試補足）</td></tr>
+  </table>
+</section>
+
+<!-- ══════════════════════════════════════════════════ -->
+<section id="go-live">
+  <h2>🚦 Go-Live Gate（上線前必達）</h2>
+
+  <ul class="checklist">
+    <li>所有 56 個測試 PASS（CI + nightly）</li>
+    <li>covering report 達標</li>
+    <li>A-01 ～ A-06 全部通過</li>
+    <li>Alpaca paper 4 週無 regression vs 舊版輸出</li>
+    <li>Tradier sandbox 4 週無 0 次人工介入</li>
+    <li>Security review checklist 完成</li>
+    <li>Runbook + Rollback 文件齊備</li>
+    <li>使用者文件 (setup-guide.html) 更新含 broker 章節</li>
+    <li>Stakeholder 簽核（你自己 + 我）</li>
+  </ul>
+</section>
+
+<!-- ══════════════════════════════════════════════════ -->
+<section id="rollback">
+  <h2>🔙 Rollback 計劃</h2>
+
+  <p>任何時候發現問題可立即回到舊版：</p>
+
+  <pre><span class="c"># 1. 立刻停所有 workflow（防止繼續下單）</span>
+gh workflow disable daily_all_accounts.yml
+
+<span class="c"># 2. 取消所有 open orders</span>
+python3 -c <span class="s">"from trader import client_from_env; client_from_env().cancel_all_open_orders()"</span>
+
+<span class="c"># 3. revert 到上一個 known-good commit</span>
+git revert HEAD~N..HEAD  <span class="c"># 或</span>
+git reset --hard &lt;last-good-sha&gt;
+git push --force-with-lease
+
+<span class="c"># 4. 重新啟用 workflow</span>
+gh workflow enable daily_all_accounts.yml
+
+<span class="c"># 5. 手動觸發 dry-run 驗證舊版正常</span>
+gh workflow run daily_all_accounts.yml -f dry_run=true</pre>
+
+  <h3>各情境的回滾觸發點</h3>
+  <table>
+    <thead><tr><th>情境</th><th>觸發</th><th>動作</th></tr></thead>
+    <tbody>
+      <tr><td>單元測試失敗</td><td>CI 紅</td><td>不 merge，繼續修</td></tr>
+      <tr><td>E2E 連續 3 天失敗</td><td>監控警示</td><td>暫停 nightly，rollback merge</td></tr>
+      <tr><td>下重複訂單</td><td>portfolio_state check</td><td>立刻停 workflow + cancel all + rollback</td></tr>
+      <tr><td>密鑰外洩</td><td>SEC-* 測試紅</td><td>revoke 所有 token，重產，rollback merge</td></tr>
+      <tr><td>持倉異常</td><td>NAV 突然 ±5%</td><td>停 workflow，比對 broker 跟 portfolio_state，必要時手動修正</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<footer>
+  Tech-Rebalance Broker Integration Plan v1 · 2026-05-30 · 56 test cases
+</footer>
+
+</main>
+
+<script>
+const links = document.querySelectorAll('.sidebar a[href^="#"]');
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if(e.isIntersecting){
+      links.forEach(l => l.classList.remove('active'));
+      const m = document.querySelector(`.sidebar a[href="#${e.target.id}"]`);
+      if(m) m.classList.add('active');
+    }
+  });
+},{threshold:0.15,rootMargin:'-60px 0px -60% 0px'});
+document.querySelectorAll('section[id]').forEach(s=>obs.observe(s));
+</script>
+</body>
+</html>
