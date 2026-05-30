@@ -306,21 +306,32 @@ cd tech-rebalance</pre>
   <div class="box info">
     <strong>📋 SMTP 只需 1 個 Secret：<code>SMTP_URL</code></strong>
     <p style="margin-top:6px;color:#94a3b8">
-      系統知道供應商的 host/port，<b>也知道你的 email（= EMAIL_RECIPIENT）</b>，所以只要填密碼。
+      已知 domain 的 email（gmail/outlook/yahoo/icloud …），系統<b>從 EMAIL_RECIPIENT 自動推 provider</b>。
+      <code>SMTP_URL</code> 直接填 App Password 即可。
     </p>
-<pre><span class="c"># 最短：provider:password（email 自動 = EMAIL_RECIPIENT）</span>
+<pre><span class="c"># 最短：純密碼（recipient 是 @gmail.com → 自動用 Gmail）</span>
+abcdEFGHijklMNOP
+
+<span class="c"># 若 domain 不在已知清單，加 provider 短碼</span>
 gmail:abcdEFGHijklMNOP
 outlook:YOUR_PASSWORD
 yahoo:YOUR_PASSWORD
-icloud:YOUR_PASSWORD
 
-<span class="c"># 若 SMTP 登入帳號 ≠ 收件人才需要：provider:email:password</span>
+<span class="c"># 若 SMTP 登入帳號 ≠ 收件人</span>
 gmail:other@gmail.com:abcdEFGHijklMNOP
 
-<span class="c"># 自架 / 不在已知清單 → 用完整 URI</span>
+<span class="c"># 自架 server / 不在清單 → 完整 URI</span>
 smtp://user:pass@your-server.com:587
 smtps://user:pass@your-server.com:465</pre>
   </div>
+
+  <p style="color:#94a3b8;font-size:12px;margin-top:8px;">
+    自動 domain 對應：
+    <code>gmail.com</code>、<code>googlemail.com</code> → gmail；
+    <code>outlook.com</code>、<code>hotmail.com</code>、<code>live.com</code>、<code>msn.com</code> → outlook；
+    <code>yahoo.com</code>、<code>yahoo.com.tw</code>、<code>ymail.com</code> → yahoo；
+    <code>icloud.com</code>、<code>me.com</code>、<code>mac.com</code> → icloud。
+  </p>
 
   <table>
     <thead><tr><th>provider 短碼</th><th>映射的 SMTP server</th><th>port</th><th>模式</th></tr></thead>
@@ -426,15 +437,14 @@ smtps://user:pass@your-server.com:465</pre>
     <tbody>
       <tr>
         <td><code>SMTP_URL</code></td>
-        <td><code>gmail:abcdEFGHijklMNOP</code></td>
+        <td><code>abcdEFGHijklMNOP</code>（純密碼）</td>
       </tr>
     </tbody>
   </table>
   <p style="color:#94a3b8;font-size:12px;">
-    格式：<code>provider:password</code>。Email 帳號自動 = <code>EMAIL_RECIPIENT</code>（寄給自己的常見場景）。<br>
-    支援 <code>gmail / outlook / hotmail / yahoo / icloud / office365</code>。<br>
-    若 SMTP 登入帳號 ≠ 收件人，改用完整格式：<code>provider:email:password</code><br>
-    自架 server 改用 URI：<code>smtp://user:pass@host:port</code>
+    當 EMAIL_RECIPIENT 是已知 domain（gmail/outlook/yahoo/icloud …），<b>SMTP_URL 直接填密碼</b>。<br>
+    自動推導：domain → provider → host/port/SSL/登入帳號全部自動。<br>
+    未知 domain 才需 <code>provider:password</code> 或完整 <code>smtp://...</code> URI。
   </p>
 
   <h4>選項 B：SendGrid</h4>
@@ -476,8 +486,8 @@ gh secret set ACC1_BASE_URL      --body "https://paper-api.alpaca.markets"
 gh secret set EMAIL_RECIPIENT    --body "you@gmail.com"     <span class="c"># 唯一要填的 email</span>
 gh secret set DASHBOARD_PUSH_TOKEN --body "github_pat_xxx"
 
-<span class="c"># 選項 A：SMTP（一行搞定，email 自動 = EMAIL_RECIPIENT）</span>
-gh secret set SMTP_URL --body "gmail:abcdEFGHijklMNOP"
+<span class="c"># 選項 A：SMTP（純密碼，provider 自動從 EMAIL_RECIPIENT domain 推）</span>
+gh secret set SMTP_URL --body "abcdEFGHijklMNOP"
 
 <span class="c"># 選項 B：SendGrid（A、B 二選一即可）</span>
 gh secret set SENDGRID_API_KEY --body "SG.xxx..."</pre>
