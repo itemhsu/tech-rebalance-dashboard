@@ -4,7 +4,7 @@
     "strategy": "d2p2t6",
     "account_id": "2",
     "account_label": "帳戶 #2 (D2P2T6)",
-    "generated_at": "2026-05-29T22:37:12Z",
+    "generated_at": "2026-05-30T07:36:39Z",
     "trading_date": "2026-05-29",
     "dry_run": false,
     "strategy_status": "active",
@@ -268,17 +268,17 @@
       -0.1963
     ],
     "nasdaq": [
-      0.0,
-      0.0,
-      -1.54,
-      -2.04,
-      -2.87,
-      -1.37,
-      -1.28,
-      -1.09,
-      0.0,
-      0.0,
-      0.0,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
       null
     ],
     "sp500": [
@@ -292,7 +292,7 @@
       -0.37,
       0.0,
       0.0,
-      0.0,
+      null,
       null
     ]
   },
