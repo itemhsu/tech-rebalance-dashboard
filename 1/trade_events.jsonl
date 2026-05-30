@@ -1,2 +1,3 @@
 {"ts": "2026-05-29T22:08:18Z", "type": "REBALANCE_SKIP", "account": "1", "strategy": "top10", "reason_code": "not_first_trading_day_of_month", "reason_human": "今日（2026-05-29）非本月第一個交易日，月度策略跳過", "today": "2026-05-29"}
 {"ts": "2026-05-29T22:36:50Z", "type": "REBALANCE_SKIP", "account": "1", "strategy": "top10", "reason_code": "not_first_trading_day_of_month", "reason_human": "今日（2026-05-29）非本月第一個交易日，月度策略跳過", "today": "2026-05-29"}
+{"ts": "2026-05-30T22:18:30Z", "type": "REBALANCE_SKIP", "account": "1", "strategy": "top10", "reason_code": "non_trading_day", "reason_human": "runner gate: non_trading_day", "today": "2026-05-30"}
