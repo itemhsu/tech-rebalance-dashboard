@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>卷商 Schema 分析 — 6 家整合設計</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:#020617;color:#e2e8f0;font-family:'Segoe UI',system-ui,sans-serif;font-size:14px;line-height:1.65;}
+a{color:#3b82f6;text-decoration:none;}
+
+.sidebar{position:fixed;top:0;left:0;width:230px;height:100vh;background:#0a0f1e;
+   border-right:1px solid #1e293b;overflow-y:auto;padding:14px 0;z-index:50;}
+.sidebar h1{font-size:13px;color:#3b82f6;padding:0 16px 12px;border-bottom:1px solid #1e293b;font-weight:800;}
+.sidebar h1 small{display:block;font-size:10px;color:#475569;margin-top:2px;font-weight:400;}
+.sidebar h3{font-size:9px;color:#475569;text-transform:uppercase;letter-spacing:1.4px;padding:14px 16px 4px;}
+.sidebar a{display:block;padding:5px 16px;font-size:12px;color:#64748b;border-left:3px solid transparent;transition:all .12s;}
+.sidebar a:hover,.sidebar a.active{color:#3b82f6;border-color:#3b82f6;background:rgba(59,130,246,.07);}
+
+main{margin-left:230px;padding:32px 5% 80px;max-width:1200px;}
+
+.hero{background:linear-gradient(135deg,#0c1628 0%,#0d1f3c 60%,#0c1628 100%);
+   padding:32px 38px;border-radius:14px;margin-bottom:24px;border:1px solid #1e3a5f;}
+.hero .badge{display:inline-block;background:#1e293b;border:1px solid #334155;color:#94a3b8;
+   padding:3px 11px;border-radius:14px;font-size:10px;margin-right:6px;}
+.hero h1{font-size:28px;font-weight:900;color:#3b82f6;margin:12px 0 8px;letter-spacing:-0.5px;}
+.hero h1 span{color:#a855f7;}
+.hero p{color:#94a3b8;font-size:13px;}
+
+section{background:#0a0f1e;border:1px solid #1e293b;border-radius:12px;padding:24px 28px;margin-bottom:18px;}
+section h2{font-size:18px;font-weight:800;color:#e2e8f0;margin-bottom:6px;}
+section h2 .num{display:inline-block;background:#3b82f6;color:#fff;font-size:11px;
+   padding:3px 9px;border-radius:12px;font-weight:700;margin-right:8px;}
+section .meta{color:#475569;font-size:11px;margin-bottom:14px;}
+section h3{font-size:14px;font-weight:700;color:#93c5fd;margin:18px 0 6px;}
+section h4{font-size:11px;font-weight:700;color:#475569;margin:12px 0 5px;text-transform:uppercase;letter-spacing:.8px;}
+p{color:#94a3b8;margin-bottom:8px;}
+ul,ol{color:#94a3b8;padding-left:20px;margin-bottom:9px;}
+li{margin-bottom:3px;}
+b,strong{color:#e2e8f0;}
+
+code{background:#0f172a;border:1px solid #1e293b;border-radius:3px;padding:1px 6px;
+   font-size:11.5px;color:#93c5fd;font-family:'Menlo','Courier New',monospace;}
+pre{background:#020617;border:1px solid #1e293b;border-radius:8px;padding:13px 17px;
+   overflow-x:auto;font-size:11.5px;line-height:1.55;margin:9px 0;
+   font-family:'Menlo','Courier New',monospace;color:#cbd5e1;}
+.k{color:#93c5fd;}.s{color:#86efac;}.n{color:#fb923c;}.c{color:#475569;font-style:italic;}
+
+.box{border-radius:8px;padding:11px 15px;margin:10px 0;border:1px solid;}
+.box.warn  {background:#190e00;border-color:#92400e;color:#fcd34d;}
+.box.info  {background:#080f1a;border-color:#1e3a5f;color:#93c5fd;}
+.box.ok    {background:#081308;border-color:#14532d;color:#86efac;}
+.box.tip   {background:#1c0d23;border-color:#581c87;color:#c4b5fd;}
+.box.danger{background:#190808;border-color:#7f1d1d;color:#fca5a5;}
+
+table{width:100%;border-collapse:collapse;font-size:11.5px;margin:9px 0;}
+th{background:#0f172a;color:#475569;padding:8px 10px;text-align:left;
+   border-bottom:1px solid #1e293b;font-size:10px;text-transform:uppercase;letter-spacing:.5px;}
+td{padding:7px 10px;border-bottom:1px solid #0d1526;color:#cbd5e1;vertical-align:top;}
+tr:hover td{background:#0c1220;}
+td code{font-size:10.5px;}
+
+.feat-yes  {color:#86efac;font-weight:700;}
+.feat-no   {color:#f87171;font-weight:700;}
+.feat-part {color:#fcd34d;font-weight:700;}
+.feat-na   {color:#475569;}
+
+.broker-card{background:#0f172a;border:1px solid #1e293b;border-radius:8px;padding:14px 18px;margin:10px 0;}
+.broker-card h3{margin-top:0;color:#e2e8f0;display:flex;align-items:center;gap:8px;}
+.broker-card .tier{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:700;}
+.tier-a{background:#14532d;color:#86efac;}
+.tier-b{background:#78350f;color:#fcd34d;}
+.tier-c{background:#7f1d1d;color:#fca5a5;}
+
+.flex-row{display:flex;gap:14px;flex-wrap:wrap;}
+.flex-row > div{flex:1;min-width:280px;}
+
+footer{text-align:center;color:#1e293b;font-size:11px;padding:36px 0 18px;}
+</style>
+</head>
+<body>
+
+<nav class="sidebar">
+  <h1>🏛 卷商 Schema 分析<small>整合 6 家 broker 的設計</small></h1>
+
+  <h3>📋 分析</h3>
+  <a href="#overview">需求與目標</a>
+  <a href="#compare">6 家功能對照</a>
+  <a href="#abstraction">統一抽象層</a>
+
+  <h3>🏛 各家卷商</h3>
+  <a href="#alpaca">Alpaca</a>
+  <a href="#tradier">Tradier</a>
+  <a href="#tradestation">TradeStation</a>
+  <a href="#public">Public</a>
+  <a href="#tastytrade">tastytrade</a>
+  <a href="#shioaji">永豐金 Shioaji</a>
+
+  <h3>📐 Schema 設計</h3>
+  <a href="#schema-v1">broker v1 Schema</a>
+  <a href="#examples">六家 JSON 範例</a>
+  <a href="#accounts-integration">accounts.json 整合</a>
+
+  <h3>🛠 實作</h3>
+  <a href="#migration">遷移路線圖</a>
+  <a href="#risks">風險與限制</a>
+</nav>
+
+<main>
+
+<div class="hero">
+  <div>
+    <span class="badge">v1 draft</span>
+    <span class="badge">2026-05-30</span>
+    <span class="badge">analysis only</span>
+  </div>
+  <h1>🏛 卷商 Schema 分析 <span>6 家整合設計</span></h1>
+  <p>把現有單一綁定 Alpaca 的架構抽象化，未來 accounts.json 可選擇任一卷商，
+  每家卷商用一個 JSON 描述其 API。本文先做<b>分析</b>，後續實作分階段進行。</p>
+</div>
+
+<!-- ══════════════════════════════════════════════════ -->
+<section id="overview">
+  <h2><span class="num">A</span>需求與目標</h2>
+
+  <h3>當前架構限制</h3>
+  <ul>
+    <li>整個系統綁死 Alpaca：<code>trader.py</code> 直接呼叫 Alpaca REST 端點</li>
+    <li><code>accounts.json</code> 只有 <code>alpaca_secret_prefix</code> 欄位，無 broker 概念</li>
+    <li>切換到其他卷商要改 7+ 個 Python 檔案</li>
+  </ul>
+
+  <h3>目標</h3>
+  <ul>
+    <li>✅ 每家卷商有一個 <code>brokers/{id}.json</code> 描述 API（authentication、endpoints、capabilities）</li>
+    <li>✅ <code>accounts.json</code> 新增 <code>broker</code> 欄位指向卷商 id</li>
+    <li>✅ 抽象 <code>BrokerClient</code> 介面：6 個共用方法統一所有卷商</li>
+    <li>✅ 各家 Python 實作為 <code>brokers/alpaca_client.py</code> / <code>brokers/tradier_client.py</code> ...</li>
+    <li>✅ 策略邏輯 (portfolio.py / momentum_runner.py) <b>完全不知道</b>背後是哪家卷商</li>
+  </ul>
+
+  <h3>本文件範圍</h3>
+  <div class="box info">
+    <strong>📋 本份只做分析，不動 production code</strong>
+    產出：(1) 卷商對照 (2) 統一 schema 草案 (3) 各家 JSON 範例 (4) 遷移路線圖。
+    實際 refactor 在獨立 task 進行。
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════ -->
+<section id="compare">
+  <h2><span class="num">B</span>6 家功能對照</h2>
+  <div class="meta">關鍵特性一覽，用於決定 schema 結構</div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>項目</th>
+        <th>Alpaca</th>
+        <th>Tradier</th>
+        <th>TradeStation</th>
+        <th>Public</th>
+        <th>tastytrade</th>
+        <th>Shioaji</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td><b>市場</b></td><td>US</td><td>US</td><td>US</td><td>US</td><td>US</td><td>TW</td></tr>
+      <tr><td><b>整合方式</b></td><td>REST + WS</td><td>REST + WS</td><td>REST v3</td><td>REST (受限)</td><td>REST</td><td>Python SDK</td></tr>
+      <tr><td><b>Paper / Sim</b></td><td class="feat-yes">✓</td><td class="feat-yes">✓</td><td class="feat-yes">✓ Sim</td><td class="feat-no">✗</td><td class="feat-yes">✓ Sandbox</td><td class="feat-yes">✓</td></tr>
+      <tr><td><b>認證</b></td><td>API Key + Secret</td><td>OAuth Bearer</td><td>OAuth 2.0 + Refresh</td><td>API Key</td><td>Session Token</td><td>API Key + Secret</td></tr>
+      <tr><td><b>整股</b></td><td class="feat-yes">✓</td><td class="feat-yes">✓</td><td class="feat-yes">✓</td><td class="feat-yes">✓</td><td class="feat-yes">✓</td><td class="feat-yes">✓ 強制</td></tr>
+      <tr><td><b>零股 (fractional)</b></td><td class="feat-yes">✓</td><td class="feat-no">✗</td><td class="feat-no">✗</td><td class="feat-yes">✓ slice</td><td class="feat-no">✗</td><td class="feat-part">⚠️ 限零股盤</td></tr>
+      <tr><td><b>美股</b></td><td class="feat-yes">✓</td><td class="feat-yes">✓</td><td class="feat-yes">✓</td><td class="feat-yes">✓</td><td class="feat-yes">✓</td><td class="feat-no">✗</td></tr>
+      <tr><td><b>選擇權</b></td><td class="feat-yes">✓</td><td class="feat-yes">✓ 強</td><td class="feat-yes">✓</td><td class="feat-no">✗</td><td class="feat-yes">✓ 強</td><td class="feat-yes">✓ (TW)</td></tr>
+      <tr><td><b>期貨</b></td><td class="feat-no">✗</td><td class="feat-no">✗</td><td class="feat-yes">✓</td><td class="feat-no">✗</td><td class="feat-yes">✓</td><td class="feat-yes">✓ TW</td></tr>
+      <tr><td><b>加密貨幣</b></td><td class="feat-yes">✓</td><td class="feat-no">✗</td><td class="feat-no">✗</td><td class="feat-yes">✓</td><td class="feat-part">⚠️ 限</td><td class="feat-no">✗</td></tr>
+      <tr><td><b>TIF: day</b></td><td class="feat-yes">✓</td><td class="feat-yes">✓</td><td class="feat-yes">✓</td><td class="feat-yes">✓</td><td class="feat-yes">✓</td><td class="feat-yes">✓ ROD</td></tr>
+      <tr><td><b>TIF: GTC</b></td><td class="feat-yes">✓</td><td class="feat-yes">✓</td><td class="feat-yes">✓</td><td class="feat-part">⚠️</td><td class="feat-yes">✓</td><td class="feat-no">✗</td></tr>
+      <tr><td><b>盤前盤後</b></td><td class="feat-yes">✓</td><td class="feat-yes">✓</td><td class="feat-yes">✓</td><td class="feat-no">✗</td><td class="feat-yes">✓</td><td class="feat-no">✗</td></tr>
+      <tr><td><b>歷史 bars API</b></td><td class="feat-yes">✓</td><td class="feat-yes">✓</td><td class="feat-yes">✓</td><td class="feat-no">✗</td><td class="feat-yes">✓</td><td class="feat-yes">✓</td></tr>
+      <tr><td><b>佣金（美股）</b></td><td>$0</td><td>$0</td><td>$0</td><td>$0</td><td>$0</td><td>~0.1425%</td></tr>
+      <tr><td><b>官方 Python SDK</b></td><td><code>alpaca-py</code></td><td>有</td><td>第三方</td><td>受限</td><td><code>tastytrade</code></td><td><code>shioaji</code></td></tr>
+      <tr><td><b>文件品質</b></td><td>⭐⭐⭐⭐⭐</td><td>⭐⭐⭐⭐</td><td>⭐⭐⭐</td><td>⭐⭐</td><td>⭐⭐⭐⭐</td><td>⭐⭐⭐</td></tr>
+      <tr><td><b>整合難度</b></td><td>低</td><td>中</td><td>中-高</td><td>高</td><td>中</td><td>中</td></tr>
+      <tr><td><b>適合本系統</b></td><td>⭐⭐⭐⭐⭐</td><td>⭐⭐⭐⭐</td><td>⭐⭐⭐</td><td>⭐⭐</td><td>⭐⭐⭐⭐</td><td>⭐⭐⭐⭐</td></tr>
+    </tbody>
+  </table>
+
+  <div class="box ok">
+    <strong>💡 建議優先順序</strong>
+    <b>Tier 1（先做）</b>：Alpaca（已有）、Tradier、tastytrade — 三家都是純 REST + 文件完整。<br>
+    <b>Tier 2（第二波）</b>：永豐 Shioaji（台股需求）、TradeStation。<br>
+    <b>Tier 3（觀望）</b>：Public — 公開 API 還不夠成熟。
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════ -->
+<section id="alpaca">
+  <h2><span class="num">1</span>Alpaca <span class="tier tier-a" style="font-size:11px">Tier A · 已實作</span></h2>
+
+  <div class="broker-card">
+    <h3>🏛 Alpaca <span style="font-size:10px;color:#64748b">— 美股 + 加密 + 選擇權</span></h3>
+    <p><a href="https://alpaca.markets" target="_blank">alpaca.markets</a> · 純線上券商，主打開發者友好</p>
+
+    <h4>認證</h4>
+    <pre>Headers:
+  APCA-API-KEY-ID:     {api_key}
+  APCA-API-SECRET-KEY: {api_secret}
+
+Endpoints:
+  Paper: https://paper-api.alpaca.markets
+  Live:  https://api.alpaca.markets
+  Data:  https://data.alpaca.markets</pre>
+
+    <h4>核心端點</h4>
+    <table>
+      <tr><td><code>GET /v2/account</code></td><td>NAV、現金</td></tr>
+      <tr><td><code>GET /v2/positions</code></td><td>持倉</td></tr>
+      <tr><td><code>POST /v2/orders</code></td><td>下單</td></tr>
+      <tr><td><code>GET /v2/orders</code></td><td>查詢訂單</td></tr>
+      <tr><td><code>DELETE /v2/orders</code></td><td>取消全部</td></tr>
+      <tr><td><code>GET /v2/clock</code></td><td>市場開盤</td></tr>
+      <tr><td><code>GET /v2/calendar</code></td><td>交易日曆</td></tr>
+      <tr><td><code>GET /v2/stocks/bars/latest</code></td><td>最新報價</td></tr>
+    </table>
+
+    <h4>特性</h4>
+    <ul>
+      <li>✅ 唯一支援 fractional shares 的本系統使用者</li>
+      <li>✅ Paper Trading 帳戶虛擬資金 $100K</li>
+      <li>✅ wait_for_fills 支援（透過 polling）</li>
+      <li>⚠️ Fractional 訂單只能 <code>day</code> TIF</li>
+      <li>⚠️ Latest bars API 不接受 <code>limit</code>/<code>timeframe</code> 參數</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════ -->
+<section id="tradier">
+  <h2><span class="num">2</span>Tradier <span class="tier tier-a" style="font-size:11px">Tier A · 推薦下一個整合</span></h2>
+
+  <div class="broker-card">
+    <h3>🏛 Tradier <span style="font-size:10px;color:#64748b">— 美股 + 選擇權 (選擇權強)</span></h3>
+    <p><a href="https://developer.tradier.com" target="_blank">developer.tradier.com</a> · 選擇權交易員首選</p>
+
+    <h4>認證</h4>
+    <pre>Headers:
+  Authorization: Bearer {access_token}
+  Accept:        application/json
+
+Endpoints:
+  Sandbox: https://sandbox.tradier.com/v1
+  Live:    https://api.tradier.com/v1</pre>
+
+    <h4>核心端點</h4>
+    <table>
+      <tr><td><code>GET /accounts/{id}/balances</code></td><td>NAV、現金</td></tr>
+      <tr><td><code>GET /accounts/{id}/positions</code></td><td>持倉</td></tr>
+      <tr><td><code>POST /accounts/{id}/orders</code></td><td>下單（含選擇權多腿）</td></tr>
+      <tr><td><code>GET /accounts/{id}/orders</code></td><td>查訂單</td></tr>
+      <tr><td><code>DELETE /accounts/{id}/orders/{oid}</code></td><td>取消單筆</td></tr>
+      <tr><td><code>GET /markets/clock</code></td><td>市場開盤</td></tr>
+      <tr><td><code>GET /markets/calendar</code></td><td>交易日曆</td></tr>
+      <tr><td><code>GET /markets/quotes</code></td><td>即時報價</td></tr>
+    </table>
+
+    <h4>本系統整合注意</h4>
+    <ul>
+      <li>❌ <b>不支援 fractional shares</b> — 必須改用整股</li>
+      <li>⚠️ 帳戶 ID 在 URL path，所有端點都要帶</li>
+      <li>⚠️ 取消所有訂單沒有單一 endpoint，要逐筆 DELETE</li>
+      <li>✅ Sandbox 帳戶免費註冊，資料即時</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════ -->
+<section id="tradestation">
+  <h2><span class="num">3</span>TradeStation <span class="tier tier-b" style="font-size:11px">Tier B · 認證複雜</span></h2>
+
+  <div class="broker-card">
+    <h3>🏛 TradeStation <span style="font-size:10px;color:#64748b">— 美股 + 選擇權 + 期貨</span></h3>
+    <p><a href="https://developer.tradestation.com" target="_blank">developer.tradestation.com</a> · 老牌專業券商</p>
+
+    <h4>認證（OAuth 2.0）</h4>
+    <pre>1. Register app at developer.tradestation.com → client_id, client_secret
+2. User authorizes → authorization_code (one-time)
+3. POST /v2/security/authorize { grant_type: "authorization_code", code }
+   → access_token (20 min) + refresh_token
+4. Refresh: POST { grant_type: "refresh_token", refresh_token }
+
+Headers:
+  Authorization: Bearer {access_token}
+
+Endpoints:
+  Sim:   https://sim-api.tradestation.com/v3
+  Live:  https://api.tradestation.com/v3</pre>
+
+    <h4>本系統整合注意</h4>
+    <ul>
+      <li>⚠️ <b>需要 OAuth flow + refresh token 管理</b> — 不能單純存 API key</li>
+      <li>⚠️ access_token 只有 20 分鐘，必須 refresh logic</li>
+      <li>❌ 不支援 fractional shares</li>
+      <li>✅ 期貨支援完整，未來想加入期貨策略可用</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════ -->
+<section id="public">
+  <h2><span class="num">4</span>Public <span class="tier tier-c" style="font-size:11px">Tier C · API 不夠成熟</span></h2>
+
+  <div class="broker-card">
+    <h3>🏛 Public.com <span style="font-size:10px;color:#64748b">— 美股 + 加密 (社交券商)</span></h3>
+    <p><a href="https://public.com" target="_blank">public.com</a> · 新興零佣金平台，2024 才開放 API</p>
+
+    <h4>整合難度</h4>
+    <ul>
+      <li>❌ <b>沒有公開 sandbox / paper trading</b></li>
+      <li>❌ 文件相對薄弱，需直接聯繫 dev team</li>
+      <li>❌ 沒有歷史 bars API（要靠 yfinance 等第三方）</li>
+      <li>✅ 支援 fractional shares (slices)</li>
+      <li>✅ 加密貨幣支援</li>
+    </ul>
+
+    <div class="box warn">
+      <strong>建議</strong>：本系統暫不整合 Public。等他們 API 文件成熟、有 paper 環境再評估。
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════ -->
+<section id="tastytrade">
+  <h2><span class="num">5</span>tastytrade <span class="tier tier-a" style="font-size:11px">Tier A · 選擇權強</span></h2>
+
+  <div class="broker-card">
+    <h3>🏛 tastytrade <span style="font-size:10px;color:#64748b">— 選擇權 + 期貨 + 美股</span></h3>
+    <p><a href="https://developer.tastytrade.com" target="_blank">developer.tastytrade.com</a> · 選擇權社群知名</p>
+
+    <h4>認證（Session-based）</h4>
+    <pre>1. POST /sessions { login, password } → session-token (24h)
+2. 後續請求帶 header: Authorization: {session-token}
+
+Endpoints:
+  Sandbox: https://api.cert.tastyworks.com
+  Live:    https://api.tastyworks.com</pre>
+
+    <h4>本系統整合注意</h4>
+    <ul>
+      <li>⚠️ <b>必須存使用者密碼或長效 OAuth token</b> — 不能用純 API key</li>
+      <li>⚠️ Session token 24 小時過期，要 re-login</li>
+      <li>❌ 不支援 fractional</li>
+      <li>✅ 官方 Python SDK <code>tastytrade-sdk</code> 維護良好</li>
+      <li>✅ Notional Market Order（用金額下單，自動算股數）</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════ -->
+<section id="shioaji">
+  <h2><span class="num">6</span>永豐金 Shioaji <span class="tier tier-a" style="font-size:11px">Tier A · 唯一 TW 市場</span></h2>
+
+  <div class="broker-card">
+    <h3>🏛 永豐金證券 — Shioaji SDK <span style="font-size:10px;color:#64748b">— 台股 + 期貨 + 選擇權</span></h3>
+    <p><a href="https://sinotrade.github.io/" target="_blank">sinotrade.github.io</a> · 永豐唯一官方程式交易 SDK</p>
+
+    <h4>整合方式（Python SDK，非 REST）</h4>
+    <pre>import shioaji as sj
+api = sj.Shioaji(simulation=True)  <span class="c"># 模擬 / 正式</span>
+api.login(
+    api_key    = "YOUR_API_KEY",
+    secret_key = "YOUR_SECRET_KEY",
+)
+api.activate_ca(ca_path="Sinopac.pfx", ca_passwd="...", person_id="A123...")
+<span class="c"># 下單需要 CA 憑證（生產環境）</span>
+
+contracts = api.Contracts.Stocks["2330"]  <span class="c"># 台積電</span>
+order = api.Order(
+    price=0, price_type=sj.constant.StockPriceType.MKT,
+    action=sj.constant.Action.Buy, quantity=1,
+    order_type=sj.constant.OrderType.ROD,
+)
+trade = api.place_order(contracts, order)</pre>
+
+    <h4>本系統整合注意</h4>
+    <ul>
+      <li>⚠️ <b>沒有 REST API</b>，必須跑 Python SDK（要 import shioaji）</li>
+      <li>⚠️ 生產環境下單需<b>金融憑證</b> (CA, .pfx 檔)，paper 模式不需</li>
+      <li>⚠️ 持倉/帳戶資料用 callback 推送，不是 polling</li>
+      <li>❌ 美股不能用此 SDK（永豐 API 只有 TW 商品）</li>
+      <li>✅ 模擬交易免費，免身分驗證</li>
+      <li>⚠️ 交易時段：09:00-13:30 TW time（盤後 13:40-14:30 另案處理）</li>
+    </ul>
+
+    <div class="box info">
+      <strong>💡 抽象層需處理</strong>
+      Shioaji 是 SDK 模型 vs 其他 5 家是 REST 模型。可能設計兩層 adapter：
+      <code>BrokerClient (interface) → RestBrokerClient (alpaca/tradier/...) + SdkBrokerClient (shioaji)</code>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════ -->
+<section id="abstraction">
+  <h2><span class="num">C</span>統一抽象層</h2>
+  <div class="meta">所有卷商必須支援的 6 個共用方法</div>
+
+  <pre><span class="k">class</span> <span class="n">BrokerClient</span>(ABC):
+    <span class="s">"""所有卷商必須實作的最小介面。"""</span>
+
+    <span class="k">def</span> __init__(self, broker_spec: dict, env: dict): ...
+
+    <span class="k">def</span> is_trading_day(self, date: date) -> bool: ...
+    <span class="k">def</span> get_account_balance(self) -> AccountBalance: ...
+    <span class="k">def</span> get_positions(self) -> list[Position]: ...
+    <span class="k">def</span> get_latest_prices(self, symbols: list[str]) -> dict[str, float]: ...
+    <span class="k">def</span> place_order(self, symbol: str, qty: float, side: str,
+                    order_type: str = <span class="s">"market"</span>) -> OrderResult: ...
+    <span class="k">def</span> cancel_all_open_orders(self) -> int: ...
+    <span class="k">def</span> wait_for_fills(self, order_ids: list[str], timeout: int) -> None: ...</pre>
+
+  <h3>共用資料型別</h3>
+  <pre><span class="k">@dataclass</span>
+<span class="k">class</span> <span class="n">AccountBalance</span>:
+    nav: float
+    cash: float
+    buying_power: float
+    currency: str = <span class="s">"USD"</span>
+
+<span class="k">@dataclass</span>
+<span class="k">class</span> <span class="n">Position</span>:
+    symbol: str
+    qty: float
+    avg_entry_price: float
+    current_price: float
+    market_value: float
+
+<span class="k">@dataclass</span>
+<span class="k">class</span> <span class="n">OrderResult</span>:
+    order_id: str
+    symbol: str
+    side: str           <span class="c"># "buy" | "sell"</span>
+    qty: float
+    status: str         <span class="c"># "new" | "filled" | "rejected"</span>
+    filled_avg_price: float = <span class="s">0.0</span></pre>
+
+  <div class="box info">
+    <strong>每家實作只需處理自己的 API 細節</strong>，外部呼叫者（main.py / portfolio.py）只看 BrokerClient 介面。
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════ -->
+<section id="schema-v1">
+  <h2><span class="num">D</span>broker v1 Schema 草案</h2>
+  <div class="meta">每家卷商寫成一個 brokers/{id}.json，描述如何連接</div>
+
+  <pre>{
+  <span class="s">"$schema"</span>: <span class="s">"broker-schema-v1.json"</span>,
+  <span class="s">"id"</span>: <span class="s">"alpaca"</span>,
+  <span class="s">"version"</span>: <span class="s">"1.0"</span>,
+  <span class="s">"display_name"</span>: <span class="s">"Alpaca Markets"</span>,
+  <span class="s">"country"</span>: <span class="s">"US"</span>,
+  <span class="s">"website"</span>: <span class="s">"https://alpaca.markets"</span>,
+
+  <span class="s">"integration"</span>: {
+    <span class="s">"type"</span>: <span class="s">"rest"</span>,            <span class="c">// "rest" | "sdk"</span>
+    <span class="s">"client_class"</span>: <span class="s">"brokers.alpaca_client.AlpacaClient"</span>
+  },
+
+  <span class="s">"auth"</span>: {
+    <span class="s">"method"</span>: <span class="s">"api_key_secret"</span>,     <span class="c">// "api_key_secret"|"oauth"|"session"|"sdk_login"</span>
+    <span class="s">"required_env"</span>: [<span class="s">"{PREFIX}_API_KEY"</span>, <span class="s">"{PREFIX}_API_SECRET"</span>],
+    <span class="s">"header_template"</span>: {
+      <span class="s">"APCA-API-KEY-ID"</span>:     <span class="s">"{api_key}"</span>,
+      <span class="s">"APCA-API-SECRET-KEY"</span>: <span class="s">"{api_secret}"</span>
+    }
+  },
+
+  <span class="s">"environments"</span>: {
+    <span class="s">"paper"</span>: { <span class="s">"base_url"</span>: <span class="s">"https://paper-api.alpaca.markets"</span> },
+    <span class="s">"live"</span>:  { <span class="s">"base_url"</span>: <span class="s">"https://api.alpaca.markets"</span> }
+  },
+
+  <span class="s">"market_data"</span>: {
+    <span class="s">"data_url"</span>: <span class="s">"https://data.alpaca.markets"</span>,
+    <span class="s">"latest_bars_endpoint"</span>: <span class="s">"/v2/stocks/bars/latest"</span>,
+    <span class="s">"calendar_endpoint"</span>: <span class="s">"/v2/calendar"</span>,
+    <span class="s">"clock_endpoint"</span>: <span class="s">"/v2/clock"</span>
+  },
+
+  <span class="s">"endpoints"</span>: {
+    <span class="s">"account"</span>:         <span class="s">"/v2/account"</span>,
+    <span class="s">"positions"</span>:       <span class="s">"/v2/positions"</span>,
+    <span class="s">"orders"</span>:          <span class="s">"/v2/orders"</span>,
+    <span class="s">"order_by_id"</span>:     <span class="s">"/v2/orders/{order_id}"</span>,
+    <span class="s">"cancel_all"</span>:      <span class="s">"/v2/orders"</span>     <span class="c">// DELETE</span>
+  },
+
+  <span class="s">"capabilities"</span>: {
+    <span class="s">"fractional_shares"</span>: true,
+    <span class="s">"asset_classes"</span>:     [<span class="s">"us_equity"</span>, <span class="s">"crypto"</span>],
+    <span class="s">"order_types"</span>:       [<span class="s">"market"</span>, <span class="s">"limit"</span>, <span class="s">"stop"</span>, <span class="s">"stop_limit"</span>, <span class="s">"trailing_stop"</span>],
+    <span class="s">"time_in_force"</span>:     [<span class="s">"day"</span>, <span class="s">"gtc"</span>, <span class="s">"opg"</span>, <span class="s">"cls"</span>, <span class="s">"ioc"</span>, <span class="s">"fok"</span>],
+    <span class="s">"extended_hours"</span>:    true,
+    <span class="s">"min_order_value_usd"</span>: 1.0,
+    <span class="s">"commission_per_trade"</span>: 0.0
+  },
+
+  <span class="s">"market"</span>: {
+    <span class="s">"timezone"</span>:    <span class="s">"America/New_York"</span>,
+    <span class="s">"open_time"</span>:   <span class="s">"09:30"</span>,
+    <span class="s">"close_time"</span>:  <span class="s">"16:00"</span>,
+    <span class="s">"currency"</span>:    <span class="s">"USD"</span>
+  },
+
+  <span class="s">"rate_limits"</span>: {
+    <span class="s">"requests_per_minute"</span>: 200,
+    <span class="s">"orders_per_second"</span>:   10
+  }
+}</pre>
+</section>
+
+<!-- ══════════════════════════════════════════════════ -->
+<section id="examples">
+  <h2><span class="num">E</span>六家 JSON 範例（精簡版）</h2>
+
+  <h3>brokers/tradier.json</h3>
+  <pre>{
+  <span class="s">"id"</span>: <span class="s">"tradier"</span>,
+  <span class="s">"auth"</span>: {
+    <span class="s">"method"</span>: <span class="s">"oauth_bearer"</span>,
+    <span class="s">"required_env"</span>: [<span class="s">"{PREFIX}_ACCESS_TOKEN"</span>, <span class="s">"{PREFIX}_ACCOUNT_ID"</span>],
+    <span class="s">"header_template"</span>: { <span class="s">"Authorization"</span>: <span class="s">"Bearer {access_token}"</span> }
+  },
+  <span class="s">"environments"</span>: {
+    <span class="s">"sandbox"</span>: { <span class="s">"base_url"</span>: <span class="s">"https://sandbox.tradier.com/v1"</span> },
+    <span class="s">"live"</span>:    { <span class="s">"base_url"</span>: <span class="s">"https://api.tradier.com/v1"</span> }
+  },
+  <span class="s">"endpoints"</span>: {
+    <span class="s">"account"</span>:   <span class="s">"/accounts/{account_id}/balances"</span>,
+    <span class="s">"positions"</span>: <span class="s">"/accounts/{account_id}/positions"</span>,
+    <span class="s">"orders"</span>:    <span class="s">"/accounts/{account_id}/orders"</span>
+  },
+  <span class="s">"capabilities"</span>: { <span class="s">"fractional_shares"</span>: false, <span class="s">"order_types"</span>: [<span class="s">"market"</span>,<span class="s">"limit"</span>,<span class="s">"stop"</span>] }
+}</pre>
+
+  <h3>brokers/tastytrade.json</h3>
+  <pre>{
+  <span class="s">"id"</span>: <span class="s">"tastytrade"</span>,
+  <span class="s">"auth"</span>: {
+    <span class="s">"method"</span>: <span class="s">"session_login"</span>,
+    <span class="s">"required_env"</span>: [<span class="s">"{PREFIX}_USERNAME"</span>, <span class="s">"{PREFIX}_PASSWORD"</span>],
+    <span class="s">"session_endpoint"</span>: <span class="s">"/sessions"</span>,
+    <span class="s">"session_ttl_hours"</span>: 24
+  },
+  <span class="s">"environments"</span>: {
+    <span class="s">"sandbox"</span>: { <span class="s">"base_url"</span>: <span class="s">"https://api.cert.tastyworks.com"</span> },
+    <span class="s">"live"</span>:    { <span class="s">"base_url"</span>: <span class="s">"https://api.tastyworks.com"</span> }
+  },
+  <span class="s">"capabilities"</span>: { <span class="s">"fractional_shares"</span>: false, <span class="s">"asset_classes"</span>: [<span class="s">"equity"</span>,<span class="s">"option"</span>,<span class="s">"future"</span>] }
+}</pre>
+
+  <h3>brokers/shioaji.json（SDK 而非 REST）</h3>
+  <pre>{
+  <span class="s">"id"</span>: <span class="s">"shioaji"</span>,
+  <span class="s">"display_name"</span>: <span class="s">"永豐金證券 Shioaji"</span>,
+  <span class="s">"country"</span>: <span class="s">"TW"</span>,
+  <span class="s">"integration"</span>: {
+    <span class="s">"type"</span>: <span class="s">"sdk"</span>,
+    <span class="s">"client_class"</span>: <span class="s">"brokers.shioaji_client.ShioajiClient"</span>,
+    <span class="s">"sdk_package"</span>:  <span class="s">"shioaji"</span>
+  },
+  <span class="s">"auth"</span>: {
+    <span class="s">"method"</span>: <span class="s">"sdk_login"</span>,
+    <span class="s">"required_env"</span>: [<span class="s">"{PREFIX}_API_KEY"</span>, <span class="s">"{PREFIX}_SECRET_KEY"</span>],
+    <span class="s">"required_env_live"</span>: [<span class="s">"{PREFIX}_CA_PATH"</span>, <span class="s">"{PREFIX}_CA_PASSWD"</span>, <span class="s">"{PREFIX}_PERSON_ID"</span>]
+  },
+  <span class="s">"environments"</span>: {
+    <span class="s">"simulation"</span>: { <span class="s">"simulation"</span>: true },
+    <span class="s">"live"</span>:       { <span class="s">"simulation"</span>: false, <span class="s">"requires_ca"</span>: true }
+  },
+  <span class="s">"capabilities"</span>: {
+    <span class="s">"fractional_shares"</span>: false,
+    <span class="s">"asset_classes"</span>:    [<span class="s">"tw_equity"</span>, <span class="s">"tw_future"</span>, <span class="s">"tw_option"</span>],
+    <span class="s">"order_types"</span>:      [<span class="s">"market"</span>, <span class="s">"limit"</span>],
+    <span class="s">"time_in_force"</span>:    [<span class="s">"ROD"</span>, <span class="s">"IOC"</span>, <span class="s">"FOK"</span>]
+  },
+  <span class="s">"market"</span>: {
+    <span class="s">"timezone"</span>: <span class="s">"Asia/Taipei"</span>,
+    <span class="s">"open_time"</span>: <span class="s">"09:00"</span>,
+    <span class="s">"close_time"</span>: <span class="s">"13:30"</span>,
+    <span class="s">"currency"</span>: <span class="s">"TWD"</span>
+  }
+}</pre>
+</section>
+
+<!-- ══════════════════════════════════════════════════ -->
+<section id="accounts-integration">
+  <h2><span class="num">F</span>accounts.json 整合方案</h2>
+  <div class="meta">加入 broker 欄位，舊欄位向下相容</div>
+
+  <h3>新版 accounts.json 範例</h3>
+  <pre>{
+  <span class="s">"accounts"</span>: [
+    {
+      <span class="s">"id"</span>: <span class="s">"1"</span>,
+      <span class="s">"strategy"</span>: <span class="s">"top10"</span>,
+      <span class="s">"broker"</span>:   <span class="s">"alpaca"</span>,         <span class="c">// ← 新欄位（指 brokers/alpaca.json）</span>
+      <span class="s">"environment"</span>: <span class="s">"paper"</span>,         <span class="c">// ← brokers JSON 的 environments key</span>
+      <span class="s">"secret_prefix"</span>: <span class="s">"ACC1"</span>,         <span class="c">// 改名（之前是 alpaca_secret_prefix）</span>
+      <span class="s">"data_dir"</span>:     <span class="s">"data/1"</span>,
+      <span class="s">"enabled"</span>:      true,
+      <span class="s">"label"</span>:        <span class="s">"帳戶 #1 TOP10 月度"</span>
+    },
+    {
+      <span class="s">"id"</span>: <span class="s">"6"</span>,
+      <span class="s">"strategy"</span>: <span class="s">"top10_options_covered_call"</span>,
+      <span class="s">"broker"</span>:   <span class="s">"tradier"</span>,           <span class="c">// 換家</span>
+      <span class="s">"environment"</span>: <span class="s">"sandbox"</span>,
+      <span class="s">"secret_prefix"</span>: <span class="s">"ACC6"</span>,
+      <span class="s">"data_dir"</span>:     <span class="s">"data/6"</span>,
+      <span class="s">"enabled"</span>:      true
+    },
+    {
+      <span class="s">"id"</span>: <span class="s">"7"</span>,
+      <span class="s">"strategy"</span>: <span class="s">"tw_top10"</span>,
+      <span class="s">"broker"</span>:   <span class="s">"shioaji"</span>,           <span class="c">// TW 市場</span>
+      <span class="s">"environment"</span>: <span class="s">"simulation"</span>,
+      <span class="s">"secret_prefix"</span>: <span class="s">"ACC7"</span>,
+      <span class="s">"data_dir"</span>:     <span class="s">"data/7"</span>,
+      <span class="s">"enabled"</span>:      true
+    }
+  ]
+}</pre>
+
+  <h3>環境變數命名規則</h3>
+  <pre><span class="c"># Alpaca 帳戶 #1：</span>
+ACC1_API_KEY      = "PK..."
+ACC1_API_SECRET   = "abc..."
+
+<span class="c"># Tradier 帳戶 #6：</span>
+ACC6_ACCESS_TOKEN = "..."
+ACC6_ACCOUNT_ID   = "VA..."
+
+<span class="c"># Shioaji 帳戶 #7：</span>
+ACC7_API_KEY    = "..."
+ACC7_SECRET_KEY = "..."
+ACC7_CA_PATH    = "/path/to/Sinopac.pfx"   <span class="c"># 僅 live 模式</span>
+ACC7_CA_PASSWD  = "..."
+ACC7_PERSON_ID  = "A123..."</pre>
+</section>
+
+<!-- ══════════════════════════════════════════════════ -->
+<section id="migration">
+  <h2><span class="num">G</span>遷移路線圖</h2>
+
+  <h3>Phase 1：抽象層基礎（不影響現有帳戶）</h3>
+  <ol>
+    <li>建立 <code>brokers/</code> 目錄 + <code>broker-schema-v1.json</code></li>
+    <li>實作 <code>brokers/base.py</code> BrokerClient ABC + 共用 dataclasses</li>
+    <li>實作 <code>brokers/alpaca_client.py</code>（搬 trader.py 邏輯，但實作介面）</li>
+    <li>把 main.py / momentum_runner.py 改用 BrokerClient 介面</li>
+    <li>產生 <code>brokers/alpaca.json</code></li>
+    <li><b>跑既有測試 + 真實 paper trading 一週驗證無 regression</b></li>
+  </ol>
+
+  <h3>Phase 2：加入第二家</h3>
+  <ol>
+    <li>選 Tradier 或 tastytrade（純 REST 容易）</li>
+    <li>實作 <code>brokers/tradier_client.py</code> + JSON</li>
+    <li>開測試帳號跑 sandbox 一週</li>
+  </ol>
+
+  <h3>Phase 3：accounts.json 升級</h3>
+  <ol>
+    <li>新增 <code>broker</code> + <code>environment</code> 欄位</li>
+    <li>向下相容：未指定 broker 時預設 <code>alpaca</code></li>
+    <li>secret_prefix 改名（舊名 alpaca_secret_prefix 仍接受）</li>
+  </ol>
+
+  <h3>Phase 4：擴充其他家</h3>
+  <ul>
+    <li>tastytrade → 選擇權策略</li>
+    <li>Shioaji → TW 市場策略（新 strategy schema 也要支援 tw_equity）</li>
+    <li>TradeStation → 期貨策略（如有需求）</li>
+  </ul>
+
+  <h3>預估時程</h3>
+  <table>
+    <tr><th>Phase</th><th>內容</th><th>預估</th></tr>
+    <tr><td>1</td><td>抽象 + Alpaca 重構</td><td>~3 天</td></tr>
+    <tr><td>2</td><td>+ Tradier</td><td>~2 天</td></tr>
+    <tr><td>3</td><td>accounts.json 整合</td><td>~1 天</td></tr>
+    <tr><td>4</td><td>每加一家</td><td>~2 天</td></tr>
+  </table>
+</section>
+
+<!-- ══════════════════════════════════════════════════ -->
+<section id="risks">
+  <h2><span class="num">H</span>風險與限制</h2>
+
+  <table>
+    <thead><tr><th>類別</th><th>風險</th><th>緩解</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>抽象層滲漏</td>
+        <td>各家 API 細節差太多（fractional / TIF / asset class）強塞同一介面會變醜</td>
+        <td>capabilities 區塊讓策略檢查能力，下單前 validate</td>
+      </tr>
+      <tr>
+        <td>SDK vs REST</td>
+        <td>Shioaji 是 SDK callback 模型，整合到 REST polling 風格不自然</td>
+        <td>分兩層 base class：RestClient + SdkClient</td>
+      </tr>
+      <tr>
+        <td>OAuth 複雜度</td>
+        <td>TradeStation 需 refresh token 維護，跑在 GitHub Actions 不易</td>
+        <td>Phase 4 才做；考慮加 token-refresh script</td>
+      </tr>
+      <tr>
+        <td>市場差異</td>
+        <td>TW vs US 開盤時間、貨幣、交割天數都不同</td>
+        <td>strategy schema 也要加 market 欄位（current 預設 US）</td>
+      </tr>
+      <tr>
+        <td>歷史資料</td>
+        <td>Public 沒 bars API；Shioaji 的 bars 跟 US 結構不同</td>
+        <td>把 market_data 抽出來，可以不從卷商拿（fallback yfinance）</td>
+      </tr>
+      <tr>
+        <td>佣金計算</td>
+        <td>Shioaji TW 有交易稅 / 手續費，跟美股 $0 不同</td>
+        <td>strategy 或 portfolio.py 加 fee_model 設定</td>
+      </tr>
+      <tr>
+        <td>多 broker 部署</td>
+        <td>GitHub Secrets 數量會暴增（每帳戶多個 secret）</td>
+        <td>用 prefix 命名規則 + 文件清楚標示</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="box warn">
+    <strong>⚠️ 重大風險</strong>
+    若實作有 bug 而誤觸發實單，可能造成損失。
+    <b>所有新 broker 必須先在 sandbox/paper 跑滿 4 週 + 100+ 次成功訂單後</b>才開放 live。
+  </div>
+</section>
+
+<footer>
+  Tech-Rebalance Broker Schema 分析 v1 · 2026-05-30
+</footer>
+
+</main>
+
+<script>
+const links = document.querySelectorAll('.sidebar a[href^="#"]');
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if(e.isIntersecting){
+      links.forEach(l => l.classList.remove('active'));
+      const m = document.querySelector(`.sidebar a[href="#${e.target.id}"]`);
+      if(m) m.classList.add('active');
+    }
+  });
+},{threshold:0.15,rootMargin:'-60px 0px -60% 0px'});
+document.querySelectorAll('section[id]').forEach(s=>obs.observe(s));
+</script>
+</body>
+</html>
