@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>完整改善計劃 — 從碎片到統一</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:#020617;color:#e2e8f0;font-family:'Segoe UI',system-ui,sans-serif;font-size:14px;line-height:1.65;}
+a{color:#3b82f6;text-decoration:none;}
+
+.sidebar{position:fixed;top:0;left:0;width:240px;height:100vh;background:#0a0f1e;
+   border-right:1px solid #1e293b;overflow-y:auto;padding:14px 0;z-index:50;}
+.sidebar h1{font-size:13px;color:#3b82f6;padding:0 16px 12px;border-bottom:1px solid #1e293b;font-weight:800;}
+.sidebar h1 small{display:block;font-size:10px;color:#475569;margin-top:2px;font-weight:400;}
+.sidebar h3{font-size:9px;color:#475569;text-transform:uppercase;letter-spacing:1.4px;padding:14px 16px 4px;}
+.sidebar a{display:block;padding:5px 16px;font-size:12px;color:#64748b;border-left:3px solid transparent;transition:all .12s;}
+.sidebar a:hover,.sidebar a.active{color:#3b82f6;border-color:#3b82f6;background:rgba(59,130,246,.07);}
+.sidebar .tag{display:inline-block;background:#1e293b;color:#475569;font-size:9px;
+   padding:1px 5px;border-radius:8px;margin-left:5px;}
+.sidebar .tag.now{background:#7f1d1d;color:#fca5a5;}
+.sidebar .tag.soon{background:#78350f;color:#fcd34d;}
+.sidebar .tag.later{background:#1e3a5f;color:#93c5fd;}
+
+main{margin-left:240px;padding:32px 5% 80px;max-width:1200px;}
+
+.hero{background:linear-gradient(135deg,#1e0c28 0%,#3c0d2c 60%,#1e0c28 100%);
+   padding:32px 38px;border-radius:14px;margin-bottom:24px;border:1px solid #581c87;}
+.hero .badge{display:inline-block;background:#1e293b;border:1px solid #334155;color:#94a3b8;
+   padding:3px 11px;border-radius:14px;font-size:10px;margin-right:6px;}
+.hero h1{font-size:28px;font-weight:900;color:#c4b5fd;margin:12px 0 8px;letter-spacing:-0.5px;}
+.hero h1 span{color:#fcd34d;}
+.hero p{color:#94a3b8;font-size:13px;}
+
+section{background:#0a0f1e;border:1px solid #1e293b;border-radius:12px;padding:24px 28px;margin-bottom:18px;}
+section h2{font-size:18px;font-weight:800;color:#e2e8f0;margin-bottom:6px;display:flex;align-items:center;gap:10px;}
+section h2 .num{display:inline-block;background:#3b82f6;color:#fff;font-size:11px;
+   padding:3px 9px;border-radius:12px;font-weight:700;}
+section h2 .severity{font-size:11px;font-weight:700;padding:2px 9px;border-radius:10px;}
+.sev-high  {background:#7f1d1d;color:#fca5a5;border:1px solid #f87171;}
+.sev-med   {background:#78350f;color:#fcd34d;border:1px solid #f59e0b;}
+.sev-low   {background:#14532d;color:#86efac;border:1px solid #4ade80;}
+.sev-quick {background:#1e3a5f;color:#93c5fd;border:1px solid #3b82f6;}
+
+section .meta{color:#475569;font-size:11px;margin-bottom:14px;}
+section h3{font-size:14px;font-weight:700;color:#93c5fd;margin:18px 0 6px;}
+section h4{font-size:11px;font-weight:700;color:#475569;margin:12px 0 5px;text-transform:uppercase;letter-spacing:.8px;}
+p{color:#94a3b8;margin-bottom:8px;}
+ul,ol{color:#94a3b8;padding-left:22px;margin-bottom:9px;}
+li{margin-bottom:3px;}
+b,strong{color:#e2e8f0;}
+
+code{background:#0f172a;border:1px solid #1e293b;border-radius:3px;padding:1px 6px;
+   font-size:11.5px;color:#93c5fd;font-family:'Menlo','Courier New',monospace;}
+pre{background:#020617;border:1px solid #1e293b;border-radius:8px;padding:13px 17px;
+   overflow-x:auto;font-size:11.5px;line-height:1.55;margin:9px 0;
+   font-family:'Menlo','Courier New',monospace;color:#cbd5e1;}
+.k{color:#93c5fd;}.s{color:#86efac;}.n{color:#fb923c;}.c{color:#475569;font-style:italic;}
+.diff-add{color:#86efac;}
+.diff-del{color:#f87171;}
+
+.box{border-radius:8px;padding:12px 16px;margin:10px 0;border:1px solid;}
+.box.warn  {background:#190e00;border-color:#92400e;color:#fcd34d;}
+.box.info  {background:#080f1a;border-color:#1e3a5f;color:#93c5fd;}
+.box.ok    {background:#081308;border-color:#14532d;color:#86efac;}
+.box.tip   {background:#1c0d23;border-color:#581c87;color:#c4b5fd;}
+.box.danger{background:#190808;border-color:#7f1d1d;color:#fca5a5;}
+
+table{width:100%;border-collapse:collapse;font-size:11.5px;margin:9px 0;}
+th{background:#0f172a;color:#475569;padding:8px 10px;text-align:left;
+   border-bottom:1px solid #1e293b;font-size:10px;text-transform:uppercase;letter-spacing:.5px;}
+td{padding:7px 10px;border-bottom:1px solid #0d1526;color:#cbd5e1;vertical-align:top;}
+tr:hover td{background:#0c1220;}
+td code{font-size:10.5px;}
+
+.timeline{margin:14px 0;}
+.timeline-item{padding:12px 16px;margin:8px 0;background:#0f172a;
+   border-left:3px solid #3b82f6;border-radius:0 8px 8px 0;}
+.timeline-item h4{color:#3b82f6;font-size:13px;margin-bottom:6px;}
+.timeline-item .est{float:right;background:#1e293b;color:#94a3b8;
+   font-size:10px;padding:2px 9px;border-radius:8px;}
+
+.phase-card{background:#0f172a;border:1px solid #1e293b;border-radius:8px;padding:14px;margin:10px 0;}
+.phase-card .badge-num{display:inline-block;width:28px;height:28px;background:#3b82f6;color:#fff;
+   border-radius:50%;text-align:center;font-weight:800;font-size:13px;line-height:28px;margin-right:8px;vertical-align:middle;}
+.phase-card h3{display:inline;color:#e2e8f0;}
+
+.metric-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin:14px 0;}
+.metric{background:#0f172a;border:1px solid #1e293b;border-radius:8px;padding:14px;text-align:center;}
+.metric .v{font-size:24px;font-weight:900;color:#3b82f6;}
+.metric .v.bad{color:#f87171;}
+.metric .v.good{color:#4ade80;}
+.metric .l{font-size:10px;color:#64748b;margin-top:4px;text-transform:uppercase;letter-spacing:.6px;}
+
+footer{text-align:center;color:#1e293b;font-size:11px;padding:36px 0 18px;}
+</style>
+</head>
+<body>
+
+<nav class="sidebar">
+  <h1>🛠 完整改善計劃<small>從碎片化到 JSON-driven 統一</small></h1>
+
+  <h3>📋 現況</h3>
+  <a href="#diagnose">問題診斷</a>
+  <a href="#root-cause">根因分析</a>
+  <a href="#scope">影響統計</a>
+
+  <h3>🎯 7 大整合</h3>
+  <a href="#r1">① ACCOUNT_STRATEGY 硬編<span class="tag now">P0</span></a>
+  <a href="#r2">② 廢棄 8 workflow<span class="tag now">P0</span></a>
+  <a href="#r3">③ Universal runner<span class="tag soon">P1</span></a>
+  <a href="#r4">④ Universal config<span class="tag soon">P1</span></a>
+  <a href="#r5">⑤ env vars 統一命名<span class="tag soon">P1</span></a>
+  <a href="#r6">⑥ Universe loader<span class="tag later">P2</span></a>
+  <a href="#r7">⑦ Email renderer 收編<span class="tag later">P2</span></a>
+
+  <h3>📅 執行</h3>
+  <a href="#phases">階段時程</a>
+  <a href="#test-plan">測試計劃</a>
+  <a href="#rollback">回退策略</a>
+  <a href="#metrics">完成度指標</a>
+</nav>
+
+<main>
+
+<div class="hero">
+  <div>
+    <span class="badge">v1.0</span>
+    <span class="badge">2026-05-30</span>
+    <span class="badge">analysis + plan</span>
+  </div>
+  <h1>🛠 完整改善計劃 <span>從碎片化到統一</span></h1>
+  <p>整套系統有「JSON-driven」基因（backtest SpecEngine + broker abstraction 都已做到），
+  但 production runner 還停留在「一個策略一個程式」的階段。<br>
+  本份計劃列出 <b>7 大整合動作</b>、<b>3 階段時程</b>、<b>完整測試計劃</b>，
+  把所有「為新策略寫程式」的反模式一次清乾淨。</p>
+</div>
+
+<!-- ══════════════════════════════════════════════════ -->
+<section id="diagnose">
+  <h2><span class="num">A</span>問題診斷</h2>
+  <div class="meta">過去多次 commit 累積的碎片化清單</div>
+
+  <h3>診斷結果：7 個重複痛點</h3>
+  <table>
+    <thead><tr><th>#</th><th>類別</th><th>檔案數</th><th>行數</th><th>新增策略要動</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td><code>ACCOUNT_STRATEGY</code> 硬編 dict</td><td>1</td><td>3</td><td>是</td></tr>
+      <tr><td>2</td><td>歷史 workflow yml</td><td>8</td><td>~800</td><td>否（純死碼）</td></tr>
+      <tr><td>3</td><td><code>main.py</code> / runner</td><td>5+2</td><td>~1,650</td><td>是</td></tr>
+      <tr><td>4</td><td>每家 <code>config.py</code></td><td>4</td><td>~263</td><td>是</td></tr>
+      <tr><td>5</td><td><code>run_account._build_env</code> 5 套命名</td><td>1</td><td>~50</td><td>是</td></tr>
+      <tr><td>6</td><td>每家 <code>universe.py</code></td><td>5</td><td>~608</td><td>是</td></tr>
+      <tr><td>7</td><td>每家 <code>email_*.py</code></td><td>3</td><td>~?</td><td>是</td></tr>
+    </tbody>
+  </table>
+
+  <div class="metric-grid">
+    <div class="metric"><div class="v bad">~3,400</div><div class="l">重複行數</div></div>
+    <div class="metric"><div class="v bad">7</div><div class="l">改一處要動 N 處</div></div>
+    <div class="metric"><div class="v bad">11</div><div class="l">workflow yml</div></div>
+    <div class="metric"><div class="v">5</div><div class="l">runner 程式</div></div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════ -->
+<section id="root-cause">
+  <h2><span class="num">B</span>根因分析</h2>
+
+  <h3>為什麼會這樣？</h3>
+  <p>追溯 commit 史，每個重複都源於一個合理但短視的選擇：</p>
+  <ol>
+    <li><b>新增策略時急著上線</b> → 複製 main.py 改成 d2p2t6/main.py 最快</li>
+    <li><b>沒人重構</b> → 第 3 個策略時 universal runner 已該寫，但又複製了一份</li>
+    <li><b>backtest 那邊有 SpecEngine 統一了</b> → production 卻沒同步遷移</li>
+  </ol>
+
+  <h3>對比：backtest 已做對的部分</h3>
+  <table>
+    <thead><tr><th>面向</th><th>backtest (✅)</th><th>production (❌)</th></tr></thead>
+    <tbody>
+      <tr><td>引擎</td><td>1 個 SpecEngine 跑 14 策略</td><td>5+ 個 main.py</td></tr>
+      <tr><td>新增策略</td><td>寫一個 v3 JSON</td><td>寫 JSON + 改 5+ Python</td></tr>
+      <tr><td>選股邏輯</td><td>JSON-driven 統一</td><td>分散在每個 runner</td></tr>
+      <tr><td>單元測試</td><td>28 個 metrics + 13 schema</td><td>各 runner 各自寫</td></tr>
+    </tbody>
+  </table>
+
+  <div class="box tip">
+    <strong>結論</strong>：把 backtest 的 SpecEngine 設計搬到 production 即可解決大半問題。
+    再加 BrokerClient（已完成）就能徹底切離卷商與策略邏輯。
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════ -->
+<section id="scope">
+  <h2><span class="num">C</span>影響統計</h2>
+
+  <h3>新增一個策略目前需動的檔案數</h3>
+  <table>
+    <thead><tr><th>類別</th><th>動的檔案</th><th>備註</th></tr></thead>
+    <tbody>
+      <tr><td>策略 JSON</td><td>+1</td><td><code>strategies/{id}.json</code></td></tr>
+      <tr><td>backtest（已做對）</td><td>0</td><td>SpecEngine 自動納入</td></tr>
+      <tr><td>main.py / runner</td><td>0 ~ 1</td><td>如果選股方法新（如 weighted_percentile_per_group）就要動</td></tr>
+      <tr><td>config.py</td><td>+1（如果是新 module）</td><td></td></tr>
+      <tr><td>universe.py</td><td>+1（如果非標準宇宙）</td><td></td></tr>
+      <tr><td>email template</td><td>0 ~ 1</td><td>renderer 預設能跑，特殊版面就要新 template</td></tr>
+      <tr><td>run_account.py 內 _build_env</td><td>0 ~ 1</td><td>若 runner 命名不同要加分支</td></tr>
+      <tr><td>scripts/send_email_from_data.py</td><td>+1</td><td>ACCOUNT_STRATEGY dict</td></tr>
+      <tr><td>accounts.json</td><td>+1 帳戶</td><td></td></tr>
+      <tr><td>GitHub Secrets</td><td>+3</td><td>API key / secret / base url</td></tr>
+    </tbody>
+  </table>
+
+  <h3>整合後（目標）</h3>
+  <table>
+    <thead><tr><th>類別</th><th>動的檔案</th></tr></thead>
+    <tbody>
+      <tr><td>策略 JSON</td><td>+1</td></tr>
+      <tr><td>accounts.json</td><td>+1 帳戶</td></tr>
+      <tr><td>GitHub Secrets</td><td>+2（API key + secret）</td></tr>
+      <tr><td><b>其他</b></td><td><b>0</b></td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ══════════════════════════════════════════════════ -->
+<section id="r1">
+  <h2><span class="num">1</span>ACCOUNT_STRATEGY 硬編 <span class="severity sev-quick">P0 · 快修</span></h2>
+  <div class="meta">⏱️ 30 分鐘 · 風險極低 · 修立刻見效的 bug</div>
+
+  <h3>問題</h3>
+  <pre>scripts/send_email_from_data.py
+ACCOUNT_STRATEGY = {
+    "1": "top10",
+    "2": "d2p2t6",
+    "3": "top9psq",      <span class="c"># ← 帳戶 #3 現在是 mom_6m_t20，這裡還寫 top9psq</span>
+}                         <span class="c"># ← 帳戶 #4 / #5 完全不在表內 → 漏寄信</span></pre>
+
+  <h3>解法</h3>
+  <pre><span class="k">def</span> _account_strategy(account_id: str) -> str | None:
+    accounts = json.loads(ROOT / <span class="s">"accounts.json"</span>).read_text())[<span class="s">"accounts"</span>]
+    for acc in accounts:
+        if str(acc[<span class="s">"id"</span>]) == str(account_id):
+            return acc.get(<span class="s">"strategy"</span>)
+    return None</pre>
+
+  <h3>影響</h3>
+  <ul>
+    <li>✅ 帳戶 #3-5 自動寄信</li>
+    <li>✅ 未來新帳戶不用碰程式碼</li>
+  </ul>
+</section>
+
+<!-- ══════════════════════════════════════════════════ -->
+<section id="r2">
+  <h2><span class="num">2</span>廢棄 8 個 workflow yml <span class="severity sev-quick">P0 · 快修</span></h2>
+  <div class="meta">⏱️ 15 分鐘 · 純刪檔 · 0 風險</div>
+
+  <h3>該刪的 workflow（已被 daily_all_accounts.yml 取代）</h3>
+  <table>
+    <thead><tr><th>檔案</th><th>用途</th><th>最後成功 run</th></tr></thead>
+    <tbody>
+      <tr><td><code>daily_rebalance.yml</code></td><td>舊版 top10</td><td>已被 daily_all_accounts 取代</td></tr>
+      <tr><td><code>d2p2t6_daily.yml</code></td><td>舊版 d2p2t6</td><td>同上</td></tr>
+      <tr><td><code>d2p2t6_monthly.yml</code></td><td>舊版備援</td><td>同上</td></tr>
+      <tr><td><code>top9psq_live.yml</code></td><td>舊版</td><td>同上</td></tr>
+      <tr><td><code>toprank_weekly.yml</code></td><td>舊版</td><td>同上</td></tr>
+      <tr><td><code>weekly_rebalance.yml</code></td><td>舊版</td><td>同上</td></tr>
+      <tr><td><code>mom6m_t20.yml</code></td><td>獨立排程</td><td>從沒成功跑過</td></tr>
+      <tr><td><code>test_email.yml</code></td><td>一次性測試</td><td>已完成驗證</td></tr>
+    </tbody>
+  </table>
+
+  <h3>保留的</h3>
+  <ul>
+    <li><code>daily_all_accounts.yml</code> — 唯一在運作的</li>
+    <li><code>momentum_tool_v2.yml</code> — backtest dashboard</li>
+    <li><code>harvest.yml</code> — 稅務增益</li>
+  </ul>
+</section>
+
+<!-- ══════════════════════════════════════════════════ -->
+<section id="r3">
+  <h2><span class="num">3</span>Universal Runner <span class="severity sev-high">P1 · 關鍵</span></h2>
+  <div class="meta">⏱️ 3 天 · 取代 5 個 main.py / 2 個 runner.py</div>
+
+  <h3>新架構</h3>
+  <pre>runner.py（新檔，~350 行）
+
+def run(account_id: str, strategy_id: str, data_dir: str, dry_run: bool):
+    # Step 1: build client (BrokerClient 已抽象)
+    client = build_client_for_account(account_id)
+
+    # Step 2: 守門（交易日 + frequency）
+    if not _gate(client, strategy_spec, dry_run):
+        return  # skip + trade_log REBALANCE_SKIP
+
+    # Step 3: 選股（statisfies all 5 selection methods）
+    picks = select_portfolio(strategy_spec, client)
+
+    # Step 4: 算 rebalance（已通用：pf.calculate_rebalance）
+    nav, cash = client.get_account_nav()
+    positions = client.get_current_positions()
+    orders = pf.calculate_rebalance(
+        positions, picks, prices, nav, cash,
+        trigger=_trigger_code(strategy_spec),
+        account_id=account_id, strategy=strategy_id,
+    )
+
+    # Step 5: 執行（已通用：tr.execute_rebalance）
+    tr.execute_rebalance(client, orders, dry_run,
+                         account_id=account_id, strategy=strategy_id)
+
+    # Step 6: state + history + harvest（全部統一）
+    _post_run(client, orders, data_dir, strategy_spec)</pre>
+
+  <h3>選股統一：<code>selection.py</code></h3>
+  <pre><span class="k">def</span> select_portfolio(spec: dict, client: BrokerClient,
+                     today: date = None) -> list[str]:
+    <span class="s">"""對應 backtest SpecEngine._select_at 的 live 版本。"""</span>
+    method = spec[<span class="s">"selection"</span>][<span class="s">"method"</span>]
+
+    if method == <span class="s">"top_n_by_metric"</span>:        return _sel_top_n_by_metric(spec, client)
+    if method == <span class="s">"top_n_per_group"</span>:        return _sel_top_n_per_group(spec, client)
+    if method == <span class="s">"factor_score"</span>:           return _sel_factor_score(spec, client)
+    if method == <span class="s">"weighted_percentile"</span>:    return _sel_weighted_percentile(spec, client)
+    if method == <span class="s">"weighted_percentile_per_group"</span>:
+                                            return _sel_wp_per_group(spec, client)
+    raise ValueError(...)</pre>
+
+  <h3>跟 backtest 共用嗎？</h3>
+  <p><b>分離但對齊</b>：backtest 用 yfinance/parquet，live 用 broker API。
+  介面 (<code>spec → list[str]</code>) 完全相同，邏輯實作平行寫但可寫共用 helpers
+  （如 <code>_score_factors()</code>）。</p>
+</section>
+
+<!-- ══════════════════════════════════════════════════ -->
+<section id="r4">
+  <h2><span class="num">4</span>Universal Config <span class="severity sev-med">P1 · 中</span></h2>
+  <div class="meta">⏱️ 1 天 · 取代 4 個 config.py</div>
+
+  <h3>取代</h3>
+  <pre><span class="diff-del">- d2p2t6/config.py        ACCOUNT_ID = os.environ.get("D2P2T6_ACCOUNT_ID")</span>
+<span class="diff-del">- top9psq/config.py       ACCOUNT_ID = os.environ.get("TOP9PSQ_ACCOUNT_ID")</span>
+<span class="diff-del">- weekly_top10/config.py  ACCOUNT_ID = os.environ.get("WEEKLY_ACCOUNT_ID")</span>
+<span class="diff-del">- toprank/config.py       多筆 path constant</span>
+
+<span class="diff-add">+ runner.py 直接從 accounts.json + ACC{id}_* env vars 讀</span>
+<span class="diff-add">+ 不再有「子模組的 config.py」</span></pre>
+</section>
+
+<!-- ══════════════════════════════════════════════════ -->
+<section id="r5">
+  <h2><span class="num">5</span>env vars 命名統一 <span class="severity sev-med">P1 · 中</span></h2>
+  <div class="meta">⏱️ 1 天 · 配合 universal runner 同時做</div>
+
+  <h3>現況：5 套命名</h3>
+  <pre>top_n    : ALPACA_API_KEY / TOP10_ACCOUNT_ID / TOP10_{id}_*
+grouped  : D2P2T6_ALPACA_KEY / D2P2T6_{sub_id}_*
+momentum : {STRATEGY_UPPER}_ALPACA_KEY
+v3_algo  : {STRATEGY_UPPER}_ALPACA_KEY
+weekly   : WEEKLY_ALPACA_KEY / WEEKLY_{id}_*</pre>
+
+  <h3>整合後：1 套</h3>
+  <pre><span class="c"># 唯一命名規則（與 BrokerClient 對齊）</span>
+ACC{id}_BROKER          <span class="c"># alpaca / tradier / ...</span>
+ACC{id}_ENVIRONMENT     <span class="c"># paper / live</span>
+ACC{id}_API_KEY
+ACC{id}_API_SECRET
+
+<span class="c"># universal runner 一律從這 4 個取（已實作於 Phase 1-3）</span></pre>
+
+  <h3>移除舊 env vars 的安全做法</h3>
+  <ol>
+    <li>universal runner 上線後，run_account.py 仍同時注入新+舊 env vars（雙寫）</li>
+    <li>觀察 2 週確認新 runner 穩定</li>
+    <li>移除舊 env var 注入</li>
+    <li>清掉 GitHub Secrets 內舊命名（TOP10_*, D2P2T6_*, MOM_*_T20_* …）</li>
+  </ol>
+</section>
+
+<!-- ══════════════════════════════════════════════════ -->
+<section id="r6">
+  <h2><span class="num">6</span>Universe Loader 統一 <span class="severity sev-low">P2 · 中後期</span></h2>
+  <div class="meta">⏱️ 2 天 · 取代 5 個 universe.py</div>
+
+  <h3>現況：每家自己抓資料</h3>
+  <pre><span class="diff-del">- universe.py              data/universe.json + shares_outstanding</span>
+<span class="diff-del">- d2p2t6/universe.py       yfinance fast_info.market_cap，三組分別排</span>
+<span class="diff-del">- top9psq/universe.py      yfinance + 自訂 hedge 邏輯</span>
+<span class="diff-del">- weekly_top10/universe.py 純 inline list</span>
+<span class="diff-del">- toprank/universe.py      exchange filter（外部資料）</span></pre>
+
+  <h3>解法：JSON spec 內 universe 區塊已能描述</h3>
+  <p>已有的 v3 schema universe types：</p>
+  <ul>
+    <li><code>single + inline</code> — 直接 list</li>
+    <li><code>single + csv_file</code> — 從 CSV 讀</li>
+    <li><code>grouped</code> — 多組（d2p2t6 用）</li>
+    <li><code>exchange_filter</code> — 條件過濾（toprank）</li>
+  </ul>
+
+  <h3>新模組 <code>universe_loader.py</code>（live 版本）</h3>
+  <pre><span class="k">def</span> load_universe(spec: dict, client: BrokerClient) -> dict[str, list[str]]:
+    <span class="s">"""讀 spec.universe 回傳 {group_id: [symbols]}。
+
+    對應 backtest 的 SpecEngine._resolve_universe，但 prices 用 broker API。
+    """</span>
+    u = spec[<span class="s">"universe"</span>]
+    if u[<span class="s">"type"</span>] == <span class="s">"single"</span>:
+        return {<span class="s">"__all__"</span>: _load_source(u[<span class="s">"source"</span>])}
+    if u[<span class="s">"type"</span>] == <span class="s">"grouped"</span>:
+        return {g[<span class="s">"id"</span>]: _load_source(g[<span class="s">"source"</span>]) for g in u[<span class="s">"groups"</span>]}
+    ...</pre>
+
+  <h3>動態 market_cap 排名</h3>
+  <p>各 universe.py 都在做「市值排名」 — 但其實 BrokerClient.get_latest_prices()
+  + 靜態 shares_outstanding.json 即可。把這個邏輯抽到 <code>selection.py</code> 即可。</p>
+</section>
+
+<!-- ══════════════════════════════════════════════════ -->
+<section id="r7">
+  <h2><span class="num">7</span>Email Renderer 收編 <span class="severity sev-low">P2 · 後期</span></h2>
+  <div class="meta">⏱️ 1 天 · 廢棄 2 個自製 template</div>
+
+  <h3>現況</h3>
+  <pre><span class="diff-add">+ engine/email_renderer.py  - 已支援多策略，~600 行，主力</span>
+<span class="diff-del">- d2p2t6/email_d2p2t6.py    - 自己重做，未切過去</span>
+<span class="diff-del">- weekly_top10/email_weekly.py - 同上</span></pre>
+
+  <h3>解法</h3>
+  <ol>
+    <li>d2p2t6 / weekly_top10 改用 <code>engine.email_renderer.render()</code></li>
+    <li>它讀 strategy JSON 的 <code>email.sections</code> 決定要顯示哪些 block</li>
+    <li>若有真的特殊版面需求 → 在 renderer 內加 sections 而非另寫檔</li>
+    <li>刪除 d2p2t6/email_d2p2t6.py 與 weekly_top10/email_weekly.py</li>
+  </ol>
+</section>
+
+<!-- ══════════════════════════════════════════════════ -->
+<section id="phases">
+  <h2><span class="num">D</span>階段時程</h2>
+
+  <div class="phase-card">
+    <span class="badge-num">0</span><h3>P0：快修（半天）</h3>
+    <div class="timeline">
+      <div class="timeline-item">
+        <span class="est">30 分</span><h4>① ACCOUNT_STRATEGY 改讀 accounts.json</h4>
+        修立刻的 bug（帳戶 #3-5 寄信 ID 對不上）
+      </div>
+      <div class="timeline-item">
+        <span class="est">15 分</span><h4>② 廢棄 8 個歷史 workflow yml</h4>
+        純刪檔，CI 介面清爽
+      </div>
+    </div>
+  </div>
+
+  <div class="phase-card">
+    <span class="badge-num">1</span><h3>P1：核心整合（4 天）</h3>
+    <div class="timeline">
+      <div class="timeline-item">
+        <span class="est">Day 1</span><h4>③ 寫 <code>selection.py</code> + 單元測試</h4>
+        對應 backtest SpecEngine 的 live 版本，5 個 method 各一份
+      </div>
+      <div class="timeline-item">
+        <span class="est">Day 2</span><h4>③ 寫 <code>runner.py</code> + contract test</h4>
+        confirm 與既有 5 runner 對同一 spec 產生相同 orders
+      </div>
+      <div class="timeline-item">
+        <span class="est">Day 3</span><h4>⑤ env vars 統一</h4>
+        runner.py 只讀 ACC{id}_*；run_account.py 雙寫 1 週
+      </div>
+      <div class="timeline-item">
+        <span class="est">Day 4</span><h4>切換 1 個帳戶到新 runner（top10）</h4>
+        paper trading 觀察 3 天
+      </div>
+    </div>
+  </div>
+
+  <div class="phase-card">
+    <span class="badge-num">2</span><h3>P2：清理（2 週）</h3>
+    <div class="timeline">
+      <div class="timeline-item">
+        <span class="est">Week 1</span><h4>其餘 4 帳戶逐一切到新 runner</h4>
+        d2p2t6 → mom_6m_t20 → weekly_top10 → top9psq，每切一個 paper 跑 2-3 天
+      </div>
+      <div class="timeline-item">
+        <span class="est">Week 2</span><h4>⑥ universe_loader + ⑦ email renderer 收編</h4>
+        舊 main.py / universe.py / email_*.py 移到 <code>legacy/</code>
+      </div>
+      <div class="timeline-item">
+        <span class="est">Day 13</span><h4>移除舊 env vars + 刪 legacy/</h4>
+        最終清理
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════ -->
+<section id="test-plan">
+  <h2><span class="num">E</span>測試計劃</h2>
+  <div class="meta">每個整合動作對應的驗證策略</div>
+
+  <h3>T-1 ~ T-3：單元測試（執行 < 5 秒）</h3>
+  <table>
+    <thead><tr><th>ID</th><th>對象</th><th>內容</th><th>數量</th></tr></thead>
+    <tbody>
+      <tr><td>T-01</td><td><code>selection._sel_top_n_by_metric</code></td><td>市值排序、min_price 過濾、exclude_symbols</td><td>5</td></tr>
+      <tr><td>T-02</td><td><code>selection._sel_top_n_per_group</code></td><td>各組配額正確</td><td>4</td></tr>
+      <tr><td>T-03</td><td><code>selection._sel_factor_score</code></td><td>多因子加權正確</td><td>4</td></tr>
+      <tr><td>T-04</td><td><code>selection._sel_weighted_percentile</code></td><td>watchlist filter + ranking</td><td>5</td></tr>
+      <tr><td>T-05</td><td><code>selection._sel_wp_per_group</code></td><td>兩段分組</td><td>3</td></tr>
+      <tr><td>T-06</td><td><code>runner._gate</code></td><td>frequency check（monthly/weekly/daily）</td><td>6</td></tr>
+      <tr><td>T-07</td><td><code>runner._trigger_code</code></td><td>觸發碼產生</td><td>4</td></tr>
+    </tbody>
+  </table>
+
+  <h3>T-10 ~ T-15：Contract Test（核心）</h3>
+  <p><b>用同一個 strategy spec + 同一個 mock broker state，新舊 runner 必須產生完全相同的 orders</b>。</p>
+
+  <pre><span class="k">def</span> test_contract_top10_orders_match_legacy():
+    spec = json.load(<span class="s">"strategies/top10_v3.json"</span>)
+    state = {
+        <span class="s">"nav"</span>: 100000, <span class="s">"cash"</span>: 10000,
+        <span class="s">"positions"</span>: [
+            Position(<span class="s">"AAPL"</span>, 30, 200, 210),
+            Position(<span class="s">"ORCL"</span>, 10, 200, 209),
+        ],
+        <span class="s">"prices"</span>: {<span class="s">"AAPL"</span>: 210, <span class="s">"NVDA"</span>: 150, ...}
+    }
+
+    new_orders = new_runner.compute_orders(spec, mock_broker(state))
+    old_orders = old_main_py_compute_orders(spec, mock_alpaca_client(state))
+
+    <span class="k">assert</span> sorted(new_orders) == sorted(old_orders)</pre>
+
+  <p>對 5 個策略類型各寫 2-3 個 state 變化 → 約 12 個 contract tests。<b>這是「重構不破壞」的關鍵保險</b>。</p>
+
+  <h3>T-20 ~ T-25：整合測試</h3>
+  <table>
+    <thead><tr><th>ID</th><th>內容</th></tr></thead>
+    <tbody>
+      <tr><td>T-20</td><td>runner.py end-to-end with mock BrokerClient（responses 庫）</td></tr>
+      <tr><td>T-21</td><td>守門 skip 正確記 trade_log</td></tr>
+      <tr><td>T-22</td><td>swap_check 通過（最小量換股守則）</td></tr>
+      <tr><td>T-23</td><td>save_state + append_history 正確</td></tr>
+      <tr><td>T-24</td><td>universal config 取代後仍能讀到正確帳戶 id</td></tr>
+      <tr><td>T-25</td><td>workflow dry-run 全綠</td></tr>
+    </tbody>
+  </table>
+
+  <h3>T-30 ~ T-35：Paper Trading 對拍（最重要）</h3>
+  <p>切換每個帳戶到新 runner 後：</p>
+  <ol>
+    <li>讓新 runner 跑 paper trading 3-5 個交易日</li>
+    <li>每天結束比對「新 runner orders == 舊 runner orders」</li>
+    <li>若有差異 → 暫停切換、debug、再試</li>
+    <li>連續 5 天 0 差異才視為通過</li>
+  </ol>
+
+  <h3>T-40：迴歸測試</h3>
+  <p>所有現有 482 個測試保持 PASS（每次 PR 必跑）。</p>
+
+  <div class="box info">
+    <strong>測試覆蓋率目標</strong>
+    <ul style="margin-top:6px;">
+      <li>新 selection.py：≥ 90%</li>
+      <li>新 runner.py：≥ 85%</li>
+      <li>整體（含舊碼）：≥ 70%</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════ -->
+<section id="rollback">
+  <h2><span class="num">F</span>回退策略</h2>
+
+  <h3>每個 phase 都有 escape hatch</h3>
+  <table>
+    <thead><tr><th>觸發</th><th>動作</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>P1 contract test 失敗</td>
+        <td>停止 P1，先修對齊邏輯。production 完全不動</td>
+      </tr>
+      <tr>
+        <td>P1 切 1 帳戶後 paper 對拍有差異</td>
+        <td>把該帳戶 revert 到舊 runner（run_account.py 改一個 flag）</td>
+      </tr>
+      <tr>
+        <td>P2 切多帳戶後 live 異常</td>
+        <td>所有帳戶 fallback 到舊 runner；舊檔保留在 <code>legacy/</code></td>
+      </tr>
+      <tr>
+        <td>broker 切到新 BrokerClient 後出錯</td>
+        <td>已有 fallback：main.py 內若 build_client_for_account 失敗會自動用 tr.client_from_env()</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Feature Flag 機制</h3>
+  <pre><span class="c"># accounts.json 加 flag</span>
+{
+  <span class="s">"id"</span>: <span class="s">"1"</span>, ...,
+  <span class="s">"legacy_runner"</span>: false   <span class="c"># true → 仍走舊 main.py</span>
+}
+
+<span class="c"># run_account.py</span>
+if account.get(<span class="s">"legacy_runner"</span>, False):
+    cmd = [python, <span class="s">"main.py"</span>]   <span class="c"># 舊路徑</span>
+else:
+    cmd = [python, <span class="s">"runner.py"</span>, strategy_id]   <span class="c"># 新路徑</span></pre>
+
+  <p>每個帳戶可獨立決定走新還是舊，逐一切換、隨時可回退。</p>
+</section>
+
+<!-- ══════════════════════════════════════════════════ -->
+<section id="metrics">
+  <h2><span class="num">G</span>完成度指標</h2>
+
+  <h3>Before vs After</h3>
+  <div class="metric-grid">
+    <div class="metric">
+      <div class="v bad">3,400</div>
+      <div class="l">Before 重複行數</div>
+    </div>
+    <div class="metric">
+      <div class="v good">~600</div>
+      <div class="l">After（runner+selection+loader）</div>
+    </div>
+    <div class="metric">
+      <div class="v bad">5</div>
+      <div class="l">Before runner 檔數</div>
+    </div>
+    <div class="metric">
+      <div class="v good">1</div>
+      <div class="l">After</div>
+    </div>
+    <div class="metric">
+      <div class="v bad">11</div>
+      <div class="l">Before workflow yml</div>
+    </div>
+    <div class="metric">
+      <div class="v good">3</div>
+      <div class="l">After</div>
+    </div>
+    <div class="metric">
+      <div class="v bad">~8 處</div>
+      <div class="l">新增策略要動</div>
+    </div>
+    <div class="metric">
+      <div class="v good">0 處</div>
+      <div class="l">After（只寫 JSON）</div>
+    </div>
+  </div>
+
+  <h3>每階段完成標準</h3>
+  <table>
+    <thead><tr><th>Phase</th><th>完成標準</th></tr></thead>
+    <tbody>
+      <tr><td>P0</td><td>① 帳戶 #4/#5 自動寄信成功 ② 8 個歷史 yml 移除後 CI 仍綠</td></tr>
+      <tr><td>P1</td><td>① 30+ 單元測試 PASS ② 12 個 contract test 全 0 差異 ③ top10 paper 3 天 0 差異</td></tr>
+      <tr><td>P2</td><td>① 5 帳戶全切到 runner.py ② 舊 main.py / config.py / universe.py 移 legacy ③ 文件更新</td></tr>
+    </tbody>
+  </table>
+
+  <div class="box ok">
+    <strong>🎯 最終目標</strong>
+    新增策略 = 寫一個 v3 JSON + 加 accounts.json 一筆 + 設 2 個 GitHub Secret。<br>
+    其他 0 程式碼變動 — 對應 backtest 已做到的 SOP。
+  </div>
+</section>
+
+<footer>
+  Tech-Rebalance 改善計劃 v1.0 · 2026-05-30 · 完整實作預估 3 週
+</footer>
+
+</main>
+
+<script>
+const links = document.querySelectorAll('.sidebar a[href^="#"]');
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if(e.isIntersecting){
+      links.forEach(l => l.classList.remove('active'));
+      const m = document.querySelector(`.sidebar a[href="#${e.target.id}"]`);
+      if(m) m.classList.add('active');
+    }
+  });
+},{threshold:0.15,rootMargin:'-60px 0px -60% 0px'});
+document.querySelectorAll('section[id]').forEach(s=>obs.observe(s));
+</script>
+</body>
+</html>
