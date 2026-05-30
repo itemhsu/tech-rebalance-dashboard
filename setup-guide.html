@@ -102,7 +102,7 @@ footer{text-align:center;color:#1e293b;font-size:11px;padding:36px 0 18px;}
   <h3>🔧 設定步驟</h3>
   <a href="#step1">① Fork repo</a>
   <a href="#step2">② Alpaca 帳號</a>
-  <a href="#step3">③ 郵件（SMTP / SendGrid）</a>
+  <a href="#step3">③ SendGrid 郵件</a>
   <a href="#step4">④ GitHub Secrets</a>
   <a href="#step5">⑤ accounts.json</a>
   <a href="#step6">⑥ GitHub Pages</a>
@@ -263,95 +263,10 @@ cd tech-rebalance</pre>
 
 <!-- ══════════════════════════════════════════════════ -->
 <section id="step3">
-  <h2><span class="step">③</span>設定郵件寄送</h2>
-  <div class="meta">⏱️ 10-15 分鐘 · 二選一：SMTP（推薦免費）或 SendGrid（也免費）</div>
+  <h2><span class="step">③</span>設定 SendGrid 寄信</h2>
+  <div class="meta">⏱️ 15 分鐘 · 每日報告寄到你的 email</div>
 
-  <p>系統自動偵測：若有 <code>SMTP_HOST</code> 環境變數則走 SMTP，否則走 SendGrid。
-  也可用 <code>EMAIL_PROVIDER=smtp|sendgrid</code> 明確指定。</p>
-
-  <h3>選項 A：SMTP（推薦，零第三方依賴）</h3>
-  <p>用你既有 Gmail / Outlook / Yahoo 帳號。無需註冊新服務。</p>
-
-  <h4>Gmail SMTP 設定</h4>
-  <ol>
-    <li>啟用 <b>兩步驟驗證</b>：<a href="https://myaccount.google.com/security" target="_blank">Google 帳戶 → 安全性</a></li>
-    <li>產生 <b>App Password</b>：<a href="https://myaccount.google.com/apppasswords" target="_blank">App passwords</a> → 選 "Mail" + "Other (Custom name)" 輸入 "tech-rebalance" → 產生</li>
-    <li>記下 16 字元密碼（如 <code>abcd efgh ijkl mnop</code>，<b>含空格也可，貼到 Secret 時系統會自動處理</b>）</li>
-  </ol>
-
-  <h4>Outlook / Hotmail SMTP</h4>
-  <ol>
-    <li>啟用兩步驟驗證後到 <a href="https://account.live.com/proofs/AppPassword" target="_blank">App passwords</a> 產生</li>
-    <li>SMTP_HOST 用 <code>smtp-mail.outlook.com</code>，port 587</li>
-  </ol>
-
-  <h4>Yahoo SMTP</h4>
-  <ol>
-    <li>到 Account Security → <b>Generate app password</b></li>
-    <li>SMTP_HOST 用 <code>smtp.mail.yahoo.com</code>，port 465 SSL 或 587 TLS</li>
-  </ol>
-
-  <h4>各供應商對照</h4>
-  <table>
-    <thead><tr><th>供應商</th><th>SMTP_HOST</th><th>SMTP_PORT</th><th>免費額度</th></tr></thead>
-    <tbody>
-      <tr><td>Gmail</td><td><code>smtp.gmail.com</code></td><td>587 (TLS) or 465 (SSL)</td><td>500/天</td></tr>
-      <tr><td>Outlook</td><td><code>smtp-mail.outlook.com</code></td><td>587 (TLS)</td><td>300/天</td></tr>
-      <tr><td>Yahoo</td><td><code>smtp.mail.yahoo.com</code></td><td>465 (SSL) or 587 (TLS)</td><td>500/天</td></tr>
-      <tr><td>iCloud</td><td><code>smtp.mail.me.com</code></td><td>587 (TLS)</td><td>1000/天</td></tr>
-      <tr><td>自架（Postfix 等）</td><td>你的 server</td><td>視設定</td><td>無限</td></tr>
-    </tbody>
-  </table>
-
-  <div class="box info">
-    <strong>📋 SMTP 只需 1 個 Secret：<code>EMAIL_PASSWORD</code></strong>
-    <p style="margin-top:6px;color:#94a3b8">
-      已知 domain 的 email（gmail/outlook/yahoo/icloud …），系統<b>從 EMAIL_RECIPIENT 自動推 provider</b>。
-      <code>EMAIL_PASSWORD</code> 直接填 App Password 即可。
-    </p>
-<pre><span class="c"># 最短：純密碼（recipient 是 @gmail.com → 自動用 Gmail）</span>
-abcdEFGHijklMNOP
-
-<span class="c"># 若 domain 不在已知清單，加 provider 短碼</span>
-gmail:abcdEFGHijklMNOP
-outlook:YOUR_PASSWORD
-yahoo:YOUR_PASSWORD
-
-<span class="c"># 若 SMTP 登入帳號 ≠ 收件人</span>
-gmail:other@gmail.com:abcdEFGHijklMNOP
-
-<span class="c"># 自架 server / 不在清單 → 完整 URI</span>
-smtp://user:pass@your-server.com:587
-smtps://user:pass@your-server.com:465</pre>
-  </div>
-
-  <p style="color:#94a3b8;font-size:12px;margin-top:8px;">
-    自動 domain 對應：
-    <code>gmail.com</code>、<code>googlemail.com</code> → gmail；
-    <code>outlook.com</code>、<code>hotmail.com</code>、<code>live.com</code>、<code>msn.com</code> → outlook；
-    <code>yahoo.com</code>、<code>yahoo.com.tw</code>、<code>ymail.com</code> → yahoo；
-    <code>icloud.com</code>、<code>me.com</code>、<code>mac.com</code> → icloud。
-  </p>
-
-  <table>
-    <thead><tr><th>provider 短碼</th><th>映射的 SMTP server</th><th>port</th><th>模式</th></tr></thead>
-    <tbody>
-      <tr><td><code>gmail</code></td><td>smtp.gmail.com</td><td>587</td><td>TLS</td></tr>
-      <tr><td><code>outlook</code> / <code>hotmail</code></td><td>smtp-mail.outlook.com</td><td>587</td><td>TLS</td></tr>
-      <tr><td><code>yahoo</code></td><td>smtp.mail.yahoo.com</td><td>465</td><td>SSL</td></tr>
-      <tr><td><code>icloud</code></td><td>smtp.mail.me.com</td><td>587</td><td>TLS</td></tr>
-      <tr><td><code>office365</code></td><td>smtp.office365.com</td><td>587</td><td>TLS</td></tr>
-    </tbody>
-  </table>
-
-  <div class="box tip">
-    <strong>💡 簡化原則</strong>
-    Gmail / Outlook / Yahoo / iCloud 用戶 <b>不需要記 host 跟 port</b>，
-    只要寫 <code>provider:email:password</code> 即可。系統知道 smtp.gmail.com / 587 / TLS 這些細節。
-  </div>
-
-  <h3>選項 B：SendGrid（HTTP API，更穩定）</h3>
-  <p>SendGrid 免費 plan 每天 100 封。優點：純 HTTP，不擔心 SMTP 連線問題、IP 黑名單。</p>
+  <p>SendGrid 免費 plan 每天可寄 100 封郵件，對一天 1-3 封的需求綽綽有餘。</p>
 
   <ol>
     <li>到 <a href="https://sendgrid.com/" target="_blank">https://sendgrid.com</a> → <b>Start for Free</b></li>
@@ -372,15 +287,9 @@ smtps://user:pass@your-server.com:465</pre>
   </ol>
 
   <div class="box tip">
-    <strong>📊 SMTP vs SendGrid 對照</strong>
-    <table>
-      <tr><th></th><th>SMTP（Gmail）</th><th>SendGrid</th></tr>
-      <tr><td>設定時間</td><td>5 分鐘</td><td>15 分鐘</td></tr>
-      <tr><td>第三方註冊</td><td>否</td><td>需要</td></tr>
-      <tr><td>穩定性</td><td>良好（偶爾 timeout）</td><td>優秀</td></tr>
-      <tr><td>送達率</td><td>高（自家 IP）</td><td>非常高</td></tr>
-      <tr><td>適合</td><td>個人 1-3 帳戶</td><td>多帳戶或商用</td></tr>
-    </table>
+    <strong>📧 為何不用 Gmail SMTP？</strong>
+    Gmail App Password 對非企業帳號偶爾驗證失敗（535 BadCredentials），debug 困難。
+    SendGrid 走 HTTP API 穩定可靠，且免費額度遠大於我們需求。
   </div>
 </section>
 
@@ -429,25 +338,7 @@ smtps://user:pass@your-server.com:465</pre>
     </tbody>
   </table>
 
-  <h3>選一組郵件 Secrets（A 或 B）</h3>
-
-  <h4>選項 A：SMTP（推薦，只需 1 個 Secret）</h4>
-  <table>
-    <thead><tr><th>Secret 名稱</th><th>範例值</th></tr></thead>
-    <tbody>
-      <tr>
-        <td><code>EMAIL_PASSWORD</code></td>
-        <td><code>abcdEFGHijklMNOP</code>（純密碼）</td>
-      </tr>
-    </tbody>
-  </table>
-  <p style="color:#94a3b8;font-size:12px;">
-    當 EMAIL_RECIPIENT 是已知 domain（gmail/outlook/yahoo/icloud …），<b>EMAIL_PASSWORD 直接填密碼</b>。<br>
-    自動推導：domain → provider → host/port/SSL/登入帳號全部自動。<br>
-    未知 domain 才需 <code>provider:password</code> 或完整 <code>smtp://...</code> URI。
-  </p>
-
-  <h4>選項 B：SendGrid</h4>
+  <h3>SendGrid 寄信 Secret</h3>
   <table>
     <thead><tr><th>Secret 名稱</th><th>值來自</th></tr></thead>
     <tbody>
@@ -455,17 +346,7 @@ smtps://user:pass@your-server.com:465</pre>
     </tbody>
   </table>
 
-  <div class="box info">
-    <strong>系統如何選擇 provider？</strong>
-    <ul style="margin-top:6px;">
-      <li>有 <code>EMAIL_PASSWORD</code> → 走 SMTP</li>
-      <li>沒 <code>EMAIL_PASSWORD</code>，有 <code>SENDGRID_API_KEY</code> → 走 SendGrid</li>
-      <li>都沒設 → 不寄，僅 log</li>
-      <li>明確指定可設 <code>EMAIL_PROVIDER=smtp</code> 或 <code>=sendgrid</code></li>
-    </ul>
-  </div>
-
-  <h3>多帳戶？再加 ACC2 / ACC3 ...</h3>
+  <h3>多帳戶?再加 ACC2 / ACC3 ...</h3>
   <p>每多一個帳戶就加三個 Secret：<code>ACC2_ALPACA_KEY</code>、<code>ACC2_ALPACA_SECRET</code>、<code>ACC2_BASE_URL</code>。</p>
 
   <h3>產生 DASHBOARD_PUSH_TOKEN（PAT）</h3>
@@ -478,19 +359,13 @@ smtps://user:pass@your-server.com:465</pre>
   </ol>
 
   <div class="box info">
-    <strong>用 gh CLI 一次設好（SMTP + Gmail 範例）</strong>
-<pre><span class="c"># Alpaca + 收信 email + dashboard</span>
-gh secret set ACC1_ALPACA_KEY    --body "你的key"
-gh secret set ACC1_ALPACA_SECRET --body "你的secret"
-gh secret set ACC1_BASE_URL      --body "https://paper-api.alpaca.markets"
-gh secret set EMAIL_RECIPIENT    --body "you@gmail.com"     <span class="c"># 唯一要填的 email</span>
-gh secret set DASHBOARD_PUSH_TOKEN --body "github_pat_xxx"
-
-<span class="c"># 選項 A：SMTP（純密碼，provider 自動從 EMAIL_RECIPIENT domain 推）</span>
-gh secret set EMAIL_PASSWORD --body "abcdEFGHijklMNOP"
-
-<span class="c"># 選項 B：SendGrid（A、B 二選一即可）</span>
-gh secret set SENDGRID_API_KEY --body "SG.xxx..."</pre>
+    <strong>用 gh CLI 一次設好</strong>
+<pre>gh secret set ACC1_ALPACA_KEY      --body "你的 Alpaca key"
+gh secret set ACC1_ALPACA_SECRET   --body "你的 Alpaca secret"
+gh secret set ACC1_BASE_URL        --body "https://paper-api.alpaca.markets"
+gh secret set EMAIL_RECIPIENT      --body "you@gmail.com"
+gh secret set SENDGRID_API_KEY     --body "SG.xxx..."
+gh secret set DASHBOARD_PUSH_TOKEN --body "github_pat_xxx"</pre>
   </div>
 </section>
 
@@ -766,16 +641,6 @@ jq 'select(.type=="ORDER_PLANNED")' data/1/trade_events.jsonl</pre>
         <td>SendGrid 401</td>
         <td>API key 過期或寄件人未驗證</td>
         <td>SendGrid → Sender Authentication 重新驗證</td>
-      </tr>
-      <tr>
-        <td>SMTP 535 驗證失敗</td>
-        <td>用了登入密碼而非 App Password；或 2FA 未開</td>
-        <td>Gmail/Yahoo 必須開 2FA 後到 App passwords 產生 16 字元密碼</td>
-      </tr>
-      <tr>
-        <td>SMTP timeout</td>
-        <td>GitHub Actions IP 被供應商 throttle，或 port 被擋</td>
-        <td>試切換 port：465 ↔ 587；或改用 SendGrid（HTTP 不會被 port 擋）</td>
       </tr>
       <tr>
         <td>策略 schema validation 失敗</td>
