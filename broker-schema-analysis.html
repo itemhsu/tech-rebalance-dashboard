@@ -168,7 +168,8 @@ footer{text-align:center;color:#1e293b;font-size:11px;padding:36px 0 18px;}
       <tr><td><b>市場</b></td><td>US</td><td>US</td><td>US</td><td>US</td><td>US</td><td>TW</td></tr>
       <tr><td><b>整合方式</b></td><td>REST + WS</td><td>REST + WS</td><td>REST v3</td><td>REST (受限)</td><td>REST</td><td>Python SDK</td></tr>
       <tr><td><b>Paper / Sim</b></td><td class="feat-yes">✓</td><td class="feat-yes">✓</td><td class="feat-yes">✓ Sim</td><td class="feat-no">✗</td><td class="feat-yes">✓ Sandbox</td><td class="feat-yes">✓</td></tr>
-      <tr><td><b>認證</b></td><td>API Key + Secret</td><td>OAuth Bearer</td><td>OAuth 2.0 + Refresh</td><td>API Key</td><td>Session Token</td><td>API Key + Secret</td></tr>
+      <tr><td><b>認證</b></td><td>API Key + Secret</td><td>PAT Bearer</td><td>OAuth 2.0 + Refresh</td><td>API Key</td><td>OAuth 2.0 / Session</td><td>API Key + Secret</td></tr>
+      <tr><td><b>GitHub Actions 友善</b></td><td class="feat-yes">✓ 永久</td><td class="feat-yes">✓ PAT 永久</td><td class="feat-part">⚠️ 需 refresh</td><td class="feat-yes">✓ 永久</td><td class="feat-part">⚠️ 需 refresh</td><td class="feat-yes">✓ 永久</td></tr>
       <tr><td><b>整股</b></td><td class="feat-yes">✓</td><td class="feat-yes">✓</td><td class="feat-yes">✓</td><td class="feat-yes">✓</td><td class="feat-yes">✓</td><td class="feat-yes">✓ 強制</td></tr>
       <tr><td><b>零股 (fractional)</b></td><td class="feat-yes">✓</td><td class="feat-no">✗</td><td class="feat-no">✗</td><td class="feat-yes">✓ slice</td><td class="feat-no">✗</td><td class="feat-part">⚠️ 限零股盤</td></tr>
       <tr><td><b>美股</b></td><td class="feat-yes">✓</td><td class="feat-yes">✓</td><td class="feat-yes">✓</td><td class="feat-yes">✓</td><td class="feat-yes">✓</td><td class="feat-no">✗</td></tr>
@@ -338,9 +339,16 @@ Endpoints:
     <h3>🏛 tastytrade <span style="font-size:10px;color:#64748b">— 選擇權 + 期貨 + 美股</span></h3>
     <p><a href="https://developer.tastytrade.com" target="_blank">developer.tastytrade.com</a> · 選擇權社群知名</p>
 
-    <h4>認證（Session-based）</h4>
-    <pre>1. POST /sessions { login, password } → session-token (24h)
-2. 後續請求帶 header: Authorization: {session-token}
+    <h4>認證（兩種方式）</h4>
+    <pre><span class="c"># 方法 A：OAuth 2.0（推薦給 GitHub Actions）</span>
+1. Developer Portal 註冊 App → client_id, client_secret
+2. 一次性授權取得 access_token + refresh_token
+3. 之後每次：用 refresh_token 換新 access_token
+4. refresh_token 永不過期（除非用戶撤銷）
+
+<span class="c"># 方法 B：Session login（不建議 unattended 用）</span>
+1. POST /sessions { login, password } → session-token (24h)
+2. ⚠️ 要存使用者網頁登入密碼，風險高
 
 Endpoints:
   Sandbox: https://api.cert.tastyworks.com
@@ -348,9 +356,10 @@ Endpoints:
 
     <h4>本系統整合注意</h4>
     <ul>
-      <li>⚠️ <b>必須存使用者密碼或長效 OAuth token</b> — 不能用純 API key</li>
-      <li>⚠️ Session token 24 小時過期，要 re-login</li>
-      <li>❌ 不支援 fractional</li>
+      <li>✅ <b>用 OAuth refresh_token 模式</b>，跟 GitHub Actions 相容（同 TradeStation）</li>
+      <li>⚠️ access_token 過期需 refresh，refresh_token 可能 rotate 要更新 GitHub Secret</li>
+      <li>❌ <b>絕不要用 session login 把網頁密碼存 GitHub Secret</b>，網頁密碼可控制整個帳戶</li>
+      <li>❌ 不支援 fractional shares</li>
       <li>✅ 官方 Python SDK <code>tastytrade-sdk</code> 維護良好</li>
       <li>✅ Notional Market Order（用金額下單，自動算股數）</li>
     </ul>
@@ -714,9 +723,9 @@ ACC7_PERSON_ID  = "A123..."</pre>
         <td>分兩層 base class：RestClient + SdkClient</td>
       </tr>
       <tr>
-        <td>OAuth 複雜度</td>
-        <td>TradeStation 需 refresh token 維護，跑在 GitHub Actions 不易</td>
-        <td>Phase 4 才做；考慮加 token-refresh script</td>
+        <td>OAuth refresh 機制</td>
+        <td>TradeStation / tastytrade 用 OAuth 2.0：access_token 過期需 refresh，refresh_token 偶爾 rotate</td>
+        <td>實作 <code>_ensure_access_token()</code>：過期時自動 refresh，若 refresh_token 變動則用 <code>gh secret set</code> 更新 GitHub Secret。一次設定後永久自動運轉。</td>
       </tr>
       <tr>
         <td>市場差異</td>
