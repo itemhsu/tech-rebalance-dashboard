@@ -305,15 +305,17 @@ cd tech-rebalance</pre>
 
   <div class="box info">
     <strong>📋 SMTP 只需 1 個 Secret：<code>SMTP_URL</code></strong>
-    <p style="margin-top:6px;color:#94a3b8">已知供應商用「短碼」即可，host/port 系統內建。</p>
-<pre><span class="c"># 已知供應商：provider:email:password（最常用）</span>
-gmail:you@gmail.com:abcdEFGHijklMNOP
-outlook:you@outlook.com:YOUR_PASSWORD
-yahoo:you@yahoo.com:YOUR_PASSWORD
-icloud:you@icloud.com:YOUR_PASSWORD
-
-<span class="c"># 更短：省略 email（系統用 EMAIL_SENDER）</span>
+    <p style="margin-top:6px;color:#94a3b8">
+      系統知道供應商的 host/port，<b>也知道你的 email（= EMAIL_RECIPIENT）</b>，所以只要填密碼。
+    </p>
+<pre><span class="c"># 最短：provider:password（email 自動 = EMAIL_RECIPIENT）</span>
 gmail:abcdEFGHijklMNOP
+outlook:YOUR_PASSWORD
+yahoo:YOUR_PASSWORD
+icloud:YOUR_PASSWORD
+
+<span class="c"># 若 SMTP 登入帳號 ≠ 收件人才需要：provider:email:password</span>
+gmail:other@gmail.com:abcdEFGHijklMNOP
 
 <span class="c"># 自架 / 不在已知清單 → 用完整 URI</span>
 smtp://user:pass@your-server.com:587
@@ -399,14 +401,14 @@ smtps://user:pass@your-server.com:465</pre>
         實單改 <code>https://api.alpaca.markets</code></td>
       </tr>
       <tr>
-        <td><code>EMAIL_SENDER</code></td>
-        <td>你的寄件人 email</td>
+        <td><code>EMAIL_RECIPIENT</code></td>
+        <td>你想收信的 email（同時自動當寄件人）</td>
         <td>e.g. <code>itemhsu@gmail.com</code></td>
       </tr>
       <tr>
-        <td><code>EMAIL_RECIPIENT</code></td>
-        <td>你想收信的</td>
-        <td>e.g. <code>itemhsu@gmail.com</code></td>
+        <td><code>EMAIL_SENDER</code>（選填）</td>
+        <td>若寄件人想跟收件人不同才設</td>
+        <td>未設 → 自動 = EMAIL_RECIPIENT</td>
       </tr>
       <tr>
         <td><code>DASHBOARD_PUSH_TOKEN</code></td>
@@ -420,18 +422,19 @@ smtps://user:pass@your-server.com:465</pre>
 
   <h4>選項 A：SMTP（推薦，只需 1 個 Secret）</h4>
   <table>
-    <thead><tr><th>Secret 名稱</th><th>範例值 (Gmail)</th></tr></thead>
+    <thead><tr><th>Secret 名稱</th><th>範例值</th></tr></thead>
     <tbody>
       <tr>
         <td><code>SMTP_URL</code></td>
-        <td><code>gmail:you@gmail.com:abcdEFGHijklMNOP</code></td>
+        <td><code>gmail:abcdEFGHijklMNOP</code></td>
       </tr>
     </tbody>
   </table>
   <p style="color:#94a3b8;font-size:12px;">
-    格式：<code>provider:email:password</code>。供應商短碼自帶 host/port/SSL 設定。<br>
-    支援 <code>gmail / outlook / hotmail / yahoo / icloud / office365</code>。
-    自架 server 改用完整 URI：<code>smtp://user:pass@host:port</code>。
+    格式：<code>provider:password</code>。Email 帳號自動 = <code>EMAIL_RECIPIENT</code>（寄給自己的常見場景）。<br>
+    支援 <code>gmail / outlook / hotmail / yahoo / icloud / office365</code>。<br>
+    若 SMTP 登入帳號 ≠ 收件人，改用完整格式：<code>provider:email:password</code><br>
+    自架 server 改用 URI：<code>smtp://user:pass@host:port</code>
   </p>
 
   <h4>選項 B：SendGrid</h4>
@@ -466,16 +469,15 @@ smtps://user:pass@your-server.com:465</pre>
 
   <div class="box info">
     <strong>用 gh CLI 一次設好（SMTP + Gmail 範例）</strong>
-<pre><span class="c"># Alpaca + 通用 email</span>
+<pre><span class="c"># Alpaca + 收信 email + dashboard</span>
 gh secret set ACC1_ALPACA_KEY    --body "你的key"
 gh secret set ACC1_ALPACA_SECRET --body "你的secret"
 gh secret set ACC1_BASE_URL      --body "https://paper-api.alpaca.markets"
-gh secret set EMAIL_SENDER       --body "you@gmail.com"
-gh secret set EMAIL_RECIPIENT    --body "you@gmail.com"
+gh secret set EMAIL_RECIPIENT    --body "you@gmail.com"     <span class="c"># 唯一要填的 email</span>
 gh secret set DASHBOARD_PUSH_TOKEN --body "github_pat_xxx"
 
-<span class="c"># 選項 A：SMTP（一行搞定，已知供應商用短碼）</span>
-gh secret set SMTP_URL --body "gmail:you@gmail.com:abcdEFGHijklMNOP"
+<span class="c"># 選項 A：SMTP（一行搞定，email 自動 = EMAIL_RECIPIENT）</span>
+gh secret set SMTP_URL --body "gmail:abcdEFGHijklMNOP"
 
 <span class="c"># 選項 B：SendGrid（A、B 二選一即可）</span>
 gh secret set SENDGRID_API_KEY --body "SG.xxx..."</pre>
