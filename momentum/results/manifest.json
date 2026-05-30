@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-30T04:01:25Z",
+  "generated_at": "2026-05-30T04:23:58Z",
   "source_dir": "/Users/miniaicar/Downloads/tradecopy/strategies",
   "strategies": [
     {
@@ -118,6 +118,33 @@
       "file": "us100_mom_12m_t10.json",
       "enabled": true,
       "order": 213
+    },
+    {
+      "id": "tech100_mom_3m_t10",
+      "label": "Tech100-Mom3m-T10",
+      "color": "#22c55e",
+      "group": "momentum",
+      "file": "tech100_mom_3m_t10.json",
+      "enabled": true,
+      "order": 221
+    },
+    {
+      "id": "tech100_mom_6m_t10",
+      "label": "Tech100-Mom6m-T10",
+      "color": "#16a34a",
+      "group": "momentum",
+      "file": "tech100_mom_6m_t10.json",
+      "enabled": true,
+      "order": 222
+    },
+    {
+      "id": "tech100_mom_12m_t10",
+      "label": "Tech100-Mom12m-T10",
+      "color": "#15803d",
+      "group": "momentum",
+      "file": "tech100_mom_12m_t10.json",
+      "enabled": true,
+      "order": 223
     },
     {
       "id": "weekly_top10",
