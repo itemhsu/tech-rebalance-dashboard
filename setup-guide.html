@@ -102,7 +102,7 @@ footer{text-align:center;color:#1e293b;font-size:11px;padding:36px 0 18px;}
   <h3>🔧 設定步驟</h3>
   <a href="#step1">① Fork repo</a>
   <a href="#step2">② Alpaca 帳號</a>
-  <a href="#step3">③ SendGrid 郵件</a>
+  <a href="#step3">③ Gmail 寄信</a>
   <a href="#step4">④ GitHub Secrets</a>
   <a href="#step5">⑤ accounts.json</a>
   <a href="#step6">⑥ GitHub Pages</a>
@@ -127,12 +127,12 @@ footer{text-align:center;color:#1e293b;font-size:11px;padding:36px 0 18px;}
     <span class="badge">Tech-Rebalance</span>
   </div>
   <h1>🚀 部署指南 <span>從零到生產</span></h1>
-  <p>fork 我的 repo，用你自己的 GitHub + Alpaca + SendGrid 帳號，
+  <p>fork 我的 repo，用你自己的 GitHub + Alpaca + Gmail 帳號，
   一步步把整套自動再平衡系統跑起來。預計 90 分鐘完成。</p>
   <div class="toc">
     <a href="#step1">① Fork</a>
     <a href="#step2">② Alpaca</a>
-    <a href="#step3">③ SendGrid</a>
+    <a href="#step3">③ Gmail</a>
     <a href="#step4">④ Secrets</a>
     <a href="#step5">⑤ accounts.json</a>
     <a href="#step6">⑥ Pages</a>
@@ -152,7 +152,7 @@ footer{text-align:center;color:#1e293b;font-size:11px;padding:36px 0 18px;}
     <li>每個帳戶依其指派的 <b>策略 JSON</b>（如 top10 / d2p2t6 / mom_6m_t20）計算當日應有持股</li>
     <li>對比 Alpaca 當前持倉，下「最小量換股」訂單</li>
     <li>生成 dashboard JSON 並推到 GitHub Pages</li>
-    <li>透過 SendGrid 寄每日報告到你的 email</li>
+    <li>透過 Gmail SMTP 寄每日報告到你的 email</li>
   </ol>
 
   <h3>三個 repo（公開 + 私有混合）</h3>
@@ -263,33 +263,40 @@ cd tech-rebalance</pre>
 
 <!-- ══════════════════════════════════════════════════ -->
 <section id="step3">
-  <h2><span class="step">③</span>設定 SendGrid 寄信</h2>
-  <div class="meta">⏱️ 15 分鐘 · 每日報告寄到你的 email</div>
+  <h2><span class="step">③</span>設定 Gmail 寄信</h2>
+  <div class="meta">⏱️ 5 分鐘 · 每日報告寄到你的 email</div>
 
-  <p>SendGrid 免費 plan 每天可寄 100 封郵件，對一天 1-3 封的需求綽綽有餘。</p>
+  <p>系統用 <b>Gmail SMTP</b> 寄信，只需要一組 Gmail
+  <b>App Password</b>（應用程式密碼），不需要第三方服務、不需信用卡、零成本。</p>
 
   <ol>
-    <li>到 <a href="https://sendgrid.com/" target="_blank">https://sendgrid.com</a> → <b>Start for Free</b></li>
-    <li>填資料註冊（不需信用卡）</li>
-    <li>登入後做 <b>Sender Authentication</b>（驗證寄件人 email）：
+    <li>先確認該 Gmail 帳號已開啟 <b>兩步驟驗證</b>（App Password 的前提）：
       <ul>
-        <li>Settings → Sender Authentication → <b>Verify a Single Sender</b></li>
-        <li>填你的 Gmail（這會成為寄件人）→ 點確認信</li>
+        <li>到 <a href="https://myaccount.google.com/security" target="_blank">Google 帳戶 → 安全性</a></li>
+        <li>找「兩步驟驗證」→ 若未開啟先開啟</li>
       </ul>
     </li>
-    <li>產生 API Key：
+    <li>產生 App Password：
       <ul>
-        <li>Settings → API Keys → <b>Create API Key</b></li>
-        <li>選 <b>Full Access</b></li>
-        <li>記下 <code>SG.xxxxxxxx</code>（只顯示一次）</li>
+        <li>到 <a href="https://myaccount.google.com/apppasswords" target="_blank">myaccount.google.com/apppasswords</a></li>
+        <li>App 名稱填任意（例如 <code>tech-rebalance</code>）→ <b>建立</b></li>
+        <li>記下顯示的 <b>16 碼密碼</b>（格式 <code>abcd efgh ijkl mnop</code>）</li>
       </ul>
     </li>
+    <li>把 16 碼<b>去掉空格</b>後存成 GitHub Secret <code>EMAIL_PASSWORD</code>（下一步詳述）。</li>
   </ol>
 
+  <div class="box warn">
+    <strong>🔑 App Password ≠ 你的 Gmail 登入密碼</strong>
+    一定要用上面產生的 16 碼專用密碼。直接用一般登入密碼會被 Google 擋下
+    （<code>535 BadCredentials</code>）。
+  </div>
+
   <div class="box tip">
-    <strong>📧 為何不用 Gmail SMTP？</strong>
-    Gmail App Password 對非企業帳號偶爾驗證失敗（535 BadCredentials），debug 困難。
-    SendGrid 走 HTTP API 穩定可靠，且免費額度遠大於我們需求。
+    <strong>📧 寄件人與收件人</strong>
+    寄件人 = App Password 所屬的 Gmail（<code>EMAIL_SENDER</code>）。
+    收件人由 <code>accounts.json</code> 每個帳戶的 <code>email_recipients</code> 決定，
+    可一個帳戶寄給多人。沒設 <code>EMAIL_SENDER</code> 時自動用收件人當寄件人。
   </div>
 </section>
 
@@ -321,14 +328,14 @@ cd tech-rebalance</pre>
         實單改 <code>https://api.alpaca.markets</code></td>
       </tr>
       <tr>
-        <td><code>EMAIL_RECIPIENT</code></td>
-        <td>你想收信的 email（同時自動當寄件人）</td>
-        <td>e.g. <code>itemhsu@gmail.com</code></td>
+        <td><code>EMAIL_SENDER</code></td>
+        <td>步驟 ③ 的 Gmail（App Password 所屬帳號）</td>
+        <td>e.g. <code>you@gmail.com</code>，同時是 SMTP 登入帳號</td>
       </tr>
       <tr>
-        <td><code>EMAIL_SENDER</code>（選填）</td>
-        <td>若寄件人想跟收件人不同才設</td>
-        <td>未設 → 自動 = EMAIL_RECIPIENT</td>
+        <td><code>EMAIL_PASSWORD</code></td>
+        <td>步驟 ③ 產生的 16 碼 App Password</td>
+        <td><b>去掉空格</b>，e.g. <code>abcdefghijklmnop</code></td>
       </tr>
       <tr>
         <td><code>DASHBOARD_PUSH_TOKEN</code></td>
@@ -338,13 +345,11 @@ cd tech-rebalance</pre>
     </tbody>
   </table>
 
-  <h3>SendGrid 寄信 Secret</h3>
-  <table>
-    <thead><tr><th>Secret 名稱</th><th>值來自</th></tr></thead>
-    <tbody>
-      <tr><td><code>SENDGRID_API_KEY</code></td><td>步驟 ③ SendGrid，<code>SG.xxxx...</code></td></tr>
-    </tbody>
-  </table>
+  <div class="box info">
+    <strong>📮 收件人在哪設？</strong>
+    收件人不是 Secret，而是寫在 <code>accounts.json</code> 每個帳戶的
+    <code>email_recipients</code> 陣列（步驟 ⑤）。這樣不同帳戶可寄給不同人。
+  </div>
 
   <h3>多帳戶?再加 ACC2 / ACC3 ...</h3>
   <p>每多一個帳戶就加三個 Secret：<code>ACC2_ALPACA_KEY</code>、<code>ACC2_ALPACA_SECRET</code>、<code>ACC2_BASE_URL</code>。</p>
@@ -363,8 +368,8 @@ cd tech-rebalance</pre>
 <pre>gh secret set ACC1_ALPACA_KEY      --body "你的 Alpaca key"
 gh secret set ACC1_ALPACA_SECRET   --body "你的 Alpaca secret"
 gh secret set ACC1_BASE_URL        --body "https://paper-api.alpaca.markets"
-gh secret set EMAIL_RECIPIENT      --body "you@gmail.com"
-gh secret set SENDGRID_API_KEY     --body "SG.xxx..."
+gh secret set EMAIL_SENDER         --body "you@gmail.com"
+gh secret set EMAIL_PASSWORD       --body "abcdefghijklmnop"
 gh secret set DASHBOARD_PUSH_TOKEN --body "github_pat_xxx"</pre>
   </div>
 </section>
@@ -504,7 +509,7 @@ gh secret set DASHBOARD_PUSH_TOKEN --body "github_pat_xxx"</pre>
     <li>workflow 變綠（所有 step 成功）</li>
     <li>log 中看到 <code>[INFO] trader: 無再平衡訂單需要執行</code>（dry-run + 空帳戶）</li>
     <li>Alpaca dashboard 沒有任何訂單（確認 dry_run 生效）</li>
-    <li>email 收到一封「[DRY RUN]」開頭的測試報告（如果有設 EMAIL_RECIPIENT）</li>
+    <li>email 收到一封「[DRY RUN]」開頭的測試報告（需設好 <code>EMAIL_SENDER</code> + <code>EMAIL_PASSWORD</code> 並在 accounts.json 填 <code>email_recipients</code>）</li>
   </ul>
 
   <h3>用 gh CLI 監看</h3>
@@ -638,9 +643,9 @@ jq 'select(.type=="ORDER_PLANNED")' data/1/trade_events.jsonl</pre>
         <td>確認 <code>ACC{N}_ALPACA_KEY</code> 對應 <code>"alpaca_secret_prefix": "ACC{N}"</code></td>
       </tr>
       <tr>
-        <td>SendGrid 401</td>
-        <td>API key 過期或寄件人未驗證</td>
-        <td>SendGrid → Sender Authentication 重新驗證</td>
+        <td>郵件沒寄出 <code>535 BadCredentials</code></td>
+        <td><code>EMAIL_PASSWORD</code> 用了一般登入密碼，或沒去掉空格</td>
+        <td>用步驟 ③ 的 16 碼 App Password，存 Secret 時不含空格</td>
       </tr>
       <tr>
         <td>策略 schema validation 失敗</td>
@@ -670,14 +675,14 @@ jq 'select(.type=="ORDER_PLANNED")' data/1/trade_events.jsonl</pre>
       <tr><td>GitHub Pro（讓私有 repo 有 Pages）</td><td>選用</td><td>$4/月</td></tr>
       <tr><td>Alpaca Paper Trading</td><td>免費</td><td>$0</td></tr>
       <tr><td>Alpaca Live Trading</td><td>0 佣金 + Reg fees</td><td>~$0.01/筆</td></tr>
-      <tr><td>SendGrid 免費 plan</td><td>100 封/天</td><td>$0</td></tr>
+      <tr><td>Gmail SMTP 寄信</td><td>免費（個人帳號約 500 封/天）</td><td>$0</td></tr>
       <tr><td>yfinance（回測資料）</td><td>免費</td><td>$0</td></tr>
     </tbody>
   </table>
 
   <div class="box ok">
     <strong>💡 全免費跑得起來</strong>
-    用公開主 repo + 免費 Alpaca Paper Trading + 免費 SendGrid → 零成本。
+    用公開主 repo + 免費 Alpaca Paper Trading + 免費 Gmail SMTP → 零成本。
     想保護交易紀錄就升 Pro $4/月。
   </div>
 </section>
