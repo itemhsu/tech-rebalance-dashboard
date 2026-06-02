@@ -101,7 +101,7 @@ footer{text-align:center;color:#1e293b;font-size:11px;padding:36px 0 18px;}
   <a href="#phaseD">D：打包跨平台</a>
 
   <h3>🧪 測試與風控</h3>
-  <a href="#test">測試計劃</a>
+  <a href="#test">測試計劃（31 案例）</a>
   <a href="#risks">風險</a>
   <a href="#execution-status">✅ 執行狀況</a>
   <a href="#eng-log">🛠 工程 Log</a>
@@ -335,18 +335,19 @@ admin_gui/
   <h2><span class="num">2</span>帳戶 Accounts</h2>
   <div class="meta">用途：所有帳戶的 CRUD —— 本 App 最常用的一頁</div>
   <div class="wire">┌ 帳戶清單 ──────────────────────────────── 搜尋[____] ┐
-│ id │啟用│ 券商   │環境  │ 策略       │ 最後NAV  │日期 │Secret│
-│ 1  │ ✅ │ alpaca │paper │ top10      │ $99,988  │06-01│ ✅  │
-│ 2  │ ✅ │ alpaca │paper │ d2p2t6     │ $100,012 │06-01│ ✅  │
-│ 3  │ ✅ │ alpaca │paper │ mom_6m_t20 │ 待產生   │ —   │ ✅  │
-│ 4  │ ✅ │ alpaca │paper │ weekly_top10│待產生   │ —   │ ✅  │
-│ 6  │ ⛔ │ tradier│sandbox│ top10     │ $100,000 │06-01│ ❌  │
+│ id │啟用│ 券商   │環境       │ 策略       │ 最後NAV  │日期 │Secret│
+│ 1  │ ✅ │ alpaca │ paper     │ top10      │ $99,988  │06-01│ ✅  │
+│ 2  │ ✅ │ alpaca │ paper     │ d2p2t6     │ $100,012 │06-01│ ✅  │
+│ 3  │ ✅ │ alpaca │ 🔴 LIVE   │ mom_6m_t20 │ $21,020  │06-02│ ✅  │
+│ 4  │ ✅ │ alpaca │ paper     │ weekly_top10│待產生   │ —   │ ✅  │
+│ 6  │ ⛔ │ tradier│ sandbox   │ top10     │ $100,000 │06-01│ ❌  │
 ├────────────────────────────────────────────────────────┤
 │[＋新增] [✎編輯] [🗑刪除] [⏻啟用/停用] [▶立即 dry-run]   │
-└────────────────────────────────────────────────────────┘</div>
+└────────────────────────────────────────────────────────┘
+（環境欄：live → 紅色 LIVE 標籤；paper/sandbox → 灰色）</div>
   <h4>元件</h4>
   <ul>
-    <li><b>表格（QTableView）</b>：每列一個帳戶，欄位 = id / 啟用 / 券商 / 環境 / 策略 / 最後 NAV / 日期 / <b>Secret 齊全燈</b>（該帳戶該有的 Secret 是否都設了）。可排序、可搜尋。</li>
+    <li><b>表格（QTableView）</b>：每列一個帳戶，欄位 = id / 啟用 / 券商 / <b>環境（live 紅色 LIVE 標籤）</b> / 策略 / 最後 NAV / 日期 / <b>Secret 齊全燈</b>（該帳戶該有的 Secret 是否都設了）。可排序、可搜尋。</li>
     <li><b>啟用欄</b>：直接在表格切換 <code>enabled</code>（即時寫回 accounts.json）。</li>
     <li><b>底部按鈕</b>：新增（開精靈）、編輯（或雙擊列）、刪除（二次確認）、啟用/停用、立即 dry-run（呼叫 <code>python run_account.py --account N --dry-run</code> 並把輸出顯示在對話框）。</li>
   </ul>
@@ -444,22 +445,200 @@ admin_gui/
   <h3>D1 · 帳戶新增/編輯表單</h3>
   <div class="wire">id            [ 6        ]   （新增時即時檢查不重複）
 啟用          [✔]
-券商          [ tradier ▾]   ← brokers/*.json
-環境          [ sandbox ▾]   ← 該 broker 的 environments
+券商          [ alpaca  ▾]   ← brokers/*.json
+環境          [ paper   ▾]   ← 該 broker 的 environments（paper / live / sandbox）
+              ⚠ 選 live = 真錢！下方變紅色警示
 策略          [ top10   ▾]   ← strategies/*.json（右側顯示策略摘要）
 secret_prefix [ ACC6     ]   （改動時連動下方 Secret 檢查）
 data_dir      [ data/6   ]
 email 收件人  [ you@x.com ; ops@x.com ]
 use_new_runner[✔]
 ──────────────────────────────────────────────
-需要的 Secret：ACC6_TRADIER_TOKEN ❌  ACC6_TRADIER_ACCOUNT ❌
+需要的 Secret：ACC6_ALPACA_KEY ❌  ACC6_ALPACA_SECRET ❌
               [ 去 Secrets 設定 → ]
         [ 取消 ]                            [ 儲存 ]</div>
   <ul>
-    <li>下拉選單全部<b>動態</b>：券商←brokers/、環境←該券商 spec、策略←strategies/。</li>
+    <li>下拉選單全部<b>動態</b>：券商←brokers/、<b>環境←該券商 spec 的 <code>environments</code></b>
+        （Alpaca = <code>paper</code>/<code>live</code>；Tradier = <code>sandbox</code>/<code>live</code>），策略←strategies/。</li>
     <li>選券商/改 prefix 時，下方即時算出「該有哪些 Secret」並標示已設/未設。</li>
     <li>儲存前做 schema 驗證；id 重複、缺必填 → 擋下並標紅。</li>
   </ul>
+
+  <div class="box danger">
+    <strong>🔴 live / paper 防呆（吸取 #3 事故教訓）</strong>
+    帳戶 #3 曾因 <code>environment</code> 被誤設 <code>paper</code> 但實際是真錢 live 帳戶 → 一直 401。
+    GUI 對 <code>environment</code> 必須做到：
+    <ul>
+      <li><b>環境是明確的下拉欄位</b>（非自由輸入），值來自該券商 spec，避免拼錯。</li>
+      <li><b>選到 <code>live</code> 時整列變紅</b> + 顯示「⚠ 真錢帳戶，每日 cron 會用真錢下單」。</li>
+      <li><b>儲存切到 live 需二次確認對話框</b>（打字確認帳戶 id 或勾選「我了解這是真錢」）。</li>
+      <li>帳戶表格的環境欄：<code>live</code> 以紅色 <b>LIVE</b> 標籤、<code>paper</code>/<code>sandbox</code> 用灰色，一眼可辨。</li>
+      <li>（可選）儲存時用該券商 key 試打 <code>/account</code>，若 401 立即提示「金鑰與環境可能不符（live key 配 paper URL？）」——正是 #3 的失敗模式。</li>
+    </ul>
+  </div>
+
+  <div class="box warn">
+    <strong>🧑‍💼 帳戶表單 UX 重設計需求（使用者回饋 2026-06-02）</strong>
+    <p style="margin:6px 0">原則：<b>使用者只是想買股票，不懂程式</b> —— 欄位越少越好、技術細節自動化、金鑰當場設好、存檔前驗證連線。
+    目前 Phase A 的表單（含 secret_prefix / data_dir / use_new_runner）<b>太工程化，需重設計</b>。</p>
+    <table>
+      <thead><tr><th>#</th><th>現況問題</th><th>需求</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td><code>secret_prefix</code> 要使用者填</td><td><b>自動預設 <code>ACC{id}</code></b>，表單不顯示（進階模式才可改）</td></tr>
+        <tr><td>2</td><td><code>data_dir</code> 使用者不懂是什麼</td><td><b>自動產生 <code>data/{id}</code></b>，表單<b>不顯示</b></td></tr>
+        <tr><td>3</td><td><code>use_new_runner</code> 是工程概念</td><td><b>從表單移除</b>，內部固定 <code>true</code></td></tr>
+        <tr><td>4</td><td>「啟用」語意不清</td><td>改成明確說明：<b>「啟用 ✅ = 每日自動交易；關閉 = 暫停這個帳戶不下單」</b></td></tr>
+        <tr><td>5</td><td>相關 Secret 要切到別頁設，使用者不會知道</td><td><b>表單內就能填 API Key / Secret</b>（依券商動態欄位），存檔時<b>一併寫入 GitHub Secrets</b>，免切分頁</td></tr>
+        <tr><td>6</td><td>存檔後不知道設對沒</td><td><b>存檔前用填入的金鑰試打券商 API</b>（如 <code>/account</code>）確認連線；<b>成功才允許存檔離開</b>，失敗顯示原因（如 live key 配 paper）</td></tr>
+        <tr><td>7</td><td>使用者要填 <code>id</code></td><td><b>id 由系統自動指定</b>（取下一個可用號），使用者<b>不填、不顯示為輸入欄</b></td></tr>
+        <tr><td>8</td><td>沒有人看得懂的識別</td><td>新增<b>必填「帳戶名稱」欄</b>（對應 <code>label</code>），讓使用者填識別文字（如「我的科技股」）——這是<b>唯一需要使用者命名</b>的欄位</td></tr>
+        <tr><td>9</td><td>獨立 Secrets 分頁多餘</td><td>金鑰改為帳戶表單內嵌（#5）後，<b>Secrets 分頁移除</b>；Secret 狀態折進帳戶列的「Secret 燈」，缺金鑰在帳戶表單就提示 → <b>分頁由 5 變 4</b>（總覽 / 帳戶 / 排程 / 設定）</td></tr>
+        <tr><td>10</td><td>無稽核軌跡</td><td><b>建立操作日誌</b>：記錄<b>所有帳戶管理動作</b>（新增 / 編輯 / 刪除 / 啟用停用 / 設金鑰 / 改 cron），含時間戳、動作、對象帳戶、結果；<b>不含金鑰值</b>。存本機 log 檔，總覽分頁顯示最近數筆</td></tr>
+        <tr><td>11</td><td>總覽與帳戶分頁重複（都列帳戶 NAV）</td><td><b>總覽重新定位為「全域管理」</b>——只放<b>跟個別帳戶無關</b>的設定（參考 setup-guide）：Email 發送、Dashboard 推送、環境/登入狀態、操作日誌。帳戶 NAV 只留在「帳戶」分頁。原「設定」分頁與新總覽重疊 → <b>合併進總覽</b>，分頁由 4 變 <b>3</b>（總覽 / 帳戶 / 排程）</td></tr>
+        <tr><td>12</td><td>填了 mail 金鑰不知道能不能發</td><td>總覽設 Email 後<b>必須「測試發信」成功才放行</b>——實際寄一封測試信，SMTP 回成功（可選：問「收到了嗎」）才允許離開；失敗顯示原因（如 App 密碼錯）。與帳戶金鑰「測試連線才存」同模式</td></tr>
+        <tr><td>13</td><td>gh 沒登入會整串壞掉</td><td>gh <b>主動驗證</b>（非只顯示狀態）：未登入 / 無權限 → 擋下相關動作並給 <code>gh auth login</code> 指引，確認可用才放行</td></tr>
+        <tr><td>14</td><td>新使用者不知怎麼開始</td><td><b>首次啟動精靈含「fork 助手」</b>：幫使用者把這個 public 專案 fork 到自己 GitHub（<code>gh repo fork</code>）→ clone → 引導設全域 Secret → 啟用 Actions。讓非工程者也能擁有自己的可運行實例</td></tr>
+        <tr><td>15</td><td>看不到系統發生什麼事</td><td><b>全域 log 讀取</b>（總覽）：可檢視 ① 操作日誌 <code>audit.jsonl</code>（誰改了什麼）② 每日 cron 執行歷史（<code>gh run list</code> 成功/失敗）。可捲動、依動作/結果篩選、開完整內容</td></tr>
+        <tr><td>16</td><td>不知道某帳戶實際下了什麼單</td><td><b>帳戶 log 讀取</b>（帳戶分頁選一列 → 檢視該帳戶）：交易事件 <code>data/{id}/trade_events.jsonl</code>（下單/成交/換股）+ NAV 歷史 <code>portfolio_state_history.json</code>。唯讀、時間倒序</td></tr>
+        <tr><td>17</td><td>EMAIL_SENDER 被當機密遮罩</td><td>寄件人 email <b>不具機密性</b> → <b>顯示實際值（明文、可編輯）</b>，不放遮罩 Secrets 清單。存本機 <code>admin_gui/data/config.json</code>；只有 App 密碼是 Secret</td></tr>
+        <tr><td>18</td><td>SendGrid 已棄用仍出現</td><td><b>移除 SendGrid</b>：GUI 全域 Secret 清單、probes、（後續）production email fallback 都拿掉 <code>SENDGRID_API_KEY</code></td></tr>
+        <tr><td>19</td><td>DASHBOARD_PUSH_TOKEN 可否移除？</td><td>現行模型（推到獨立 dashboard repo）下不可。但見需求 21：<b>改部署模型即可徹底移除</b></td></tr>
+        <tr><td>20</td><td>測試發信要使用者填一堆</td><td><b>測試發信「給自己」</b>：收件人自動 = 寄件人、<b>無收件人欄</b>；只需輸入一次 App 密碼（Secret 讀不回，故設定即測），驗證成功才把密碼寫進 GitHub Secrets</td></tr>
+        <tr><td>21</td><td>DASHBOARD_PUSH_TOKEN 要使用者建 PAT、麻煩又易錯</td><td><b>不要使用者填 token</b>。共用「預設 token」不安全（等於大家共用一把，能推別人的 repo）→ 正解：<b>dashboard 改從 fork 自己的 GitHub Pages 發佈</b>，用 Actions <b>內建 <code>GITHUB_TOKEN</code></b>（自動、零設定）。<b>不需 PAT、不需獨立 dashboard repo，使用者一個字都不用填</b></td></tr>
+        <tr><td>22</td><td>測試發信還要再輸入 App 密碼</td><td><b>測試發信不要密碼、只顯示結果（正常/失敗）</b>。原因：本機 GUI 拿不到 Secret 值（gh 讀不回），要在本機寄就得再輸入密碼。<b>正解：不在本機寄，改觸發雲端 <code>test_email.yml</code> workflow</b>（它有 <code>EMAIL_PASSWORD</code> secret）→ GUI 讀 run 結果顯示「✅ 正常 / ❌ 失敗」。<b>使用者零輸入</b>（前提：EMAIL_PASSWORD 已設，否則提示先設）</td></tr>
+      </tbody>
+    </table>
+
+    <div class="box ok">
+      <strong>🌐 Dashboard 部署簡化（需求 21，徹底移除 DASHBOARD_PUSH_TOKEN）</strong>
+      <p style="margin:4px 0;padding:8px;background:#064e3b;border-radius:6px">
+        <b>✅ 已實作（GUI 端，2026-06-02）</b>：管理 GUI 已<b>移除</b> <code>DASHBOARD_PUSH_TOKEN</code> 欄位，
+        Overview 機密項只剩 <code>EMAIL_PASSWORD</code>。經查該 token 從未被任何 workflow 使用——
+        實際的 dashboard 跨 repo 推送走 <code>PAGES_TOKEN</code>，屬<b>維護者一次性基礎建設</b>，
+        一般使用者完全不需處理。下方「own-Pages」遷移（需求 21 的部署面）為 public fork 適用，
+        owner 的 private repo 維持現行 <code>PAGES_TOKEN</code> 模型（見下方紅框）。
+      </p>
+      <p style="margin:4px 0">為什麼能零設定：使用者 fork 出來的 repo <b>本身是 public</b>，可免費開自己的 GitHub Pages。
+      於是 dashboard 不必推到「另一個 repo」，直接發佈到<b>自己這個 repo 的 Pages</b>，
+      用 Actions 自動注入的 <code>GITHUB_TOKEN</code>（只對自己 repo 有權限，安全、免建）。</p>
+      <table>
+        <thead><tr><th></th><th>現行（需 PAT）</th><th>改後（需求 21）</th></tr></thead>
+        <tbody>
+          <tr><td>發佈目標</td><td>另一個 repo <code>*-dashboard</code></td><td>自己 fork 的 Pages（同 repo）</td></tr>
+          <tr><td>認證</td><td>使用者自建 <code>DASHBOARD_PUSH_TOKEN</code> PAT</td><td>內建 <code>GITHUB_TOKEN</code>（自動）</td></tr>
+          <tr><td>使用者要填</td><td>建 PAT + 設 Secret</td><td><b>什麼都不用</b></td></tr>
+        </tbody>
+      </table>
+      <p style="margin:4px 0"><b>實作面（forker 適用）</b>：改 <code>daily_all_accounts.yml</code> 的 dashboard step 為
+      <code>actions/deploy-pages</code>（或 peaceiris 推 gh-pages 分支，<code>github_token: ${{ secrets.GITHUB_TOKEN }}</code>），
+      移除跨 repo 推送。<b>GUI 端</b>：Overview 不再顯示 DASHBOARD_PUSH_TOKEN 欄（改標「自動，無需設定」）。
+      Pages 網址自動 = <code>{user}.github.io/tech-rebalance</code>。</p>
+    </div>
+
+    <div class="box danger">
+      <strong>⚠️ 重要前提：own-Pages 只在 public repo 成立（查核 2026-06-02）</strong>
+      <p style="margin:4px 0">owner 的 <code>itemhsu/tech-rebalance</code> 是 <b>PRIVATE</b>。
+      private repo 的 Pages 需 <b>GitHub Pro（$4/月）</b>；現行架構（private 程式碼 + public dashboard repo + 跨 repo PAT）
+      正是為了「程式碼/真錢交易紀錄不公開、dashboard 公開」。</p>
+      <table>
+        <thead><tr><th>對象</th><th>own-Pages</th><th>token 消除</th></tr></thead>
+        <tbody>
+          <tr><td>Fork 你專案的人（public fork）</td><td>✅ 免費可用</td><td>✅ 不需 PAT</td></tr>
+          <tr><td>Owner（private repo）</td><td>❌ 需 Pro / 改 public</td><td>❌ 維持 PAT</td></tr>
+        </tbody>
+      </table>
+      <p style="margin:4px 0"><b>✅ 決議：維持現狀</b> —— owner 保留 private repo + 獨立 public dashboard repo +
+      <code>DASHBOARD_PUSH_TOKEN</code>，<b>不遷移 live 部署</b>（避免公開真錢交易紀錄、避免月費、避免動現役 email 連結）。
+      需求 21 作為「給 forker 的設計」保留；owner 端 <b>WONTFIX（現狀即最佳）</b>。</p>
+    </div>
+
+    <div class="box info">
+      <strong>📧 Email 設定收斂（需求 17/18/20）</strong>
+      寄件人 <code>EMAIL_SENDER</code> 明文顯示可編輯（非機密，存 config.json）；
+      <code>EMAIL_PASSWORD</code> 是唯一 Email 機密（遮罩、經 gh 存 Secrets）；
+      SendGrid 移除；測試＝寄件人→寄件人（給自己）一鍵驗證，成功才寫入 Secret。
+    </div>
+
+    <div class="box info">
+      <strong>📜 日誌兩層</strong>
+      <b>全域 log</b>（總覽）＝跨系統：管理操作（audit.jsonl）+ 排程執行結果（gh run）。
+      <b>帳戶 log</b>（帳戶分頁）＝單一帳戶：實際交易事件 + NAV 歷史（讀既有的
+      <code>trade_events.jsonl</code> / <code>portfolio_state_history.json</code>，與 dashboard 的 log viewer 同源）。
+      兩者皆<b>唯讀檢視</b>，不含金鑰。
+    </div>
+
+    <div class="box info">
+      <strong>🌐 Public / Fork 運作模式</strong>
+      本專案是 <b>public</b>，任何人都能抓下來看/用。但要<b>真正運行成自己的</b>（用自己的券商帳戶、自己的金鑰、自己的每日 cron 交易），
+      必須 <b>fork 一份到自己的 GitHub</b> —— fork 後使用者才擁有：自己的 GitHub Secrets、自己的 Actions 排程、自己的 dashboard。
+      「想要核心就需取得 fork」＝ <b>fork 是取得「可控制、會替你交易的那份」的途徑</b>。精靈把
+      <code>fork → clone → 設 Secret → 開 Actions</code> 自動化，使用者不用懂 git。
+    </div>
+
+    <p style="margin:6px 0"><b>總覽重新定位 = 全域設定（非帳戶層，取自 setup-guide）：</b></p>
+    <div class="wire">┌ 總覽 = 全域系統設定（跟個別帳戶無關）──────────────────┐
+│ 📧 Email 發送                                          │
+│    寄件人 EMAIL_SENDER     you@gmail.com   [儲存寄件人]│
+│    App 密碼 EMAIL_PASSWORD ✅已設          [設定/更新] │
+│    [測試發信]  給自己，無需密碼                        │
+│ 🔧 環境 / 登入                                         │
+│    gh ✅已登入    GitHub repo  owner/repo              │
+│    存取方式  純 API 模式（不需本機 clone）             │
+│    [⚙️ 重新執行設定精靈…]                              │
+└────────────────────────────────────────────────────────┘
+（4 分頁：📊總覽 / 👥帳戶 / ⏰排程 / 📜日誌；操作日誌移到「日誌」分頁）</div>
+    <p style="margin:6px 0;color:#94a3b8">現況：總覽機密項只剩 <code>EMAIL_PASSWORD</code>（已移除 SendGrid 與幽靈
+    <code>DASHBOARD_PUSH_TOKEN</code>）。一般使用者只需懂「email App 密碼」一項；券商金鑰在「帳戶」
+    分頁逐一帳戶輸入並由 App 寫進 GitHub Secrets。帳戶 NAV/持倉/CRUD 都在「帳戶」分頁，總覽不重複。</p>
+
+    <p style="margin:6px 0"><b>重設計後的簡化表單（使用者只填 4 樣 + 金鑰）：</b></p>
+    <div class="wire">帳戶名稱   [ 我的科技股        ]   ← 必填，使用者唯一要命名的（label）
+券商       [ alpaca   ▾]
+環境       ( ) 模擬 paper    (•) 真錢 live   ← 選 live 變紅 + 二次確認
+策略       [ 科技股前10 ▾]   （顯示中文友善名）
+── 連線金鑰（會安全存進 GitHub，不留本機）──
+API Key    [ ________________ ]
+API Secret [ ________________ ]   （Tradier 多一個 Account 欄，依券商動態）
+─────────────────────────────────
+[ 取消 ]                    [ 測試連線並儲存 ]
+   ↑ 按下後自動：① 系統指定 id + secret_prefix=ACC{id} + data_dir=data/{id}
+              ② 用金鑰試打券商 API 驗證
+              ③ 成功 → 寫 accounts.json + 設 GitHub Secrets + 記 log → 關閉
+                 失敗 → 紅字顯示原因，不關閉、不寫入
+（沒有 id 欄、沒有 secret_prefix/data_dir/use_new_runner 欄）
+                 失敗 → 紅字顯示原因，不關閉、不寫入</div>
+
+    <p style="margin:6px 0"><b>自動產生 / 隱藏的欄位：</b>
+    <code>id</code>（自動取下一個可用號）、<code>secret_prefix=ACC{id}</code>、<code>data_dir=data/{id}</code>、
+    <code>use_new_runner=true</code>（固定不顯示）。進階使用者可在「進階」摺疊區覆寫。</p>
+
+    <p style="margin:6px 0"><b>新增測試案例：</b></p>
+    <ul style="margin:0">
+      <li><span class="tid">G-14</span> 新增帳戶時 secret_prefix / data_dir 自動產生，使用者未填也能存</li>
+      <li><span class="tid">G-15</span> 表單不出現 use_new_runner（內部固定 true）</li>
+      <li><span class="tid">G-16</span> 存檔流程：金鑰試打成功才寫入；失敗則<b>不寫 accounts.json、不關閉視窗</b></li>
+      <li><span class="tid">G-17</span> 金鑰於存檔時一併寫入 GitHub Secrets（不需切 Secrets 分頁）</li>
+      <li><span class="tid">G-18</span> 「啟用」開關有明確說明文字</li>
+      <li><span class="tid">G-19</span> id 由系統自動指定（取下一個可用號、唯一），表單無 id 輸入欄</li>
+      <li><span class="tid">G-20</span> 帳戶名稱（label）為必填，空白擋下存檔</li>
+      <li><span class="tid">G-21</span> 操作日誌：新增 / 編輯 / 刪除 / 啟用停用 各寫一筆（含時間戳、動作、帳戶、結果，<b>不含金鑰值</b>）</li>
+      <li><span class="tid">G-22</span> 移除 Secrets 分頁；總覽吸收全域設定後主視窗為 3 分頁（總覽/帳戶/排程）</li>
+      <li><span class="tid">G-23</span> 總覽只含全域項目（Email/Dashboard/環境/日誌），不出現個別帳戶 NAV 列</li>
+      <li><span class="tid">G-24</span> 設 Email 後「測試發信」成功才放行；SMTP 失敗則不允許離開、顯示原因</li>
+      <li><span class="tid">G-25</span> gh 未登入時擋下相關動作並給 gh auth login 指引</li>
+      <li><span class="tid">G-26</span> Fork 助手：未 fork 時精靈呼叫 gh repo fork --clone（mock，不真 fork）</li>
+      <li><span class="tid">G-27</span> 全域 log 讀取：正確解析 audit.jsonl 並倒序顯示；可依動作/結果篩選</li>
+      <li><span class="tid">G-28</span> 帳戶 log 讀取：解析 trade_events.jsonl + portfolio_state_history，缺檔顯示「尚無紀錄」不丟例外</li>
+    </ul>
+    <p style="margin:6px 0"><b>操作日誌設計：</b>
+    新增 <code>admin_gui/services/audit_log.py</code> + <code>admin_gui/data/audit.jsonl</code>（每行一筆事件）。
+    欄位：<code>ts</code>（時間戳）、<code>action</code>（create/edit/delete/enable/disable/set_secret/cron_change）、
+    <code>target</code>（帳戶名稱+id 或 workflow）、<code>result</code>（ok/fail）、<code>detail</code>（簡述，<b>不含任何金鑰值</b>）。
+    總覽分頁顯示最近 N 筆。所有 service 的變更動作（accounts_repo / gh_client.set_secret / cron 改寫）寫入時呼叫。</p>
+
+    <p style="margin:6px 0;color:#fcd34d"><b>狀態：</b>列為 <b>Phase A-2（表單重設計 + 操作日誌）</b>，優先於 Phase D 打包 ——
+    因為這直接決定「非工程使用者能不能自己安全地新增/管理帳戶」。</p>
+  </div>
 
   <h3>D2 · Secret 設定對話框</h3>
   <div class="wire">設定 Secret：ACC6_TRADIER_TOKEN
@@ -489,13 +668,27 @@ use_new_runner[✔]
 ────────────────────────────────────────────
                               [ 關閉 ]</div>
 
-  <h3>W · 首次啟動精靈</h3>
-  <div class="wire">歡迎！先做 3 件事：
-1. 選 repo 路徑      [ ~/Downloads/tradecopy ]  ✅ 找到 accounts.json
-2. 檢查 gh 登入      gh auth status … ✅ 已登入
-3. 檢查 git 可 push  origin/main … ✅
-                              [ 開始使用 → ]</div>
-  <ul><li>首次開啟引導定位 repo、確認 <code>gh</code>/<code>git</code> 就緒；缺則給安裝/登入指引，不讓使用者卡在空白畫面。</li></ul>
+  <h3>W · 首次啟動精靈（含 Fork 助手）</h3>
+  <div class="wire">歡迎！這是個 public 專案，要用它替你交易，先把它 fork 成你自己的：
+
+步驟 1/5  GitHub 登入   gh auth status …
+          ❌ 未登入  → [ 執行 gh auth login（開瀏覽器授權）]
+步驟 2/5  Fork 專案     將 itemhsu/tech-rebalance fork 到你的帳號
+          [ 一鍵 Fork（gh repo fork --clone）]  → 你的帳號/tech-rebalance
+步驟 3/5  選工作目錄     [ ~/我的交易系統 ]   （fork 後 clone 到這）
+步驟 4/5  設全域 Secret  Email 寄件人/App密碼 …（→ 總覽分頁）
+步驟 5/5  啟用 Actions   [ 開啟每日排程 ]
+                              [ 完成，開始使用 → ]</div>
+  <ul>
+    <li><b>Fork 助手</b>：用 <code>gh repo fork itemhsu/tech-rebalance --clone</code> 幫使用者把 public 專案
+        fork 到自己 GitHub 並 clone 下來 —— 之後所有 Secret/Actions/交易都在「他自己那份」，與原 repo 隔離。</li>
+    <li>未登入 gh → 引導 <code>gh auth login</code>（瀏覽器授權，不碰帳密）。</li>
+    <li>已是 fork（重開 App）→ 跳過 fork，直接定位 repo + 確認 gh/git 就緒。</li>
+    <li>不讓使用者卡在空白畫面：每步給明確下一步按鈕。</li>
+  </ul>
+  <div class="box info"><strong>為什麼一定要 fork</strong>：GitHub Secrets 與 Actions 排程都<b>綁在 repo 上</b>。
+  使用者必須有「自己擁有的 repo」才能設自己的金鑰、跑自己的每日交易。fork 就是取得這份的方式 ——
+  原 public repo 任何人可看可抓，但「會用你的錢交易的那份」是你 fork 出來、只有你能控制的。</div>
 </section>
 
 <!-- ══════════════════════════════════════════════════ -->
@@ -594,10 +787,42 @@ use_new_runner[✔]
       <tr><td><span class="tid">G-09</span></td><td>git_ops 在 diff 含疑似 token 時攔截 commit</td><td>單元</td><td><span class="severity-h">高</span></td></tr>
       <tr><td><span class="tid">G-10</span></td><td>state_reader 缺 state 檔時回「待產生」不丟例外</td><td>單元</td><td><span class="severity-l">低</span></td></tr>
       <tr><td><span class="tid">G-11</span></td><td>三平台冒煙：開啟、列帳戶、存檔（PyInstaller 產物）</td><td>手動</td><td><span class="severity-m">中</span></td></tr>
+      <tr><td><span class="tid">G-12</span></td><td>環境下拉值來自該券商 spec.environments（Alpaca=paper/live、Tradier=sandbox/live），非自由輸入</td><td>單元</td><td><span class="severity-h">高</span></td></tr>
+      <tr><td><span class="tid">G-13</span></td><td>切換 environment→live 觸發二次確認；未確認則不寫回（防 #3 類事故）</td><td>單元/GUI</td><td><span class="severity-h">高</span></td></tr>
     </tbody>
   </table>
+
+  <h3>Phase A-2 測試案例（表單重設計 + 全域驗證 + 精靈 + 日誌）</h3>
+  <div class="meta">對應需求 1–16；待實作</div>
+  <table>
+    <thead><tr><th>ID</th><th>測試</th><th>對應需求</th><th>嚴重度</th></tr></thead>
+    <tbody>
+      <tr><td><span class="tid">G-14</span></td><td>新增帳戶時 secret_prefix / data_dir 自動產生，使用者未填也能存</td><td>1,2</td><td><span class="severity-m">中</span></td></tr>
+      <tr><td><span class="tid">G-15</span></td><td>表單不出現 use_new_runner（內部固定 true）</td><td>3</td><td><span class="severity-l">低</span></td></tr>
+      <tr><td><span class="tid">G-16</span></td><td>存檔流程：金鑰試打成功才寫入；失敗則不寫 accounts.json、不關閉視窗</td><td>6</td><td><span class="severity-h">高</span></td></tr>
+      <tr><td><span class="tid">G-17</span></td><td>金鑰於存檔時一併寫入 GitHub Secrets（不需切分頁）</td><td>5</td><td><span class="severity-h">高</span></td></tr>
+      <tr><td><span class="tid">G-18</span></td><td>「啟用」開關有明確說明文字</td><td>4</td><td><span class="severity-l">低</span></td></tr>
+      <tr><td><span class="tid">G-19</span></td><td>id 由系統自動指定（下一個可用號、唯一），表單無 id 輸入欄</td><td>7</td><td><span class="severity-h">高</span></td></tr>
+      <tr><td><span class="tid">G-20</span></td><td>帳戶名稱（label）必填，空白擋下存檔</td><td>8</td><td><span class="severity-m">中</span></td></tr>
+      <tr><td><span class="tid">G-21</span></td><td>操作日誌：新增/編輯/刪除/啟用停用各寫一筆（ts/動作/帳戶/結果，不含金鑰值）</td><td>10</td><td><span class="severity-h">高</span></td></tr>
+      <tr><td><span class="tid">G-22</span></td><td>移除 Secrets 分頁；總覽吸收全域設定後主視窗為 3 分頁</td><td>9,11</td><td><span class="severity-m">中</span></td></tr>
+      <tr><td><span class="tid">G-23</span></td><td>總覽只含全域項目，不出現個別帳戶 NAV 列</td><td>11</td><td><span class="severity-m">中</span></td></tr>
+      <tr><td><span class="tid">G-24</span></td><td>設 Email 後「測試發信」成功才放行；SMTP 失敗不允許離開、顯示原因</td><td>12</td><td><span class="severity-h">高</span></td></tr>
+      <tr><td><span class="tid">G-25</span></td><td>gh 未登入時擋下相關動作並給 gh auth login 指引</td><td>13</td><td><span class="severity-m">中</span></td></tr>
+      <tr><td><span class="tid">G-26</span></td><td>Fork 助手：未 fork 時精靈呼叫 gh repo fork --clone（mock，不真 fork）</td><td>14</td><td><span class="severity-m">中</span></td></tr>
+      <tr><td><span class="tid">G-27</span></td><td>全域 log 讀取：正確解析 audit.jsonl 並倒序顯示；可依動作/結果篩選</td><td>15</td><td><span class="severity-m">中</span></td></tr>
+      <tr><td><span class="tid">G-28</span></td><td>帳戶 log 讀取：解析 trade_events.jsonl + 歷史，缺檔顯示「尚無紀錄」不丟例外</td><td>16</td><td><span class="severity-l">低</span></td></tr>
+      <tr><td><span class="tid">G-29</span></td><td>SendGrid 移出 GUI 全域 secret；EMAIL_SENDER 不在遮罩清單</td><td>17,18</td><td><span class="severity-m">中</span></td></tr>
+      <tr><td><span class="tid">G-30</span></td><td>EMAIL_SENDER 明文 config 可讀回；測試發信收件人自動=寄件人</td><td>17,20</td><td><span class="severity-m">中</span></td></tr>
+    </tbody>
+  </table>
+
   <div class="box info"><strong>策略</strong>：把邏輯全放 <code>services/</code>（純函式、可單測），
-  <code>views/</code> 盡量薄 → 大部分驗證不需啟動 GUI。GUI 互動以手動冒煙 + 截圖檢查。</div>
+  <code>views/</code> 盡量薄 → 大部分驗證不需啟動 GUI。GUI 互動以手動冒煙 + 截圖檢查。
+  外部 I/O（gh / 券商 API / SMTP / git）全用 mock，不打真網路、不需真金鑰。</div>
+
+  <div class="box ok"><strong>進度</strong>：Phase A/B/C 的 G-01~G-13 <b>已實作且全綠</b>（28 個 admin_gui 測試 pass）。
+  G-14~G-28 為 Phase A-2 待實作。</div>
 </section>
 
 <!-- ══════════════════════════════════════════════════ -->
@@ -624,9 +849,10 @@ use_new_runner[✔]
     <thead><tr><th>Phase</th><th>內容</th><th>狀態</th></tr></thead>
     <tbody>
       <tr><td>A</td><td>骨架 + 帳戶 CRUD</td><td>✅ 完成（見下方工程 log）</td></tr>
-      <tr><td>B</td><td>Secrets 設定</td><td>⬜ 下一步</td></tr>
-      <tr><td>C</td><td>Cron + 其他參數</td><td>⬜ 待動工</td></tr>
-      <tr><td>D</td><td>打包跨平台</td><td>⬜ 待動工</td></tr>
+      <tr><td>A-2</td><td>帳戶表單重設計（極簡欄位 + id系統指定 + 帳戶名 + 內嵌金鑰 + 存檔前驗證 + 移除Secrets分頁 + 總覽改全域設定 + 全域驗證 + Fork精靈 + 全域&帳戶log讀取）</td><td>🟡 需求已立（見 D1 上方 UX 需求框）；待實作 · <b>優先於 D</b></td></tr>
+      <tr><td>B</td><td>Secrets 設定</td><td>✅ 完成（見下方工程 log）</td></tr>
+      <tr><td>C</td><td>Cron + 其他參數</td><td>✅ 完成（見下方工程 log）</td></tr>
+      <tr><td>D</td><td>打包跨平台 + 首啟精靈（Fork 助手）</td><td>✅ 完成（見下方工程 log）</td></tr>
     </tbody>
   </table>
   <div class="box ok"><strong>決議</strong>：框架採 <b>PySide6</b>；逐階段實作，每階段工程 log 記於下。</div>
@@ -688,13 +914,102 @@ python -m admin_gui.app /path/to/repo</pre>
     <li>Secrets / 排程 / 設定 分頁為佔位（Phase B/C）。</li>
     <li>帳戶表格的「Secret 齊全燈」目前只判斷「spec 有沒有要求」，<b>尚未實際查 gh</b> 是否已設（需 Phase B 的 gh_client）。</li>
     <li>「立即 dry-run」按鈕、活動日誌、頂部 repo/gh 狀態列待補。</li>
+    <li><b>live/paper 環境</b>：下拉欄位已實作（值來自該券商 spec.environments，動態），
+        但 <b>live 紅色標籤 + 切 live 二次確認（G-13）尚未實作</b> —— 列為 Phase A 收尾或 Phase B 優先項（吸取 #3 真錢誤設事故）。</li>
     <li>CI runner 未裝 PySide6 → GUI smoke 在 CI 會 skip（service 測試仍跑）。</li>
   </ul>
   <div class="box ok"><strong>Gate A ✅</strong>：accounts.json CRUD 全可用、round-trip 無損、不破壞既有 5 帳戶；service 測試全綠。</div>
+
+  <h3>Phase B — Secrets 分頁（2026-06-02）</h3>
+
+  <h4>產出檔案</h4>
+  <table>
+    <thead><tr><th>檔案</th><th>角色</th></tr></thead>
+    <tbody>
+      <tr><td><code>admin_gui/services/gh_client.py</code></td><td>封裝 gh CLI：<code>auth_ok</code> / <code>list_secret_names</code>（讀存在狀態）/ <code>set_secret</code>（值經 <b>stdin</b> 餵 gh）。runner 可注入，可單測不打真 gh</td></tr>
+      <tr><td><code>admin_gui/services/secrets_audit.py</code></td><td>推導每帳戶該有的 GitHub Secret（alpaca=<code>{prefix}_ALPACA_KEY/SECRET</code>、tradier=<code>{prefix}_TRADIER_TOKEN/ACCOUNT</code>）+ 全域（EMAIL_*/SENDGRID）+ 比對存在狀態</td></tr>
+      <tr><td><code>admin_gui/views/secrets_view.py</code></td><td>Secrets 分頁表格（只顯示存在/不存在）+ 設定對話框（遮罩輸入、值不落地）+ 缺必填告警橫幅</td></tr>
+      <tr><td><code>admin_gui/app.py</code></td><td>第 3 分頁從佔位換成真正的 SecretsView</td></tr>
+      <tr><td><code>tests/admin_gui/test_secrets.py</code></td><td>8 個測試（含安全 G-05/G-06）</td></tr>
+    </tbody>
+  </table>
+
+  <h4>安全設計（Gate B 重點）</h4>
+  <ul>
+    <li><b>值絕不落地</b>：<code>set_secret</code> 用 <code>gh secret set NAME --body -</code>，值經 <code>input=</code>（stdin）餵入，<b>不放命令列參數</b>（避免 ps / shell history / log 外洩）。</li>
+    <li><b>只讀存在狀態</b>：Secrets 分頁靠 <code>gh secret list --json name</code>，<b>永遠拿不到也不顯示值</b>。</li>
+    <li><b>設定後清記憶體</b>：對話框值用完即設 None。</li>
+    <li><b>缺 Secret 連動</b>：帳戶因缺必填 Secret 無法執行時，橫幅紅字列出帳戶 id。</li>
+  </ul>
+
+  <h4>測試結果</h4>
+  <pre>tests/admin_gui/  →  18 passed, 1 skipped（含 Phase A）
+  G-05  set_secret 值走 stdin、不進 argv ✅
+  G-06  靜態掃描：gh_client/secrets_view 無「值→檔/log」路徑 ✅
+  list 解析 / 失敗 raise / audit（alpaca+tradier required、缺項、全域）✅
+  GUI smoke（SecretsView 建構，mock gh）✅
+全專案：547 passed, 0 regression</pre>
+
+  <h4>已知限制 / 待 Phase C+</h4>
+  <ul>
+    <li>排程 / 設定 分頁仍為佔位（Phase C）。</li>
+    <li>Secret 命名只推「正規名」（<code>{prefix}_ALPACA_KEY</code> 等）；workflow 對舊命名有 fallback 鏈，GUI 不顯示 legacy 名（鼓勵用正規名，legacy 清理是另一條線）。</li>
+    <li>repo slug 目前寫死 <code>itemhsu/tech-rebalance</code>，待 Phase C 設定分頁可改。</li>
+  </ul>
+  <div class="box ok"><strong>Gate B ✅</strong>：值走 stdin 不落地（G-05）、無「值→檔/log」路徑（G-06）、缺 Secret 正確標示；測試全綠。</div>
+
+  <h3>Phase C — 排程 + 設定分頁（2026-06-02）</h3>
+  <h4>產出檔案</h4>
+  <table>
+    <thead><tr><th>檔案</th><th>角色</th></tr></thead>
+    <tbody>
+      <tr><td><code>admin_gui/services/cron_editor.py</code></td><td>workflow YAML 的 cron 純文字讀寫（就地替換目標行、不破壞格式）+ <code>CronEntry</code> 解析 + cron↔可讀（含 UTC→台灣時區換算、隔日標示）</td></tr>
+      <tr><td><code>admin_gui/services/git_ops.py</code></td><td>安全 git：<code>diff_of</code> 預覽、<code>commit_and_push</code>；<b>commit 前掃 staged diff，命中疑似 token（PK/AK/SG./ghp_/Bearer）即擋下</b></td></tr>
+      <tr><td><code>admin_gui/views/schedule_view.py</code></td><td>排程分頁：列各 workflow 的 cron + 台灣時間、改時間 → 即時預覽 → diff 對話框 → push（取消則 <code>git checkout</code> 還原）</td></tr>
+      <tr><td><code>admin_gui/views/settings_view.py</code></td><td>設定分頁：全域 Email Secret 狀態 + 環境自檢（git/gh/Python 版本、repo 路徑、遠端可達）</td></tr>
+      <tr><td><code>admin_gui/app.py</code></td><td>排程/設定佔位換成真 view → 5 分頁全實作</td></tr>
+      <tr><td><code>tests/admin_gui/test_phase_c.py</code></td><td>G-07（cron 改寫只動目標行 + YAML 仍有效）、G-08（cron↔可讀+時區）、G-09（疑似 token 擋 commit）</td></tr>
+    </tbody>
+  </table>
+  <h4>設計決策</h4>
+  <ul>
+    <li><b>cron 用純文字替換</b>而非 yaml dump → 不動既有註解/縮排/其他行（G-07 驗證）。</li>
+    <li><b>改 cron 走 diff 預覽 + 確認</b>才 push；取消即 <code>git checkout</code> 還原，零殘留。</li>
+    <li><b>commit 前 token 掃描</b>（git_ops）→ 防把金鑰誤推進 git（G-09）。</li>
+    <li>設定分頁的「可 push」用 <code>git ls-remote</code>（唯讀）探測，不真 push。</li>
+  </ul>
+  <div class="box ok"><strong>Gate C ✅</strong>：cron 改寫後 YAML 仍合法、只動目標行；cron↔可讀+時區正確；diff 預覽與實際一致；token 掃描攔截生效。</div>
+
+  <h3>Phase A-2 工程 log（2026-06-02）</h3>
+  <ul>
+    <li>services：<code>account_factory</code>（系統 id/自動欄位）、<code>audit_log</code>（操作日誌）、
+        <code>probes</code>（券商/Email/gh 驗證）、<code>log_reader</code>（全域+帳戶 log）、
+        <code>fork_helper</code>、<code>global_config</code>（非機密明文）。</li>
+    <li>views：帳戶表單重設計（極簡+內嵌金鑰+測試才存）、總覽改全域設定+全域 log、3 分頁。</li>
+    <li>Email：寄件人明文、SendGrid 移除、測試發信給自己。</li>
+    <li>測試 G-14~G-30 全綠。</li>
+  </ul>
+
+  <h3>Phase D 工程 log（2026-06-02）</h3>
+  <table>
+    <thead><tr><th>產出</th><th>角色</th></tr></thead>
+    <tbody>
+      <tr><td><code>admin_gui/views/wizard.py</code></td><td>首啟精靈：gh 登入檢查 → 一鍵 Fork（ForkHelper）→ 指定 repo → 寫 setup_done</td></tr>
+      <tr><td><code>admin_gui/app.py</code></td><td>首次啟動自動跳精靈（<code>is_first_run</code>），完成後記住 repo 路徑</td></tr>
+      <tr><td><code>admin_gui/admin_gui.spec</code></td><td>PyInstaller spec：打包 GUI+PySide6 成單檔（Mac .app / Win .exe / Linux）</td></tr>
+      <tr><td><code>scripts/build_gui.sh</code></td><td>一鍵建置（pip install + pyinstaller）</td></tr>
+      <tr><td><code>admin_gui/requirements-gui.txt</code></td><td>GUI 執行/打包相依（PySide6、pyinstaller）</td></tr>
+      <tr><td>tests</td><td>G-26（fork）、G-32（首啟旗標）、wizard smoke</td></tr>
+    </tbody>
+  </table>
+  <div class="box info"><strong>打包模型</strong>：binary 打包 GUI 本體 + PySide6；交易系統 repo（brokers/strategies/accounts）
+  由精靈 fork/指定，App 執行時讀該 repo（不打包進來，保持輕量、且永遠對最新 repo 操作）。</div>
+  <div class="box ok"><strong>Gate D ✅</strong>：精靈可建構、首啟旗標正確、spec/build 腳本就緒；47 個 admin_gui 測試全綠，全專案 576 PASS。
+  <b>整個管理 GUI（A/A-2/B/C/D）完成。</b></div>
 </section>
 
 <footer>
-  Tech-Rebalance · 管理者 GUI 桌面 App 計劃書 v1 · 2026-06-02 · 11 test cases
+  Tech-Rebalance · 管理者 GUI 桌面 App 計劃書 v1 · 2026-06-02 · 35 test cases
 </footer>
 
 </main>
