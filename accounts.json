@@ -12,8 +12,7 @@
       "data_dir": "data/1",
       "email_recipients": [
         "itemhsu@gmail.com"
-      ],
-      "use_new_runner": true
+      ]
     },
     {
       "id": "2",
