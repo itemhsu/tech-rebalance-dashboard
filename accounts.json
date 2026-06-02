@@ -32,10 +32,10 @@
     {
       "id": "3",
       "strategy": "mom_6m_t20",
-      "label": "帳戶 #3 (MOM-6m-T20 月度動能)",
+      "label": "帳戶 #3 (MOM-6m-T20 月度動能 · LIVE 真錢)",
       "enabled": true,
       "broker": "alpaca",
-      "environment": "paper",
+      "environment": "live",
       "secret_prefix": "ACC3",
       "alpaca_secret_prefix": "ACC3",
       "data_dir": "data/3",
