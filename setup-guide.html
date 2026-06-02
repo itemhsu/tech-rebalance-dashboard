@@ -141,6 +141,20 @@ footer{text-align:center;color:#1e293b;font-size:11px;padding:36px 0 18px;}
   </div>
 </div>
 
+<div class="box ok">
+  <strong>🖥️ 最簡單的方式：用桌面 App（推薦）</strong>
+  下載 <b>TradingAdmin</b> 桌面程式，<b>不用碰命令列、不用手動設 Secrets、不用手編 accounts.json</b>。
+  它用 GitHub API 直接幫你管理帳戶、券商金鑰、cron 排程與日誌；你只要在 App 裡：
+  <ol style="margin:8px 0 0 18px">
+    <li>登入 GitHub（<code>gh auth login</code>，App 會引導）</li>
+    <li>在「帳戶」分頁新增帳戶 → 填券商金鑰（App 直接幫你寫進 GitHub Secrets）</li>
+    <li>在「總覽」分頁設定 email App 密碼（<code>EMAIL_PASSWORD</code>）</li>
+  </ol>
+  下載：<a href="https://github.com/itemhsu/tradingadmin/releases/latest" target="_blank">github.com/itemhsu/tradingadmin/releases/latest</a>
+  （macOS DMG）。<br>
+  下面的「手動命令列」步驟僅供進階使用者或想了解底層的人參考——用 App 的話可略過步驟 ③④⑤。
+</div>
+
 <!-- ══════════════════════════════════════════════════ -->
 <section id="overview">
   <h2>📋 系統架構</h2>
@@ -337,13 +351,15 @@ cd tech-rebalance</pre>
         <td>步驟 ③ 產生的 16 碼 App Password</td>
         <td><b>去掉空格</b>，e.g. <code>abcdefghijklmnop</code></td>
       </tr>
-      <tr>
-        <td><code>DASHBOARD_PUSH_TOKEN</code></td>
-        <td>GitHub PAT</td>
-        <td>讓主 repo workflow 能 push 到 dashboard repo（下方說明）</td>
-      </tr>
     </tbody>
   </table>
+
+  <div class="box tip">
+    <strong>💡 用桌面 App 的話，這一步全自動</strong>
+    在 TradingAdmin App 的「帳戶」分頁新增帳戶時直接填券商金鑰，App 會幫你寫進
+    <code>ACC{N}_ALPACA_KEY</code> / <code>ACC{N}_ALPACA_SECRET</code>；
+    email 密碼在「總覽」分頁設定 <code>EMAIL_PASSWORD</code>。你不需要記任何 Secret 名稱。
+  </div>
 
   <div class="box info">
     <strong>📮 收件人在哪設？</strong>
@@ -354,23 +370,19 @@ cd tech-rebalance</pre>
   <h3>多帳戶?再加 ACC2 / ACC3 ...</h3>
   <p>每多一個帳戶就加三個 Secret：<code>ACC2_ALPACA_KEY</code>、<code>ACC2_ALPACA_SECRET</code>、<code>ACC2_BASE_URL</code>。</p>
 
-  <h3>產生 DASHBOARD_PUSH_TOKEN（PAT）</h3>
-  <ol>
-    <li>到 <a href="https://github.com/settings/tokens?type=beta" target="_blank">GitHub → Settings → Developer settings → Fine-grained PAT</a></li>
-    <li><b>Generate new token</b></li>
-    <li>Repository access: <b>Only select repositories</b> → 選 <code>tech-rebalance-dashboard</code></li>
-    <li>Permissions: <code>Contents</code> → <b>Read and write</b></li>
-    <li>產生後複製整段 <code>github_pat_xxxx</code> 到 <code>DASHBOARD_PUSH_TOKEN</code></li>
-  </ol>
-
   <div class="box info">
-    <strong>用 gh CLI 一次設好</strong>
+    <strong>用 gh CLI 一次設好（手動方式）</strong>
 <pre>gh secret set ACC1_ALPACA_KEY      --body "你的 Alpaca key"
 gh secret set ACC1_ALPACA_SECRET   --body "你的 Alpaca secret"
 gh secret set ACC1_BASE_URL        --body "https://paper-api.alpaca.markets"
 gh secret set EMAIL_SENDER         --body "you@gmail.com"
-gh secret set EMAIL_PASSWORD       --body "abcdefghijklmnop"
-gh secret set DASHBOARD_PUSH_TOKEN --body "github_pat_xxx"</pre>
+gh secret set EMAIL_PASSWORD       --body "abcdefghijklmnop"</pre>
+  </div>
+
+  <div class="box tip">
+    <strong>📊 Dashboard 自動更新的金鑰由維護者設定（你不用碰）</strong>
+    讓主 repo 把 dashboard 推到公開 Pages repo 的金鑰是 <code>PAGES_TOKEN</code>，
+    屬一次性基礎建設、由系統維護者設定一次即可，<b>一般使用者完全不需要處理</b>。
   </div>
 </section>
 
@@ -654,8 +666,8 @@ jq 'select(.type=="ORDER_PLANNED")' data/1/trade_events.jsonl</pre>
       </tr>
       <tr>
         <td>Dashboard 顯示 404</td>
-        <td>Pages 未啟用 / push token 失效</td>
-        <td>步驟 ⑥ + 步驟 ④ DASHBOARD_PUSH_TOKEN</td>
+        <td>Pages 未啟用 / <code>PAGES_TOKEN</code> 失效</td>
+        <td>步驟 ⑥ 啟用 Pages；確認維護者已設好 <code>PAGES_TOKEN</code></td>
       </tr>
     </tbody>
   </table>
