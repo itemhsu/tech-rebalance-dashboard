@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>報告產生管線重構提案 — 資料驅動的單一產生器</title>
+<style>
+  :root{--bg:#0b1220;--card:#111b2e;--ink:#e5edf7;--muted:#93a4bd;--accent:#38bdf8;
+        --line:#22324d;--warn:#f59e0b;--bad:#f87171;--good:#34d399;}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+       font-family:-apple-system,"PingFang TC","Noto Sans TC",Segoe UI,sans-serif;line-height:1.7}
+  .wrap{max-width:980px;margin:0 auto;padding:32px 20px 80px}
+  h1{font-size:30px;margin:0 0 4px}
+  h2{font-size:22px;margin:34px 0 10px;border-left:4px solid var(--accent);padding-left:10px}
+  h3{font-size:17px;margin:20px 0 8px;color:#cfe3fb}
+  .sub{color:var(--muted);margin:0 0 22px}
+  .badge{display:inline-block;background:#15233b;border:1px solid var(--line);
+         color:var(--accent);border-radius:999px;padding:2px 12px;font-size:13px;margin:2px 4px 2px 0}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin:14px 0}
+  table{width:100%;border-collapse:collapse;margin:10px 0;font-size:14px}
+  th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+  th{background:#15233b;color:#cfe3fb}
+  code{background:#0e1a2e;border:1px solid var(--line);border-radius:5px;padding:1px 6px;font-size:13px}
+  pre{background:#0e1a2e;border:1px solid var(--line);border-radius:10px;padding:14px;overflow:auto;font-size:13px}
+  .bad{color:var(--bad)} .good{color:var(--good)} .warn{color:var(--warn)}
+  .pill{font-weight:700}
+  ul{margin:8px 0 8px 0;padding-left:20px} li{margin:4px 0}
+  .box{border-radius:10px;padding:12px 14px;margin:12px 0;border:1px solid}
+  .box.bad{background:#2a1416;border-color:#7f1d1d}
+  .box.good{background:#0e2a1f;border-color:#14532d}
+  .box.warn{background:#2a2210;border-color:#78510f}
+  .kpi{display:flex;gap:14px;flex-wrap:wrap;margin:8px 0}
+  .kpi div{background:#0e1a2e;border:1px solid var(--line);border-radius:10px;padding:10px 14px;min-width:140px}
+  .kpi b{display:block;font-size:24px;color:var(--accent)}
+  .muted{color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>📊 報告產生管線重構提案</h1>
+  <p class="sub">從「每策略一個硬寫函式」→「資料驅動的單一產生器」 · 2026-06-03</p>
+  <span class="badge">scripts/migrate_to_mvp.py</span>
+  <span class="badge">狀態：提案 · 待核可後實作</span>
+
+  <h2>1. 問題陳述</h2>
+  <div class="box bad">
+    <b class="bad">每新增一個帳戶/策略，就要手寫一個近百行的產生器函式 —— 並且每次都先壞一次、再修一次。</b>
+    這次帳戶 #3（mom_6m_t20）就是：報告日期長期停在舊資料、主旨錯成「Monthly TOP10」、三個按鈕消失，
+    全因為 <code>migrate_to_mvp.py</code> 裡<strong>根本沒有 #3 的產生器</strong>。
+  </div>
+  <p>現況：<code>migrate_to_mvp.py</code> 為每個策略硬寫一個函式：</p>
+  <pre>migrate_top10()        # 帳戶 #1
+migrate_d2p2t6()       # 帳戶 #2
+migrate_mom_6m_t20()   # 帳戶 #3   ← 這次才補上（頭痛醫頭）
+migrate_weekly_top10() # 帳戶 #4
+migrate_d2p2t6_live()  # 舊
+migrate_top9psq_live() # 舊
+… 每個 ~90 行，彼此 90% 重複</pre>
+  <div class="kpi">
+    <div><b>~90</b><span class="muted">行/策略</span></div>
+    <div><b>22</b><span class="muted">現有策略</span></div>
+    <div><b class="bad">~400+</b><span class="muted">預期還要新增的行數</span></div>
+    <div><b class="bad">~400</b><span class="muted">預期還要再錯的次數</span></div>
+  </div>
+
+  <h2>2. 根因分析：其實只有「兩個地方」會變</h2>
+  <p>把六個函式逐行比對，<strong>95% 完全相同</strong>（讀 state、抽 nav_history/trade_log、呼叫
+  <code>write_data_json</code>、注入 benchmark、存快照）。真正隨策略不同的只有兩點：</p>
+  <table>
+    <thead><tr><th>變異點</th><th>各策略目前怎麼做</th><th>本質</th></tr></thead>
+    <tbody>
+      <tr><td>① 持股清單來源</td>
+          <td><code>state.top10</code> / <code>state.target_weights</code> / <code>positions</code></td>
+          <td>同一組欄位的 fallback 順序，<span class="good">已可泛化</span></td></tr>
+      <tr><td>② 排名（rankings）形狀</td>
+          <td><code>ranked_stocks</code>（TOP10/MOM）、<code>scorecard</code>（Weekly）、
+              三大宇宙分組（D2P2T6）</td>
+          <td>3 種已知形狀，<span class="good">可用「宣告式 adapter」表達</span></td></tr>
+    </tbody>
+  </table>
+  <p>其餘（路徑、strategy_id、id/label）<strong>本來就都在 <code>accounts.json</code> 裡</strong>，
+  根本不該寫死在 Python。</p>
+
+  <h2>3. 設計原則</h2>
+  <ul>
+    <li><span class="pill good">新增策略 = 只改 JSON、0 行 Python</span>（與本專案既有的 SpecEngine、
+        rest_broker「JSON-driven」哲學一致）。</li>
+    <li>單一產生器 <code>generate_for_account(account)</code>，<strong>迴圈跑 accounts.json 的每個 enabled 帳戶</strong>。</li>
+    <li>變異點用<strong>宣告式設定</strong>表達（在 strategy JSON 的 <code>dashboard</code> 區塊），不是 if/elif 分支。</li>
+    <li>產出一律經 <code>validate_data_json()</code> 驗證 + 套用 email schema（含 cta），<strong>壞掉當場失敗</strong>而不是無聲產生爛報告。</li>
+  </ul>
+
+  <h2>4. 提案架構</h2>
+  <pre>def generate_all(output_dir):
+    for account in load_accounts(enabled=True):          # 來源唯一：accounts.json
+        generate_for_account(account, output_dir)
+
+def generate_for_account(account, output_dir):
+    strat  = load_and_validate(account["strategy"])      # 策略 JSON（含 dashboard 設定）
+    state  = load_state(account["data_dir"])             # 統一 portfolio_state.json
+    if not state: return "skip"                          # 無資料 → 略過（不算錯）
+    hist   = extract_history(account["data_dir"])
+
+    holdings = resolve_holdings(state)                   # ① 泛化 fallback
+    rankings = resolve_rankings(state, strat)            # ② 宣告式 adapter（見下）
+
+    data = write_data_json(strat, account, state, hist, holdings, rankings, ...)
+    inject_benchmark(data); validate_data_json(data); save_snapshot(data)
+    return "ok"</pre>
+  <p class="muted">↑ 不論 1 個或 400 個帳戶，<strong>都是這段、沒有任何 per-strategy 分支</strong>。</p>
+
+  <h3>① resolve_holdings（持股 fallback 鏈）</h3>
+  <pre>state.get("top10")
+  or list(state.get("target_weights", {}).keys())
+  or [p["symbol"] for p in state.get("positions", [])][:N]</pre>
+
+  <h3>② resolve_rankings（宣告式 adapter）</h3>
+  <p>在 strategy JSON 宣告排名來源，產生器照表操作；新策略若用既有形狀，<strong>一個字都不用寫</strong>：</p>
+  <table>
+    <thead><tr><th><code>dashboard.rankings.source</code></th><th>讀取</th><th>適用</th></tr></thead>
+    <tbody>
+      <tr><td><code>"ranked_stocks"</code>（預設）</td><td><code>state.ranked_stocks</code></td><td>TOP10 / MOM 系列（多數）</td></tr>
+      <tr><td><code>"scorecard"</code></td><td><code>state.scorecard</code>（score→rank）</td><td>Weekly TOP10</td></tr>
+      <tr><td><code>"universe_groups"</code></td><td>依 <code>dashboard.groups</code> 設定分組</td><td>D2P2T6（軍火/醫藥/科技）</td></tr>
+    </tbody>
+  </table>
+  <div class="box good">
+    沒設 <code>rankings.source</code> 時，產生器<strong>自動偵測</strong> state 內有哪個欄位
+    （<code>ranked_stocks</code> → <code>scorecard</code> → 由 positions 推導），
+    所以絕大多數策略<strong>連這行設定都不用加</strong>。
+  </div>
+
+  <h2>5. 遷移計畫（對真錢報告安全）</h2>
+  <table>
+    <thead><tr><th>階段</th><th>動作</th><th>安全保證</th></tr></thead>
+    <tbody>
+      <tr><td>P1</td><td>實作 <code>generate_for_account</code> 與兩個 resolver（純函式）</td><td>不接線，先單測</td></tr>
+      <tr><td>P2</td><td><b>Parity 測試</b>：對 #1/#2/#4 跑「新產生器 vs 舊函式」，逐欄比對 data.json 一致</td><td>輸出位元級相同才算過</td></tr>
+      <tr><td>P3</td><td>workflow 改呼叫 <code>generate_all</code>；觀察 1 天（與舊輸出並存比對）</td><td>可隨時回退</td></tr>
+      <tr><td>P4</td><td>刪除 6 個 <code>migrate_*</code> 函式（含這次的 <code>migrate_mom_6m_t20</code>）</td><td>移除 ~500 行重複碼</td></tr>
+    </tbody>
+  </table>
+
+  <h2>6. 測試計畫</h2>
+  <table>
+    <thead><tr><th>ID</th><th>測試</th><th>嚴重度</th></tr></thead>
+    <tbody>
+      <tr><td>R-01</td><td>resolve_holdings：top10 / target_weights / positions 三種來源各取對</td><td>高</td></tr>
+      <tr><td>R-02</td><td>resolve_rankings：ranked_stocks / scorecard / universe_groups / 自動偵測 各產出正確形狀</td><td>高</td></tr>
+      <tr><td>R-03</td><td><b>Parity</b>：#1/#2/#4 新舊輸出逐欄一致（防回歸）</td><td>高</td></tr>
+      <tr><td>R-04</td><td>對 accounts.json <b>每個 enabled 帳戶</b>跑產生器 → <code>validate_data_json</code> 全過、date=最新、subject 可套版、含 cta</td><td>高</td></tr>
+      <tr><td>R-05</td><td>新增一個「假策略 JSON」→ 不寫任何 Python，產生器即能產出有效 data.json（證明 0-Python 目標）</td><td>中</td></tr>
+      <tr><td>R-06</td><td>無資料帳戶 → 回 skip、不丟例外、不產生爛報告</td><td>中</td></tr>
+    </tbody>
+  </table>
+  <p class="muted">這次已先加的守門測試（email section 名有效、subject 可套版、含 cta、migrate 有對應產生器）併入 R-04 範圍。</p>
+
+  <h2>7. 對比（重構前 / 後）</h2>
+  <table>
+    <thead><tr><th></th><th>現在（每策略硬寫）</th><th>重構後（資料驅動）</th></tr></thead>
+    <tbody>
+      <tr><td>新增 1 個策略</td><td class="bad">寫 ~90 行 Python + 接 main + 容易漏 → 報告壞</td><td class="good">只放 strategy JSON（多數連 rankings 設定都不用）</td></tr>
+      <tr><td>產生器程式碼量</td><td class="bad">6×~90 ≈ 540 行，且隨策略線性增長</td><td class="good">~1 個泛用函式 + 2 個 resolver（固定）</td></tr>
+      <tr><td>新策略漏接的後果</td><td class="bad">無聲產生舊/錯報告（如 #3）</td><td class="good">accounts.json 一列就自動納入；缺資料則 skip</td></tr>
+      <tr><td>22→400 策略</td><td class="bad">~400 次「錯一次、修一次」</td><td class="good">零增量 Python</td></tr>
+    </tbody>
+  </table>
+
+  <h2>8. 風險與緩解</h2>
+  <ul>
+    <li><b>D2P2T6 分組排名</b>是唯一較特殊的形狀 → 用 <code>universe_groups</code> adapter + 策略既有的群組設定表達，Parity 測試把關。</li>
+    <li><b>真錢 #3</b>：本重構只動「報告產生」，<strong>不碰交易/下單</strong>；P2 Parity + P3 並存比對確保輸出不變。</li>
+    <li>舊函式分階段刪除，任何階段可回退。</li>
+  </ul>
+
+  <div class="box good">
+    <b>結論：</b>把 <code>migrate_to_mvp.py</code> 從「每策略一函式」改成「讀 accounts.json + strategy JSON 的單一資料驅動產生器」，
+    讓「新增策略 = 只改 JSON、0 Python」。這才是根治，而非再補第 7、第 8… 個 <code>migrate_*</code>。
+  </div>
+
+</div>
+</body>
+</html>
