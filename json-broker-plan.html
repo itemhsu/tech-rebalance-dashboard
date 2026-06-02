@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>JSON-Driven 券商引擎 — 計劃書 + 測試計劃</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:#020617;color:#e2e8f0;font-family:'Segoe UI',system-ui,sans-serif;font-size:14px;line-height:1.65;}
+a{color:#3b82f6;text-decoration:none;}
+
+.sidebar{position:fixed;top:0;left:0;width:240px;height:100vh;background:#0a0f1e;
+   border-right:1px solid #1e293b;overflow-y:auto;padding:14px 0;z-index:50;}
+.sidebar h1{font-size:13px;color:#3b82f6;padding:0 16px 12px;border-bottom:1px solid #1e293b;font-weight:800;}
+.sidebar h1 small{display:block;font-size:10px;color:#475569;margin-top:2px;font-weight:400;}
+.sidebar h3{font-size:9px;color:#475569;text-transform:uppercase;letter-spacing:1.4px;padding:14px 16px 4px;}
+.sidebar a{display:block;padding:5px 16px;font-size:12px;color:#64748b;border-left:3px solid transparent;transition:all .12s;}
+.sidebar a:hover,.sidebar a.active{color:#3b82f6;border-color:#3b82f6;background:rgba(59,130,246,.07);}
+
+main{margin-left:240px;padding:32px 5% 80px;max-width:1200px;}
+
+.hero{background:linear-gradient(135deg,#0c1628 0%,#0d1f3c 60%,#0c1628 100%);
+   padding:32px 38px;border-radius:14px;margin-bottom:24px;border:1px solid #1e3a5f;}
+.hero .badge{display:inline-block;background:#1e293b;border:1px solid #334155;color:#94a3b8;
+   padding:3px 11px;border-radius:14px;font-size:10px;margin-right:6px;}
+.hero h1{font-size:28px;font-weight:900;color:#3b82f6;margin:12px 0 8px;letter-spacing:-0.5px;}
+.hero h1 span{color:#a855f7;}
+.hero p{color:#94a3b8;font-size:13px;}
+
+section{background:#0a0f1e;border:1px solid #1e293b;border-radius:12px;padding:24px 28px;margin-bottom:18px;}
+section h2{font-size:18px;font-weight:800;color:#e2e8f0;margin-bottom:6px;}
+section h2 .num{display:inline-block;background:#3b82f6;color:#fff;font-size:11px;
+   padding:3px 9px;border-radius:12px;font-weight:700;margin-right:8px;}
+section .meta{color:#475569;font-size:11px;margin-bottom:14px;}
+section h3{font-size:14px;font-weight:700;color:#93c5fd;margin:18px 0 6px;}
+section h4{font-size:11px;font-weight:700;color:#475569;margin:14px 0 5px;text-transform:uppercase;letter-spacing:.8px;}
+p{color:#94a3b8;margin-bottom:8px;}
+ul,ol{color:#94a3b8;padding-left:22px;margin-bottom:9px;}
+li{margin-bottom:3px;}
+b,strong{color:#e2e8f0;}
+
+code{background:#0f172a;border:1px solid #1e293b;border-radius:3px;padding:1px 6px;
+   font-size:11.5px;color:#93c5fd;font-family:'Menlo','Courier New',monospace;}
+pre{background:#020617;border:1px solid #1e293b;border-radius:8px;padding:13px 17px;
+   overflow-x:auto;font-size:11.5px;line-height:1.55;margin:9px 0;
+   font-family:'Menlo','Courier New',monospace;color:#cbd5e1;}
+.k{color:#93c5fd;}.s{color:#86efac;}.n{color:#fb923c;}.c{color:#475569;font-style:italic;}
+
+.box{border-radius:8px;padding:11px 15px;margin:10px 0;border:1px solid;}
+.box.warn  {background:#190e00;border-color:#92400e;color:#fcd34d;}
+.box.info  {background:#080f1a;border-color:#1e3a5f;color:#93c5fd;}
+.box.ok    {background:#081308;border-color:#14532d;color:#86efac;}
+.box.tip   {background:#1c0d23;border-color:#581c87;color:#c4b5fd;}
+.box.danger{background:#190808;border-color:#7f1d1d;color:#fca5a5;}
+
+table{width:100%;border-collapse:collapse;font-size:11.5px;margin:9px 0;}
+th{background:#0f172a;color:#475569;padding:8px 10px;text-align:left;
+   border-bottom:1px solid #1e293b;font-size:10px;text-transform:uppercase;letter-spacing:.5px;}
+td{padding:7px 10px;border-bottom:1px solid #0d1526;color:#cbd5e1;vertical-align:top;}
+tr:hover td{background:#0c1220;}
+td code{font-size:10.5px;}
+
+.phase-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:11px;margin:13px 0;}
+.phase-card{background:#0f172a;border:1px solid #1e293b;border-radius:9px;padding:14px;position:relative;}
+.phase-card .pn{position:absolute;top:8px;right:12px;font-size:36px;font-weight:900;color:#1e293b;line-height:1;}
+.phase-card h4{font-size:12px;font-weight:700;color:#3b82f6;margin:0 0 8px;text-transform:none;letter-spacing:0;}
+.phase-card ul{font-size:11px;color:#94a3b8;padding-left:14px;margin:0 0 8px;}
+.phase-card .dur{font-size:10px;color:#fcd34d;font-weight:700;border-top:1px solid #1e293b;padding-top:6px;}
+
+.tid{display:inline-block;background:#0f172a;border:1px solid #334155;color:#3b82f6;
+   font-family:monospace;font-size:10px;padding:1px 6px;border-radius:4px;font-weight:700;}
+
+.checklist{list-style:none;padding-left:0;}
+.checklist li{padding:4px 0 4px 24px;position:relative;color:#cbd5e1;font-size:12px;}
+.checklist li::before{content:'☐';position:absolute;left:6px;color:#475569;font-size:13px;}
+
+.severity-h{color:#f87171;font-weight:700;}
+.severity-m{color:#fcd34d;font-weight:700;}
+.severity-l{color:#86efac;font-weight:700;}
+
+footer{text-align:center;color:#1e293b;font-size:11px;padding:36px 0 18px;}
+</style>
+</head>
+<body>
+
+<nav class="sidebar">
+  <h1>🧩 JSON 券商引擎<small>計劃書 + 測試計劃</small></h1>
+
+  <h3>🎯 概覽</h3>
+  <a href="#summary">執行摘要</a>
+  <a href="#why">為什麼券商要 JSON 化</a>
+  <a href="#scope">範圍與不做什麼</a>
+
+  <h3>🏗 設計</h3>
+  <a href="#schema-v2">broker-schema v2</a>
+  <a href="#engine">通用 REST 引擎</a>
+  <a href="#mapping">對應表範例</a>
+  <a href="#limits">涵蓋範圍與限制</a>
+
+  <h3>🛠 工程計劃</h3>
+  <a href="#phases">階段概覽</a>
+  <a href="#phaseA">A：schema v2 + 引擎</a>
+  <a href="#phaseB">B：Alpaca 純 JSON 化</a>
+  <a href="#phaseC">C：Tradier 純 JSON</a>
+  <a href="#phaseD">D：清理舊 client</a>
+  <a href="#phaseE">E：Tradier 上線實單</a>
+
+  <h3>🧪 測試計劃</h3>
+  <a href="#test-strategy">測試策略</a>
+  <a href="#test-unit">單元：引擎</a>
+  <a href="#test-schema">Schema 驗證</a>
+  <a href="#test-parity">Alpaca Parity</a>
+  <a href="#test-tradier">Tradier 整合</a>
+  <a href="#test-security">安全測試</a>
+  <a href="#test-cd">CI/CD Gate</a>
+
+  <h3>🚨 風控</h3>
+  <a href="#rollback">Rollback 計劃</a>
+  <a href="#execution-status">✅ 執行狀況</a>
+</nav>
+
+<main>
+
+<div class="hero">
+  <div>
+    <span class="badge">v1 draft</span>
+    <span class="badge">2026-06-01</span>
+    <span class="badge">含 38 個測試案例</span>
+  </div>
+  <h1>🧩 JSON-Driven 券商引擎 <span>新券商 0 程式碼</span></h1>
+  <p>把「每家券商一個 Python client」升級為「一個通用 REST 引擎 + 每家一份 JSON」。
+  新增 REST 券商 = 寫一個 spec JSON，<b>0 行 Python</b>，與策略層相同的 SOP。</p>
+</div>
+
+<!-- ══════════════════════════════════════════════════ -->
+<section id="summary">
+  <h2>📋 執行摘要</h2>
+  <div class="meta">一頁看懂這份計劃</div>
+
+  <p><b>現況</b>：策略層已 JSON-driven（新策略 0 程式），但券商層還是「每家一個 client」
+  （<code>brokers/alpaca_client.py</code> ~250 行）。要加 Tradier 就得再寫一個 client。</p>
+
+  <p><b>目標</b>：把券商層也 JSON 化。寫<b>一次</b>通用 REST 引擎
+  <code>brokers/rest_broker.py</code>，之後每家券商只寫一份描述「API 長怎樣」的 JSON
+  （auth 方式、endpoint、請求/回應欄位對應），<b>不寫 Python</b>。</p>
+
+  <table>
+    <thead><tr><th>軸</th><th>新增一個要做什麼</th><th>JSON 化後</th></tr></thead>
+    <tbody>
+      <tr><td>策略</td><td>寫 v3 JSON</td><td>✅ 已是 0 程式</td></tr>
+      <tr><td>券商（本計劃）</td><td>寫一個 client.py</td><td>→ 寫一份 spec JSON，<b>0 程式</b></td></tr>
+    </tbody>
+  </table>
+
+  <div class="box warn">
+    <strong>⚖️ 誠實的取捨</strong>
+    通用引擎(~300 行) + schema 擴充是<b>一次性高成本</b>，比單寫一個 Tradier client(~150 行)還多碼。
+    <b>兩家券商時其實不划算</b>，從第 3 家 REST 券商起才回本。本計劃之所以做，是因為「券商也 JSON 化」是明確的設計要求，且回本後永久受惠。
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════ -->
+<section id="why">
+  <h2>🤔 為什麼券商「也能」JSON 化</h2>
+  <div class="meta">差異是行為，但行為可被宣告式描述</div>
+
+  <p>券商間的差異看似是「行為」（form-encoded vs JSON、欄位名、巢狀回應），
+  但這些行為<b>都是有限、可列舉的模式</b> —— 只要引擎支援這些模式，差異就退化成「填哪個值」的資料問題。</p>
+
+  <table>
+    <thead><tr><th>差異點</th><th>Alpaca</th><th>Tradier</th><th>JSON 怎麼描述</th></tr></thead>
+    <tbody>
+      <tr><td>請求編碼</td><td>JSON</td><td>form</td><td><code>request.encoding: "json"｜"form"</code></td></tr>
+      <tr><td>認證</td><td>2 個 header</td><td>Bearer token</td><td><code>auth.method</code> + <code>header_template</code></td></tr>
+      <tr><td>下單欄位名</td><td>time_in_force / qty</td><td>duration / quantity</td><td><code>request.field_map</code></td></tr>
+      <tr><td>固定參數</td><td>無</td><td>class=equity</td><td><code>request.constants</code></td></tr>
+      <tr><td>路徑帳號</td><td>無</td><td>/accounts/{id}/…</td><td><code>endpoints</code> 模板</td></tr>
+      <tr><td>回應取 id</td><td>id</td><td>order.id（巢狀）</td><td><code>response.order_id_path</code></td></tr>
+      <tr><td>餘額欄位</td><td>portfolio_value</td><td>balances.total_equity</td><td><code>response.balance.*</code></td></tr>
+      <tr><td>TIF 值翻譯</td><td>day</td><td>day（但 gtc→gtc）</td><td><code>value_maps.time_in_force</code></td></tr>
+    </tbody>
+  </table>
+
+  <div class="box info">
+    <strong>界線</strong>
+    能 JSON 化的前提是差異「可列舉」。一旦某券商需要<b>自訂邏輯</b>（簽章演算法、OAuth refresh 流程、本地 gateway 握手），
+    純 JSON 表達不了 —— 那種券商仍需特例程式（見 <a href="#limits">涵蓋範圍與限制</a>）。
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════ -->
+<section id="scope">
+  <h2>🎯 範圍與不做什麼</h2>
+  <div class="meta">避免 scope creep</div>
+
+  <h3>✅ 做</h3>
+  <ul>
+    <li>broker-schema v1 → v2：加 <code>request</code> / <code>response</code> / <code>value_maps</code> 區塊</li>
+    <li>寫通用 <code>brokers/rest_broker.py</code>（RestBrokerClient，實作 BrokerClient ABC）</li>
+    <li>Alpaca 改成純 JSON（補對應表）+ parity 測試證明 live 帳戶 0 變動</li>
+    <li>Tradier 純 JSON + sandbox 驗證</li>
+    <li>保留 <code>BrokerClient</code> ABC 不變（外部呼叫者 runner.py 完全不動）</li>
+  </ul>
+
+  <h3>❌ 不做</h3>
+  <ul>
+    <li>不碰策略層 / selection.py / runner.py（介面不變）</li>
+    <li>不支援需自訂邏輯的券商（OAuth refresh、本地 gateway）—— 留特例 hook</li>
+    <li>引擎開發階段（A–D）只在 sandbox 驗證 —— 蓋水管不用真錢測漏。<b>live 不是被排除</b>，是放在 Phase E 過安全閘後上線（見下方）</li>
+    <li>不重寫既有測試框架，沿用 pytest + mock</li>
+  </ul>
+</section>
+
+<!-- ══════════════════════════════════════════════════ -->
+<section id="schema-v2">
+  <h2>📐 broker-schema v2</h2>
+  <div class="meta">新增 3 個宣告式區塊</div>
+
+  <p>v2 在 v1 之上新增 <code>request</code> / <code>response</code> / <code>value_maps</code>。
+  v1 spec（只有 client_class、無對應表）仍可被舊 client 路徑載入 —— 向下相容。</p>
+
+  <pre><span class="c">// tradier.json（v2 新增區塊）</span>
+{
+  <span class="k">"request"</span>: {
+    <span class="k">"encoding"</span>: <span class="s">"form"</span>,              <span class="c">// "json" | "form"</span>
+    <span class="k">"field_map"</span>: {                    <span class="c">// 通用名 → 券商欄位名</span>
+      <span class="k">"symbol"</span>: <span class="s">"symbol"</span>,
+      <span class="k">"qty"</span>: <span class="s">"quantity"</span>,
+      <span class="k">"side"</span>: <span class="s">"side"</span>,
+      <span class="k">"order_type"</span>: <span class="s">"type"</span>,
+      <span class="k">"time_in_force"</span>: <span class="s">"duration"</span>
+    },
+    <span class="k">"constants"</span>: { <span class="k">"class"</span>: <span class="s">"equity"</span> }   <span class="c">// 每單固定帶</span>
+  },
+  <span class="k">"response"</span>: {
+    <span class="k">"order_id_path"</span>: <span class="s">"order.id"</span>,        <span class="c">// 巢狀路徑</span>
+    <span class="k">"order_status_path"</span>: <span class="s">"order.status"</span>,
+    <span class="k">"balance"</span>: {
+      <span class="k">"nav"</span>:  <span class="s">"balances.total_equity"</span>,
+      <span class="k">"cash"</span>: <span class="s">"balances.total_cash"</span>,
+      <span class="k">"buying_power"</span>: <span class="s">"balances.total_cash"</span>
+    },
+    <span class="k">"positions_path"</span>: <span class="s">"positions.position"</span>,
+    <span class="k">"quote_list_path"</span>: <span class="s">"quotes.quote"</span>,
+    <span class="k">"quote_symbol_field"</span>: <span class="s">"symbol"</span>,
+    <span class="k">"quote_price_field"</span>: <span class="s">"last"</span>
+  },
+  <span class="k">"value_maps"</span>: {
+    <span class="k">"side"</span>: { <span class="k">"buy"</span>: <span class="s">"buy"</span>, <span class="k">"sell"</span>: <span class="s">"sell"</span> },
+    <span class="k">"time_in_force"</span>: { <span class="k">"day"</span>: <span class="s">"day"</span>, <span class="k">"gtc"</span>: <span class="s">"gtc"</span> }
+  }
+}</pre>
+
+  <div class="box tip">
+    <strong>路徑語法</strong>
+    <code>order.id</code> 走點號逐層；list 取用 <code>positions.position[]</code>。
+    引擎用一個小 helper <code>_dig(data, "a.b.c")</code> 解析，不引入 JSONPath 套件（減依賴）。
+    Tradier 的「單筆回 dict、多筆回 list」由引擎統一正規化成 list。
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════ -->
+<section id="engine">
+  <h2>⚙️ 通用 REST 引擎</h2>
+  <div class="meta">brokers/rest_broker.py — 寫一次</div>
+
+  <p><code>RestBrokerClient(BrokerClient)</code> 讀 v2 spec，把 ABC 的 7 個方法用「查表 + 組請求 + 解析回應」實作。</p>
+
+  <table>
+    <thead><tr><th>ABC 方法</th><th>引擎怎麼做</th></tr></thead>
+    <tbody>
+      <tr><td><code>get_account_balance</code></td><td>GET <code>endpoints.balances</code>（套 account_id）→ 用 <code>response.balance.*</code> 取值</td></tr>
+      <tr><td><code>get_positions</code></td><td>GET positions → 走 <code>response.positions_path</code> → 正規化 list → 欄位映射</td></tr>
+      <tr><td><code>get_latest_prices</code></td><td>GET <code>market_data.quotes_endpoint</code> → <code>quote_list_path</code> + price field</td></tr>
+      <tr><td><code>place_order</code></td><td>field_map + constants + value_maps 組 body → 依 <code>encoding</code> 送 json/form → <code>order_id_path</code> 取 id</td></tr>
+      <tr><td><code>is_trading_day</code></td><td>GET clock/calendar → 依 spec 的 <code>market_data.*</code> 解析 open/closed</td></tr>
+      <tr><td><code>cancel_all_open_orders</code></td><td>列 open orders → 逐筆 DELETE（路徑套 account_id + order_id）</td></tr>
+      <tr><td><code>wait_for_fills</code></td><td>輪詢 order_by_id → 用 <code>order_status_path</code> 判 terminal 狀態</td></tr>
+    </tbody>
+  </table>
+
+  <p>共用設施沿用既有：<code>_request</code>（retry/backoff）、<code>_check_resp</code>（401→BrokerAuthError、不洩 secret）、
+  <code>check_capability</code>（fractional 擋下）。引擎只多了「查表組裝」那層。</p>
+
+  <div class="box info">
+    <strong>特例 hook（給不純 REST 的券商留後路）</strong>
+    spec 可選填 <code>integration.client_class</code> 指向自訂子類；有填就用自訂，沒填就用通用引擎。
+    Alpaca/Tradier 走通用引擎；未來 IBKR/Schwab 真要做時用 hook 寫特例，<b>不破壞 JSON-first 主路徑</b>。
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════ -->
+<section id="mapping">
+  <h2>🗺 對應表範例：同一筆下單 → 兩家</h2>
+  <div class="meta">證明同一通用呼叫被引擎翻成兩種 HTTP</div>
+
+  <pre><span class="c"># 通用呼叫（runner.py 不知道是哪家券商）</span>
+client.place_order(<span class="s">"AAPL"</span>, qty=<span class="n">10</span>, side=<span class="s">"buy"</span>,
+                   order_type=<span class="s">"market"</span>, time_in_force=<span class="s">"day"</span>)</pre>
+
+  <table>
+    <thead><tr><th></th><th>Alpaca（encoding=json）</th><th>Tradier（encoding=form）</th></tr></thead>
+    <tbody>
+      <tr><td>URL</td><td><code>POST /v2/orders</code></td><td><code>POST /accounts/VA…/orders</code></td></tr>
+      <tr><td>Body</td>
+          <td><code>{"symbol":"AAPL","qty":"10","side":"buy","type":"market","time_in_force":"day"}</code></td>
+          <td><code>class=equity&amp;symbol=AAPL&amp;quantity=10&amp;side=buy&amp;type=market&amp;duration=day</code></td></tr>
+      <tr><td>取 id</td><td><code>resp["id"]</code></td><td><code>resp["order"]["id"]</code></td></tr>
+    </tbody>
+  </table>
+  <p>兩種輸出<b>完全由各自的 JSON 對應表決定</b>，引擎程式碼一行都不為某家特判。</p>
+</section>
+
+<!-- ══════════════════════════════════════════════════ -->
+<section id="limits">
+  <h2>🧱 涵蓋範圍與限制</h2>
+  <div class="meta">誠實標出 JSON 化的邊界</div>
+
+  <table>
+    <thead><tr><th>券商類型</th><th>例</th><th>純 JSON?</th><th>說明</th></tr></thead>
+    <tbody>
+      <tr><td>REST + 永久 token/key</td><td>Tradier, Alpaca, Public, Webull</td><td>✅ 可</td><td>本引擎目標範圍</td></tr>
+      <tr><td>REST + OAuth refresh</td><td>Schwab, tastytrade, TradeStation</td><td>⚠️ 半</td><td>API 形狀可 JSON，但 token refresh 流程需特例 hook</td></tr>
+      <tr><td>本地 gateway / SDK</td><td>IBKR, moomoo, Shioaji</td><td>❌ 否</td><td>需常駐 gateway 握手，非純 HTTP → 走 client_class 特例</td></tr>
+    </tbody>
+  </table>
+
+  <div class="box danger">
+    <strong>不要過度承諾</strong>
+    「新券商 0 程式」只對<b>純 REST + 永久憑證</b>的券商成立。
+    OAuth/gateway 券商仍需少量特例程式 —— 這是引擎的設計邊界，不是 bug。
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════ -->
+<section id="phases">
+  <h2>🛠 階段概覽</h2>
+  <div class="meta">4 階段，每階段都有 gate</div>
+
+  <div class="phase-grid">
+    <div class="phase-card"><span class="pn">A</span>
+      <h4>schema v2 + 引擎</h4>
+      <ul><li>broker-schema-v2.json</li><li>rest_broker.py</li><li>引擎單元測試</li></ul>
+      <div class="dur">⏱️ ~2 天</div>
+    </div>
+    <div class="phase-card"><span class="pn">B</span>
+      <h4>Alpaca 純 JSON 化</h4>
+      <ul><li>alpaca.json 補對應表</li><li>走通用引擎</li><li>parity vs 舊 client</li></ul>
+      <div class="dur">⏱️ ~1 天（關鍵安全閘）</div>
+    </div>
+    <div class="phase-card"><span class="pn">C</span>
+      <h4>Tradier 純 JSON</h4>
+      <ul><li>tradier.json</li><li>sandbox 整合測試</li><li>dry-run 對拍</li></ul>
+      <div class="dur">⏱️ ~1 天</div>
+    </div>
+    <div class="phase-card"><span class="pn">D</span>
+      <h4>清理</h4>
+      <ul><li>移除 alpaca_client.py</li><li>文件 + 執行狀況</li></ul>
+      <div class="dur">⏱️ ~0.5 天</div>
+    </div>
+    <div class="phase-card"><span class="pn">E</span>
+      <h4>Tradier 上線實單</h4>
+      <ul><li>入金 + 重產 prod token</li><li>過 go-live gate</li><li>小額 → 全額</li></ul>
+      <div class="dur">⏱️ 安全期後（≥4 週）</div>
+    </div>
+  </div>
+</section>
+
+<section id="phaseA">
+  <h2><span class="num">A</span>schema v2 + 通用引擎</h2>
+  <div class="meta">⏱️ ~2 天 · 寫一次的核心</div>
+  <ol>
+    <li>新增 <code>brokers/broker-schema-v2.json</code>（v1 + request/response/value_maps），向下相容</li>
+    <li>寫 <code>brokers/rest_broker.py</code>：<code>RestBrokerClient(BrokerClient)</code> + <code>_dig()</code> 路徑解析 + <code>_normalize_list()</code></li>
+    <li>引擎單元測試全用 <b>假 spec + mock HTTP</b>，不打網路</li>
+  </ol>
+  <div class="box ok"><strong>Gate A</strong>：引擎單元測試全綠（涵蓋 json/form 編碼、巢狀取值、list 正規化、capability 擋下）。</div>
+</section>
+
+<section id="phaseB">
+  <h2><span class="num">B</span>Alpaca 純 JSON 化（安全閘）</h2>
+  <div class="meta">⏱️ ~1 天 · live 帳戶不能壞</div>
+  <ol>
+    <li><code>alpaca.json</code> 補 request/response/value_maps，移除 <code>client_class</code>（改走通用引擎）</li>
+    <li>寫 <b>parity 測試</b>：同一組 mock HTTP 回應，舊 <code>AlpacaClient</code> vs 新 <code>RestBrokerClient</code> 產出的
+        balance/positions/order body 必須<b>逐欄位相同</b></li>
+    <li>跑既有全測試 + 4 帳戶 dry-run，確認 0 差異</li>
+  </ol>
+  <div class="box danger"><strong>Gate B（最關鍵）</strong>：parity 測試 0 差異 + 既有 broker 測試全綠，才可繼續。
+  任何欄位不一致 → 停，先對齊，production 完全不動。</div>
+</section>
+
+<section id="phaseC">
+  <h2><span class="num">C</span>Tradier 純 JSON</h2>
+  <div class="meta">⏱️ ~1 天 · 證明「加券商 0 程式」</div>
+  <ol>
+    <li>只寫 <code>brokers/tradier.json</code>（不寫任何 .py）</li>
+    <li>整合測試：mock Tradier 回應格式，驗證引擎正確翻譯</li>
+    <li>用既有 <code>tradier_smoke.yml</code> 機制，跑 sandbox 真實連線驗證</li>
+  </ol>
+  <div class="box ok"><strong>Gate C</strong>：Tradier 整合測試綠 + sandbox 取餘額/報價成功，<b>且過程 0 行 Python 新增</b>（這就是本計劃的驗收）。</div>
+</section>
+
+<section id="phaseD">
+  <h2><span class="num">D</span>清理</h2>
+  <div class="meta">⏱️ ~0.5 天</div>
+  <ul>
+    <li>移除 <code>brokers/alpaca_client.py</code>（已被引擎取代；保留 git 歷史）</li>
+    <li>更新 broker-integration-plan 的執行狀況 + 本計劃執行狀況</li>
+    <li>docs/env-vars.md 補 Tradier 的 <code>ACC{id}_API_KEY</code>(token) + <code>ACC{id}_ACCOUNT_ID</code></li>
+  </ul>
+</section>
+
+<!-- ══════════════════════════════════════════════════ -->
+<section id="phaseE">
+  <h2><span class="num">E</span>Tradier 上線實單（go-live）</h2>
+  <div class="meta">⏱️ 安全期後 · 這才是「有用」的終點</div>
+
+  <p>引擎(A–D)只是把水管接好。<b>真正用 Tradier 賺/賠真錢在這一階段</b> ——
+  沿用每個券商都要過的同一道安全閘，跟你 4 個 Alpaca 帳戶當初一樣。</p>
+
+  <h3>前置條件（缺一不可）</h3>
+  <ul>
+    <li><b>Tradier 帳戶入金</b> —— sandbox 的 $100k 是模擬，live 要真錢</li>
+    <li><b>重產 production token</b> —— 之前在對話貼過的那把已外洩，必須 revoke 重產</li>
+    <li>設 live GitHub Secret：<code>ACC{id}_TRADIER_TOKEN</code>(prod) + <code>ACC{id}_TRADIER_ACCOUNT</code>（你自己設一次）</li>
+    <li>accounts.json 新增一筆 <code>broker: tradier, environment: live</code></li>
+  </ul>
+
+  <h3>Go-Live Gate（過了才開 live）</h3>
+  <table>
+    <thead><tr><th>條件</th><th>門檻</th></tr></thead>
+    <tbody>
+      <tr><td>sandbox 連續運作</td><td>≥ 4 週每日 dry-run/paper 無錯</td></tr>
+      <tr><td>累計成功訂單</td><td>≥ 100 筆 sandbox 成交</td></tr>
+      <tr><td>Parity / 對拍</td><td>同策略 Tradier vs Alpaca 選股一致（同 universe 時）</td></tr>
+      <tr><td>金額爬升</td><td>先小額（如 $1k）跑 1–2 週 → 確認無異常 → 才放大</td></tr>
+    </tbody>
+  </table>
+
+  <div class="box danger">
+    <strong>⚠️ 實單觸及真錢，規則照舊</strong>
+    切 live = 改 <code>ALPACA_BASE_URL</code> 等同的 Tradier live base + 設 prod secret，<b>由你本人操作</b>。
+    我不碰金鑰、不代你開 live。引擎與測試我做；入金、token、按下 live 開關是你的事。
+  </div>
+
+  <div class="box ok">
+    <strong>所以「有用」在哪</strong>
+    A–D 讓 Tradier 變成系統裡一個能下單的合法券商（JSON 化、測試過）；
+    E 讓它真的拿真錢執行你的策略。<b>終點是 live，sandbox 只是必經的安全前站。</b>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════ -->
+<section id="test-strategy">
+  <h2>🧪 測試策略</h2>
+  <div class="meta">38 個測試案例，金字塔分布</div>
+
+  <p>全部用 <b>mock HTTP + 假金鑰</b>，CI 不需要真 token。唯一打真網路的是 sandbox smoke（手動觸發、讀 GitHub Secret）。</p>
+
+  <table>
+    <thead><tr><th>層級</th><th>數量</th><th>打網路?</th><th>需要金鑰?</th></tr></thead>
+    <tbody>
+      <tr><td>引擎單元（U）</td><td>16</td><td>❌</td><td>❌ 假 spec</td></tr>
+      <tr><td>Schema 驗證（S）</td><td>5</td><td>❌</td><td>❌</td></tr>
+      <tr><td>Alpaca parity（P）</td><td>7</td><td>❌ mock</td><td>❌ 假 key</td></tr>
+      <tr><td>Tradier 整合（T）</td><td>6</td><td>❌ mock</td><td>❌ 假 key</td></tr>
+      <tr><td>安全（SEC）</td><td>4</td><td>❌</td><td>❌</td></tr>
+      <tr><td>sandbox smoke（E2E）</td><td>1 workflow</td><td>✅</td><td>✅ GitHub Secret（不經過任何人手貼）</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="test-unit">
+  <h2>🔬 單元測試：引擎</h2>
+  <div class="meta">brokers/rest_broker.py — 16 case</div>
+  <table>
+    <thead><tr><th>ID</th><th>測試</th><th>嚴重度</th></tr></thead>
+    <tbody>
+      <tr><td><span class="tid">U-01</span></td><td><code>_dig("a.b.c")</code> 正確逐層取值</td><td><span class="severity-m">中</span></td></tr>
+      <tr><td><span class="tid">U-02</span></td><td><code>_dig</code> 路徑不存在回 None 不丟例外</td><td><span class="severity-m">中</span></td></tr>
+      <tr><td><span class="tid">U-03</span></td><td>單筆 dict 被正規化成 1 元素 list</td><td><span class="severity-h">高</span></td></tr>
+      <tr><td><span class="tid">U-04</span></td><td>多筆 list 維持不變</td><td><span class="severity-m">中</span></td></tr>
+      <tr><td><span class="tid">U-05</span></td><td>encoding=json → body 走 json=</td><td><span class="severity-h">高</span></td></tr>
+      <tr><td><span class="tid">U-06</span></td><td>encoding=form → body 走 data= + 正確 url-encode</td><td><span class="severity-h">高</span></td></tr>
+      <tr><td><span class="tid">U-07</span></td><td>field_map 正確把 qty→quantity 等</td><td><span class="severity-h">高</span></td></tr>
+      <tr><td><span class="tid">U-08</span></td><td>constants 被併入 body（class=equity）</td><td><span class="severity-h">高</span></td></tr>
+      <tr><td><span class="tid">U-09</span></td><td>value_maps 翻譯 side/tif</td><td><span class="severity-m">中</span></td></tr>
+      <tr><td><span class="tid">U-10</span></td><td>endpoints 模板套入 account_id / order_id</td><td><span class="severity-h">高</span></td></tr>
+      <tr><td><span class="tid">U-11</span></td><td>get_account_balance 走 response.balance.* 取值</td><td><span class="severity-h">高</span></td></tr>
+      <tr><td><span class="tid">U-12</span></td><td>get_positions 經 positions_path + 正規化</td><td><span class="severity-h">高</span></td></tr>
+      <tr><td><span class="tid">U-13</span></td><td>place_order 從 order_id_path 取巢狀 id</td><td><span class="severity-h">高</span></td></tr>
+      <tr><td><span class="tid">U-14</span></td><td>fractional qty + capability=false → BrokerCapabilityError</td><td><span class="severity-h">高</span></td></tr>
+      <tr><td><span class="tid">U-15</span></td><td>401 回應 → BrokerAuthError，訊息不含 token</td><td><span class="severity-h">高</span></td></tr>
+      <tr><td><span class="tid">U-16</span></td><td>缺 client_class 時 registry 自動用 RestBrokerClient</td><td><span class="severity-m">中</span></td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="test-schema">
+  <h2>📐 Schema 驗證 — 5 case</h2>
+  <table>
+    <thead><tr><th>ID</th><th>測試</th></tr></thead>
+    <tbody>
+      <tr><td><span class="tid">S-01</span></td><td>alpaca.json 通過 broker-schema-v2 驗證</td></tr>
+      <tr><td><span class="tid">S-02</span></td><td>tradier.json 通過 broker-schema-v2 驗證</td></tr>
+      <tr><td><span class="tid">S-03</span></td><td>encoding 只接受 json｜form（其他值報錯）</td></tr>
+      <tr><td><span class="tid">S-04</span></td><td>缺 required request.field_map → 驗證失敗</td></tr>
+      <tr><td><span class="tid">S-05</span></td><td>v1 spec（無對應表）仍能被舊路徑載入（向下相容）</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="test-parity">
+  <h2>⚖️ Alpaca Parity — 7 case（安全核心）</h2>
+  <div class="meta">舊 AlpacaClient vs 新 RestBrokerClient，逐欄位對拍</div>
+  <table>
+    <thead><tr><th>ID</th><th>測試</th><th>嚴重度</th></tr></thead>
+    <tbody>
+      <tr><td><span class="tid">P-01</span></td><td>同 mock 帳戶回應 → balance(nav/cash/bp) 逐欄位相同</td><td><span class="severity-h">高</span></td></tr>
+      <tr><td><span class="tid">P-02</span></td><td>同 mock 持倉回應 → positions list 完全相同</td><td><span class="severity-h">高</span></td></tr>
+      <tr><td><span class="tid">P-03</span></td><td>place_order 組出的 HTTP body 兩者逐 key 相同</td><td><span class="severity-h">高</span></td></tr>
+      <tr><td><span class="tid">P-04</span></td><td>get_latest_prices 解析結果相同</td><td><span class="severity-h">高</span></td></tr>
+      <tr><td><span class="tid">P-05</span></td><td>is_trading_day 對同 calendar 回應結論相同</td><td><span class="severity-m">中</span></td></tr>
+      <tr><td><span class="tid">P-06</span></td><td>cancel_all 對同 open-orders 回應行為相同</td><td><span class="severity-m">中</span></td></tr>
+      <tr><td><span class="tid">P-07</span></td><td>401/500 錯誤映射到相同 Broker*Error 類別</td><td><span class="severity-h">高</span></td></tr>
+    </tbody>
+  </table>
+  <div class="box danger"><strong>P-01~P-04 任一不過 = 直接停工。</strong>這四個保證 4 個 live Alpaca 帳戶切到新引擎後行為 0 變動。</div>
+</section>
+
+<section id="test-tradier">
+  <h2>🔌 Tradier 整合 — 6 case</h2>
+  <table>
+    <thead><tr><th>ID</th><th>測試（mock Tradier 回應格式）</th></tr></thead>
+    <tbody>
+      <tr><td><span class="tid">T-01</span></td><td>balances → AccountBalance（total_equity→nav）</td></tr>
+      <tr><td><span class="tid">T-02</span></td><td>positions 單筆 dict 正確正規化成 1 持倉</td></tr>
+      <tr><td><span class="tid">T-03</span></td><td>quotes → {symbol: last} 對應正確</td></tr>
+      <tr><td><span class="tid">T-04</span></td><td>place_order 組出 form body 含 class=equity, duration=day</td></tr>
+      <tr><td><span class="tid">T-05</span></td><td>order 回應從 order.id 取單號</td></tr>
+      <tr><td><span class="tid">T-06</span></td><td>fractional qty → BrokerCapabilityError（Tradier 不支援零股）</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="test-security">
+  <h2>🔒 安全測試 — 4 case</h2>
+  <table>
+    <thead><tr><th>ID</th><th>測試</th></tr></thead>
+    <tbody>
+      <tr><td><span class="tid">SEC-01</span></td><td><code>repr(client)</code> 不含 token/key</td></tr>
+      <tr><td><span class="tid">SEC-02</span></td><td>BrokerAuthError 訊息不含 token（401 回應截斷）</td></tr>
+      <tr><td><span class="tid">SEC-03</span></td><td>spec JSON 內不得有任何硬編金鑰（grep 測試）</td></tr>
+      <tr><td><span class="tid">SEC-04</span></td><td>缺 required_env → BrokerAuthError 含變數名但不含值</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="test-cd">
+  <h2>🔄 CI/CD Gate</h2>
+  <ul>
+    <li>U + S + P + T + SEC 全進現有 <code>pytest tests/</code>，每次 push 必跑</li>
+    <li>Parity（P-*）設為 <b>必過</b>——紅了 block merge</li>
+    <li>sandbox smoke（E2E）維持手動 <code>workflow_dispatch</code>，不卡 CI（避免依賴外部網路）</li>
+  </ul>
+  <div class="box info"><strong>預期測試數變化</strong>：491 → ~529（+38）。</div>
+</section>
+
+<!-- ══════════════════════════════════════════════════ -->
+<section id="rollback">
+  <h2>↩️ Rollback 計劃</h2>
+  <div class="meta">每階段都可獨立回退</div>
+  <table>
+    <thead><tr><th>情境</th><th>偵測</th><th>回退</th></tr></thead>
+    <tbody>
+      <tr><td>引擎有 bug</td><td>U-* 紅</td><td>Phase A 還沒碰 production，直接修</td></tr>
+      <tr><td>Alpaca parity 有差</td><td>P-* 紅</td><td>不移除 alpaca_client.py，alpaca.json 保留 client_class 走舊路徑</td></tr>
+      <tr><td>Tradier 翻譯錯</td><td>T-* 紅 / sandbox 失敗</td><td>Tradier 帳戶 enabled=false，不影響其他 4 帳戶</td></tr>
+      <tr><td>切換後 live 異常</td><td>NAV 突變</td><td>git revert spec 變更；client_class hook 一行切回舊 client</td></tr>
+    </tbody>
+  </table>
+  <div class="box tip"><strong>關鍵安全網</strong>：Phase D（移除 alpaca_client.py）<b>最後才做</b>，且觀察期過了才動。
+  在那之前舊 client 一直留著，<code>client_class</code> 一行就能切回去。</div>
+</section>
+
+<!-- ══════════════════════════════════════════════════ -->
+<section id="execution-status">
+  <h2>✅ 執行狀況（完成紀錄）</h2>
+  <div class="meta">更新：2026-06-02 · A/B/C 完成 · D 文件完成、檔案刪除待 production 閘</div>
+
+  <table>
+    <thead><tr><th>Phase</th><th>內容</th><th>狀態</th></tr></thead>
+    <tbody>
+      <tr><td>—</td><td>Tradier sandbox 連線驗證（smoke）</td><td>✅ 完成（餘額 $100k、account VA80282763、行情正常）</td></tr>
+      <tr><td>A</td><td>schema v2 + 通用引擎</td><td>✅ 完成（見下方 A 明細）</td></tr>
+      <tr><td>B</td><td>Alpaca 純 JSON 化 + parity</td><td>✅ 完成（見下方 B 明細）</td></tr>
+      <tr><td>C</td><td>Tradier 純 JSON</td><td>✅ 完成（見下方 C 明細）</td></tr>
+      <tr><td>D</td><td>清理舊 client</td><td>🟡 文件完成；<code>alpaca_client.py</code> 標 deprecated，待 Alpaca production 首輪確認後刪</td></tr>
+      <tr><td>E</td><td>Tradier 上線實單（go-live）</td><td>⬜ 待入金 + 重產 prod token + 過安全閘</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Phase A 完成明細（2026-06-01）</h3>
+  <table>
+    <thead><tr><th>產出</th><th>檔案</th><th>說明</th></tr></thead>
+    <tbody>
+      <tr><td>schema v2</td><td><code>brokers/broker-schema-v2.json</code></td><td>v1 + <code>request</code>/<code>response</code>/<code>value_maps</code>；<code>client_class</code> 改選填；加 <code>bearer_token</code> auth + <code>form</code> encoding</td></tr>
+      <tr><td>通用引擎</td><td><code>brokers/rest_broker.py</code></td><td><code>RestBrokerClient</code> 實作 ABC 7 方法 + <code>dig()</code>/<code>normalize_list()</code> + 向下相容層</td></tr>
+      <tr><td>registry 預設</td><td><code>brokers/registry.py</code></td><td>spec 缺 <code>client_class</code> → 自動用 <code>RestBrokerClient</code></td></tr>
+      <tr><td>引擎單元測試</td><td><code>tests/brokers/test_rest_broker.py</code></td><td>U-01~U-16 全 PASS（json/form 編碼、巢狀取值、list 正規化、field_map、constants、value_maps、capability 擋下、401 不洩 token）</td></tr>
+      <tr><td>schema 測試</td><td><code>tests/brokers/test_schema_v2.py</code></td><td>S-01/03/04/05 PASS；S-02（Tradier）skip 待 Phase C</td></tr>
+    </tbody>
+  </table>
+  <div class="box ok"><strong>Gate A ✅ 通過</strong>：引擎 16 單元測試全綠 + schema 4 測試綠。全測試 491 → 511 PASS，0 regression。</div>
+
+  <h3>Phase B 完成明細（2026-06-02）</h3>
+  <table>
+    <thead><tr><th>產出</th><th>檔案</th><th>說明</th></tr></thead>
+    <tbody>
+      <tr><td>Alpaca JSON 化</td><td><code>brokers/alpaca.json</code></td><td>補 <code>request</code>/<code>response</code> 對應表；<b>移除 <code>client_class</code></b> → 4 個 live Alpaca 帳戶改走通用 <code>RestBrokerClient</code></td></tr>
+      <tr><td>registry 預設生效</td><td><code>brokers/registry.py</code></td><td><code>build_client("alpaca")</code> 現回 <code>RestBrokerClient</code></td></tr>
+      <tr><td>Parity 測試</td><td><code>tests/brokers/test_alpaca_parity.py</code></td><td>P-01~P-07：新舊 client 對同一 mock 回應產出 balance/positions/order-body/prices/trading-day/cancel/error 完全一致</td></tr>
+      <tr><td>既有測試對齊</td><td><code>test_registry.py</code> / <code>test_schema.py</code></td><td>Alpaca 預期類別改 RestBrokerClient；broker spec 改用 v2 驗證</td></tr>
+    </tbody>
+  </table>
+  <div class="box danger"><strong>Gate B ✅ 通過</strong>：P-01~P-04（balance/positions/order/prices）0 差異，證明 live 帳戶切引擎後行為不變。
+  <b>Rollback 一行</b>：alpaca.json 加回 <code>client_class</code> → 退回舊 AlpacaClient（檔案保留到 Phase D）。</div>
+  <div class="box warn"><strong>⏳ 觀察點</strong>：下次每日 cron 跑時，4 個 Alpaca 帳戶會首次實際走 RestBrokerClient。
+  需確認 dashboard 的 NAV / 持倉與前一日連續、無異常，才視為 production 驗證通過。</div>
+
+  <h3>Phase C 完成明細（2026-06-02）— ⭐ 本計劃的驗收</h3>
+  <table>
+    <thead><tr><th>產出</th><th>檔案</th><th>說明</th></tr></thead>
+    <tbody>
+      <tr><td>Tradier spec</td><td><code>brokers/tradier.json</code></td><td><b>整個整合就這一個檔，0 行 Python</b>。bearer auth、form 編碼、field_map、class=equity、巢狀回應路徑、position_fields(cost_basis)、fractional=false</td></tr>
+      <tr><td>整合測試</td><td><code>tests/brokers/test_tradier_json.py</code></td><td>T-01~T-06：引擎只靠 JSON 正確翻譯 balances/單筆持倉/報價/form 下單 body/巢狀 order.id/零股擋下；+ 斷言 Tradier 解析為通用 RestBrokerClient（0 Python 的證明）</td></tr>
+      <tr><td>真實 sandbox 驗證</td><td><code>scripts/tradier_smoke.py</code> + workflow</td><td>引擎自我驗證步驟對<b>真實 Tradier sandbox</b> 跑 <code>RestBrokerClient + tradier.json</code></td></tr>
+    </tbody>
+  </table>
+  <div class="box ok"><strong>Gate C ✅ 通過</strong>：T-01~T-06 全綠 + 真實 sandbox 驗證成功 —
+  <code>get_account_balance → nav=100000</code>、<code>get_latest_prices(AAPL)=306.98</code>，全由 <code>tradier.json</code> 驅動。
+  <b>新增一家券商 = 寫一個 JSON 檔，0 行 Python — 本計劃的核心主張兌現。</b></div>
+
+  <h3>Phase D 進度（2026-06-02）</h3>
+  <ul>
+    <li>✅ <code>brokers/alpaca_client.py</code> 標記 DEPRECATED（保留為 rollback 網 + parity 對拍基準）</li>
+    <li>✅ <code>docs/env-vars.md</code> 補 Tradier 命名（<code>ACC{id}_API_KEY</code>=token / <code>ACC{id}_ACCOUNT_ID</code>），並標出 <code>run_account.py</code> 憑證解析待 Phase E 補</li>
+    <li>🟡 <b>實體刪除 <code>alpaca_client.py</code> 暫緩</b> — 依本計劃 Rollback 紀律，須等 4 個 Alpaca 帳戶 production 首輪走 RestBrokerClient 確認 NAV/持倉無異常後才刪（屆時 parity 測試一併轉為 golden 斷言）</li>
+  </ul>
+  <div class="box warn"><strong>為何不現在刪</strong>：刪檔會同時拿掉「一行 rollback」與「新舊 parity 對拍」兩道保護，
+  而新引擎尚未在 production 對真實 Alpaca 帳戶跑過。在那之前保留檔案是對 live 真錢的負責做法。</div>
+
+  <div class="box info"><strong>已就緒的前置</strong>
+    <code>scripts/tradier_smoke.py</code> + <code>.github/workflows/tradier_smoke.yml</code> 已建，
+    GitHub Secret <code>TRADIER_SANDBOX_TOKEN</code> 已設，sandbox 連線確認可用。
+  </div>
+</section>
+
+<footer>
+  Tech-Rebalance · JSON-Driven 券商引擎計劃書 v1 · 2026-06-01 · 38 test cases
+</footer>
+
+</main>
+
+<script>
+const links = document.querySelectorAll('.sidebar a[href^="#"]');
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if(e.isIntersecting){
+      links.forEach(l => l.classList.remove('active'));
+      const m = document.querySelector(`.sidebar a[href="#${e.target.id}"]`);
+      if(m) m.classList.add('active');
+    }
+  });
+},{threshold:0.15,rootMargin:'-60px 0px -60% 0px'});
+document.querySelectorAll('section[id]').forEach(s=>obs.observe(s));
+</script>
+</body>
+</html>

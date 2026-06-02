@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>管理者 GUI — 桌面 App 開發計劃書</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:#020617;color:#e2e8f0;font-family:'Segoe UI',system-ui,sans-serif;font-size:14px;line-height:1.65;}
+a{color:#3b82f6;text-decoration:none;}
+.sidebar{position:fixed;top:0;left:0;width:240px;height:100vh;background:#0a0f1e;
+   border-right:1px solid #1e293b;overflow-y:auto;padding:14px 0;z-index:50;}
+.sidebar h1{font-size:13px;color:#3b82f6;padding:0 16px 12px;border-bottom:1px solid #1e293b;font-weight:800;}
+.sidebar h1 small{display:block;font-size:10px;color:#475569;margin-top:2px;font-weight:400;}
+.sidebar h3{font-size:9px;color:#475569;text-transform:uppercase;letter-spacing:1.4px;padding:14px 16px 4px;}
+.sidebar a{display:block;padding:5px 16px;font-size:12px;color:#64748b;border-left:3px solid transparent;transition:all .12s;}
+.sidebar a:hover,.sidebar a.active{color:#3b82f6;border-color:#3b82f6;background:rgba(59,130,246,.07);}
+main{margin-left:240px;padding:32px 5% 80px;max-width:1200px;}
+.hero{background:linear-gradient(135deg,#0c1628 0%,#0d1f3c 60%,#0c1628 100%);
+   padding:32px 38px;border-radius:14px;margin-bottom:24px;border:1px solid #1e3a5f;}
+.hero .badge{display:inline-block;background:#1e293b;border:1px solid #334155;color:#94a3b8;
+   padding:3px 11px;border-radius:14px;font-size:10px;margin-right:6px;}
+.hero h1{font-size:28px;font-weight:900;color:#3b82f6;margin:12px 0 8px;letter-spacing:-0.5px;}
+.hero h1 span{color:#a855f7;}
+.hero p{color:#94a3b8;font-size:13px;}
+section{background:#0a0f1e;border:1px solid #1e293b;border-radius:12px;padding:24px 28px;margin-bottom:18px;}
+section h2{font-size:18px;font-weight:800;color:#e2e8f0;margin-bottom:6px;}
+section h2 .num{display:inline-block;background:#3b82f6;color:#fff;font-size:11px;
+   padding:3px 9px;border-radius:12px;font-weight:700;margin-right:8px;}
+section .meta{color:#475569;font-size:11px;margin-bottom:14px;}
+section h3{font-size:14px;font-weight:700;color:#93c5fd;margin:18px 0 6px;}
+section h4{font-size:11px;font-weight:700;color:#475569;margin:14px 0 5px;text-transform:uppercase;letter-spacing:.8px;}
+p{color:#94a3b8;margin-bottom:8px;}
+ul,ol{color:#94a3b8;padding-left:22px;margin-bottom:9px;}
+li{margin-bottom:3px;}
+b,strong{color:#e2e8f0;}
+code{background:#0f172a;border:1px solid #1e293b;border-radius:3px;padding:1px 6px;
+   font-size:11.5px;color:#93c5fd;font-family:'Menlo','Courier New',monospace;}
+pre{background:#020617;border:1px solid #1e293b;border-radius:8px;padding:13px 17px;
+   overflow-x:auto;font-size:11.5px;line-height:1.55;margin:9px 0;
+   font-family:'Menlo','Courier New',monospace;color:#cbd5e1;}
+.k{color:#93c5fd;}.s{color:#86efac;}.n{color:#fb923c;}.c{color:#475569;font-style:italic;}
+.box{border-radius:8px;padding:11px 15px;margin:10px 0;border:1px solid;}
+.box.warn  {background:#190e00;border-color:#92400e;color:#fcd34d;}
+.box.info  {background:#080f1a;border-color:#1e3a5f;color:#93c5fd;}
+.box.ok    {background:#081308;border-color:#14532d;color:#86efac;}
+.box.tip   {background:#1c0d23;border-color:#581c87;color:#c4b5fd;}
+.box.danger{background:#190808;border-color:#7f1d1d;color:#fca5a5;}
+table{width:100%;border-collapse:collapse;font-size:11.5px;margin:9px 0;}
+th{background:#0f172a;color:#475569;padding:8px 10px;text-align:left;
+   border-bottom:1px solid #1e293b;font-size:10px;text-transform:uppercase;letter-spacing:.5px;}
+td{padding:7px 10px;border-bottom:1px solid #0d1526;color:#cbd5e1;vertical-align:top;}
+tr:hover td{background:#0c1220;}
+td code{font-size:10.5px;}
+.phase-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:11px;margin:13px 0;}
+.phase-card{background:#0f172a;border:1px solid #1e293b;border-radius:9px;padding:14px;position:relative;}
+.phase-card .pn{position:absolute;top:8px;right:12px;font-size:36px;font-weight:900;color:#1e293b;line-height:1;}
+.phase-card h4{font-size:12px;font-weight:700;color:#3b82f6;margin:0 0 8px;text-transform:none;letter-spacing:0;}
+.phase-card ul{font-size:11px;color:#94a3b8;padding-left:14px;margin:0 0 8px;}
+.phase-card .dur{font-size:10px;color:#fcd34d;font-weight:700;border-top:1px solid #1e293b;padding-top:6px;}
+.tid{display:inline-block;background:#0f172a;border:1px solid #334155;color:#3b82f6;
+   font-family:monospace;font-size:10px;padding:1px 6px;border-radius:4px;font-weight:700;}
+.checklist{list-style:none;padding-left:0;}
+.checklist li{padding:4px 0 4px 24px;position:relative;color:#cbd5e1;font-size:12px;}
+.checklist li::before{content:'☐';position:absolute;left:6px;color:#475569;font-size:13px;}
+.severity-h{color:#f87171;font-weight:700;}
+.severity-m{color:#fcd34d;font-weight:700;}
+.severity-l{color:#86efac;font-weight:700;}
+.wire{background:#0b1120;border:1px solid #1e293b;border-radius:8px;padding:14px;margin:10px 0;font-family:monospace;font-size:11px;color:#cbd5e1;white-space:pre;overflow-x:auto;}
+footer{text-align:center;color:#1e293b;font-size:11px;padding:36px 0 18px;}
+</style>
+</head>
+<body>
+
+<nav class="sidebar">
+  <h1>🖥 管理者 GUI<small>桌面 App 開發計劃書</small></h1>
+
+  <h3>🎯 概覽</h3>
+  <a href="#summary">執行摘要</a>
+  <a href="#needs">功能需求</a>
+  <a href="#constraints">約束與技術選型</a>
+
+  <h3>🏗 設計</h3>
+  <a href="#arch">架構</a>
+  <a href="#datamodel">資料模型</a>
+  <a href="#security">安全模型（金鑰）</a>
+  <a href="#screens">畫面設計（總覽）</a>
+  <a href="#scr-nav">導覽結構</a>
+  <a href="#scr1">① 總覽</a>
+  <a href="#scr2">② 帳戶</a>
+  <a href="#scr3">③ Secrets</a>
+  <a href="#scr4">④ 排程</a>
+  <a href="#scr5">⑤ 設定</a>
+  <a href="#scr-dialogs">對話框 + 首啟精靈</a>
+
+  <h3>🛠 工程計劃</h3>
+  <a href="#phases">階段概覽</a>
+  <a href="#phaseA">A：骨架 + 帳戶 CRUD</a>
+  <a href="#phaseB">B：Secrets 設定</a>
+  <a href="#phaseC">C：Cron + 其他參數</a>
+  <a href="#phaseD">D：打包跨平台</a>
+
+  <h3>🧪 測試與風控</h3>
+  <a href="#test">測試計劃</a>
+  <a href="#risks">風險</a>
+  <a href="#execution-status">✅ 執行狀況</a>
+  <a href="#eng-log">🛠 工程 Log</a>
+</nav>
+
+<main>
+
+<div class="hero">
+  <div>
+    <span class="badge">v1 draft</span>
+    <span class="badge">2026-06-02</span>
+    <span class="badge">桌面 GUI · 無 HTTP server</span>
+  </div>
+  <h1>🖥 管理者控制台 <span>本機桌面 App</span></h1>
+  <p>一個跨平台桌面 GUI，集中管理交易系統的所有「人工設定」：
+  帳戶 CRUD、券商/策略指派、GitHub Secrets、cron 排程、email 收件人等。
+  <b>不跑 HTTP server</b>、純本機執行、直接操作 repo 與 <code>gh</code>。</p>
+</div>
+
+<!-- ══════════════════════════════════════════════════ -->
+<section id="summary">
+  <h2>📋 執行摘要</h2>
+  <div class="meta">一頁看懂</div>
+
+  <p><b>痛點</b>：目前所有管理動作都要手改檔案 + 記指令 —
+  改 <code>accounts.json</code>、<code>gh secret set</code>、編輯 workflow 的 cron、git commit/push。
+  容易打錯、漏步驟（例如忘了設對應的 Secret）、也難一眼看全狀態。</p>
+
+  <p><b>解法</b>：一個本機桌面 App，把這些動作收進有驗證、有防呆的 GUI。
+  它<b>不是</b>新的後端服務 —— 沒有 server、沒有資料庫，直接讀寫 repo 內的
+  <code>accounts.json</code> / workflow YAML，並 shell out 到 <code>gh</code> 設 Secret。</p>
+
+  <table>
+    <thead><tr><th>能力</th><th>底層動作</th><th>防呆</th></tr></thead>
+    <tbody>
+      <tr><td>看所有帳戶</td><td>讀 accounts.json + 各 data/ 的 state</td><td>顯示 enabled、broker、strategy、最後 NAV/日期</td></tr>
+      <tr><td>新增 / 改 / 刪帳戶</td><td>寫 accounts.json</td><td>schema 驗證、id 不重複、strategy/broker 下拉選單</td></tr>
+      <tr><td>設定 Secrets</td><td><code>gh secret set</code></td><td>金鑰<b>不寫入任何檔案</b>，只過 gh；缺哪個 Secret 會標紅</td></tr>
+      <tr><td>設定 cron 時間</td><td>編輯 workflow YAML + git push</td><td>cron ↔ 人類可讀互轉、顯示換算時區、commit 前 diff 預覽</td></tr>
+      <tr><td>其他管理參數</td><td>accounts.json / workflow inputs</td><td>email 收件人、dry_run 預設、data_dir、secret_prefix…</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ══════════════════════════════════════════════════ -->
+<section id="needs">
+  <h2>🎯 功能需求（使用者指定）</h2>
+  <div class="meta">逐項對應到設計</div>
+  <table>
+    <thead><tr><th>需求</th><th>設計對應</th></tr></thead>
+    <tbody>
+      <tr><td>看到所有帳戶</td><td>主畫面帳戶表格（含即時狀態）</td></tr>
+      <tr><td>修改帳戶參數</td><td>帳戶編輯表單（雙擊一列）</td></tr>
+      <tr><td>刪除帳戶</td><td>選列 → 刪除（二次確認；保留 data/ 不動）</td></tr>
+      <tr><td>新增帳戶</td><td>「＋新增」精靈，含必填欄位 + Secret 提醒</td></tr>
+      <tr><td>設定 secret</td><td>Secrets 分頁，對接 <code>gh secret</code>（不存明文）</td></tr>
+      <tr><td>設定 cron 時間</td><td>排程分頁，視覺化編輯 workflow cron</td></tr>
+      <tr><td>其他必須由管理者設定的參數</td><td>設定分頁：email 收件人 / SENDGRID 等 Secret / dry_run / 全域預設</td></tr>
+      <tr><td>有 GUI</td><td>原生桌面視窗</td></tr>
+      <tr><td>不依賴 HTTP server</td><td>Python 原生 GUI 框架（無 localhost、無 socket）</td></tr>
+      <tr><td>跑在 local、跨平台</td><td>Mac / Windows / Linux 單一程式碼</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ══════════════════════════════════════════════════ -->
+<section id="constraints">
+  <h2>⚙️ 約束與技術選型</h2>
+  <div class="meta">「無 HTTP server + 跨平台 + 本機」如何收斂選擇</div>
+
+  <p>關鍵約束「<b>不依賴 HTTP server</b>」直接排除所有 web 方案
+  （Flask/FastAPI + 瀏覽器、localhost dashboard）。剩下要在「原生桌面 GUI」裡選。</p>
+
+  <table>
+    <thead><tr><th>方案</th><th>無 HTTP?</th><th>跨平台</th><th>與本專案契合</th><th>評語</th></tr></thead>
+    <tbody>
+      <tr><td><b>Python + PySide6 (Qt)</b></td><td>✅ 原生</td><td>✅ Mac/Win/Linux</td><td>⭐⭐⭐⭐⭐</td><td><b>推薦</b>。專案本身 Python，GUI 可直接 import accounts 驗證/broker spec，零跨語言成本；Qt 介面專業</td></tr>
+      <tr><td>Python + Tkinter</td><td>✅ 原生</td><td>✅（內建）</td><td>⭐⭐⭐⭐</td><td>零額外依賴（Python 自帶）。介面陽春，但最穩、打包最小 → <b>備案</b></td></tr>
+      <tr><td>Tauri (Rust+webview)</td><td>⚠️ IPC 非 HTTP</td><td>✅</td><td>⭐⭐</td><td>二進位小、UI 漂亮，但要寫 Rust + 前端，跨語言橋接本專案邏輯，過重</td></tr>
+      <tr><td>Electron</td><td>⚠️ IPC 非 HTTP</td><td>✅</td><td>⭐⭐</td><td>技術上不需 HTTP server，但體積大、又是 JS 生態，與 Python 後端要 IPC 橋接</td></tr>
+      <tr><td>Web + 瀏覽器</td><td>❌ 需 server</td><td>—</td><td>✗</td><td>違反「不依賴 HTTP server」，出局</td></tr>
+    </tbody>
+  </table>
+
+  <div class="box ok">
+    <strong>選定：Python + PySide6（Qt for Python）</strong>
+    無 HTTP/socket、跨平台、與既有 Python 系統同生態（可直接重用
+    <code>brokers/registry.py</code> 驗證 broker、<code>strategies/*.json</code> 列策略、
+    <code>engine/universe_loader.py</code> 等）。打包用 PyInstaller 出三平台單檔。
+    <br>備案：若要求「零安裝相依」，退回 Tkinter（Python 內建）。
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════ -->
+<section id="arch">
+  <h2>🏗 架構</h2>
+  <div class="meta">薄 GUI + 既有邏輯重用，無新後端</div>
+
+  <pre><span class="c"># 新增目錄（不動既有交易程式）</span>
+admin_gui/
+├── app.py                <span class="c"># 進入點：QApplication + 主視窗</span>
+├── views/
+│   ├── overview_view.py  <span class="c"># 總覽：健康卡片 + 帳戶狀態 + 活動日誌</span>
+│   ├── accounts_view.py  <span class="c"># 帳戶表格 + 編輯表單</span>
+│   ├── secrets_view.py   <span class="c"># Secrets 狀態 + 設定</span>
+│   ├── schedule_view.py  <span class="c"># cron 視覺化編輯</span>
+│   └── settings_view.py  <span class="c"># email / 全域參數 + 環境自檢</span>
+├── services/
+│   ├── accounts_repo.py  <span class="c"># 讀寫 accounts.json（含 schema 驗證）</span>
+│   ├── gh_client.py      <span class="c"># 封裝 gh CLI：secret set/list、workflow run</span>
+│   ├── cron_editor.py    <span class="c"># workflow YAML cron 讀寫 + 人類可讀互轉</span>
+│   ├── git_ops.py        <span class="c"># 安全 commit/push（diff 預覽、確認）</span>
+│   └── state_reader.py   <span class="c"># 讀各 data/ 的 portfolio_state（顯示用）</span>
+└── models/
+    └── account.py        <span class="c"># dataclass + 驗證規則</span></pre>
+
+  <div class="box info">
+    <strong>重用既有模組（不重寫）</strong>
+    broker 下拉 ← <code>brokers/*.json</code>；strategy 下拉 ← <code>strategies/*.json</code>；
+    帳戶驗證沿用與 <code>run_account.py</code> 一致的欄位定義。GUI 只是「設定的編輯器」，
+    執行交易仍是既有 cron + runner.py，<b>GUI 不參與交易路徑</b>。
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════ -->
+<section id="datamodel">
+  <h2>🗂 資料模型</h2>
+  <div class="meta">GUI 操作的就是這些既有檔案</div>
+  <table>
+    <thead><tr><th>來源</th><th>GUI 操作</th><th>寫回方式</th></tr></thead>
+    <tbody>
+      <tr><td><code>accounts.json</code></td><td>帳戶 CRUD、enabled、broker/env、strategy、data_dir、email_recipients、secret_prefix、use_new_runner</td><td>原子寫檔（temp+rename）+ 自動 git add</td></tr>
+      <tr><td><code>brokers/*.json</code></td><td>唯讀（填 broker 下拉 + 顯示 capabilities）</td><td>—</td></tr>
+      <tr><td><code>strategies/*.json</code></td><td>唯讀（填 strategy 下拉 + 顯示摘要）</td><td>—</td></tr>
+      <tr><td><code>.github/workflows/*.yml</code></td><td>cron 排程</td><td>YAML 局部改寫 cron 行 + diff 確認</td></tr>
+      <tr><td>GitHub Secrets</td><td>設定 / 檢視「是否存在」（值看不到）</td><td><code>gh secret set/list</code></td></tr>
+      <tr><td>各 <code>data/*/portfolio_state.json</code></td><td>唯讀（顯示 NAV/日期/持倉數）</td><td>—</td></tr>
+    </tbody>
+  </table>
+  <div class="box tip"><strong>單一真相來源不變</strong>：GUI 不引入新設定檔，
+  它就是 accounts.json / workflow YAML / GitHub Secrets 的圖形前端，cron 仍是唯一執行者。</div>
+</section>
+
+<!-- ══════════════════════════════════════════════════ -->
+<section id="security">
+  <h2>🔒 安全模型（金鑰）</h2>
+  <div class="meta">最關鍵：金鑰絕不落地</div>
+  <ul>
+    <li><b>App 永不持久化任何 secret</b>。設 Secret 時，密碼欄輸入 → 直接以 stdin 餵給
+        <code>gh secret set NAME --body -</code> → 進 GitHub Secrets，<b>不寫 accounts.json、不寫任何本機檔、不寫 log</b>。</li>
+    <li>Secrets 分頁只顯示「<b>存在 / 不存在</b>」（來自 <code>gh secret list</code>），<b>從不顯示值</b>。</li>
+    <li>輸入框遮罩、剪貼簿不留存、記憶體用完即清。</li>
+    <li>每個帳戶依 <code>secret_prefix</code> + broker 算出「應有哪些 Secret」，缺的標紅 →
+        防「新增帳戶卻忘了設金鑰」這類漏步驟。</li>
+    <li>git push 含金鑰風險防護：commit 前掃描 diff，若疑似 token 字串出現在被 commit 的檔案 → 擋下並警告。</li>
+  </ul>
+  <div class="box danger"><strong>界線</strong>：App 幫你「呼叫 gh 設 Secret」，
+  但 <code>gh</code> 的登入授權仍由你本人完成（<code>gh auth login</code>）。
+  App 不碰你的 GitHub 帳密，只用你已授權的 gh session。</div>
+</section>
+
+<!-- ══════════════════════════════════════════════════ -->
+<section id="screens">
+  <h2>🖼 畫面設計（總覽）</h2>
+  <div class="meta">5 個主分頁 + 5 個對話框 + 1 個首次啟動精靈</div>
+
+  <p>整個 App 是<b>單一視窗 + 左側分頁</b>。視窗頂部固定一條狀態列，底部固定一條動作列。
+  下面逐頁講清楚：每頁<b>用途、長相（線稿）、每個元件、互動、狀態</b>。</p>
+
+  <table>
+    <thead><tr><th>#</th><th>分頁</th><th>一句話用途</th><th>主要動作</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>總覽 Overview</td><td>一眼看系統健康</td><td>唯讀 + 跳轉</td></tr>
+      <tr><td>2</td><td>帳戶 Accounts</td><td>看/增/改/刪所有帳戶</td><td>CRUD</td></tr>
+      <tr><td>3</td><td>Secrets</td><td>看哪些金鑰已設、設定金鑰</td><td>set（不顯值）</td></tr>
+      <tr><td>4</td><td>排程 Schedule</td><td>改 cron 執行時間</td><td>編輯 + push</td></tr>
+      <tr><td>5</td><td>設定 Settings</td><td>全域參數 + 環境自檢</td><td>編輯</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ══════════════════════════════════════════════════ -->
+<section id="scr-nav">
+  <h2>🧭 導覽結構（每頁共用的框）</h2>
+  <div class="meta">頂狀態列 + 左分頁 + 底動作列</div>
+  <div class="wire">┌─ 交易系統管理控制台 ───────── repo: ~/tradecopy ● gh:已登入 ●─┐
+│┌─────────┐                                          ↻ 重新整理 │
+││ 📊 總覽 │  ←─ 左側分頁（高亮當前頁）                          │
+││ 👥 帳戶 │                                                    │
+││ 🔑 Secrets                  （主內容區，隨分頁切換）          │
+││ ⏰ 排程 │                                                    │
+││ ⚙ 設定 │                                                    │
+│└─────────┘                                                    │
+├───────────────────────────────────────────────────────────────┤
+│ 狀態：accounts.json 已存檔 · 2 個帳戶缺 Secret      [ 檢視 → ] │
+└───────────────────────────────────────────────────────────────┘</div>
+  <ul>
+    <li><b>頂狀態列</b>：目前 repo 路徑、<code>gh</code> 登入狀態、git 是否可 push（綠/紅燈）、重新整理鈕。</li>
+    <li><b>左分頁</b>：5 個頁籤，icon + 文字，當前頁高亮。</li>
+    <li><b>底狀態列</b>：最近一次操作結果 + 全域警示（如「N 個帳戶缺 Secret」可點擊跳轉）。</li>
+  </ul>
+</section>
+
+<!-- ══════════════════════════════════════════════════ -->
+<section id="scr1">
+  <h2><span class="num">1</span>總覽 Overview</h2>
+  <div class="meta">用途：開 App 第一眼就知道「一切正常嗎」</div>
+  <div class="wire">┌ 系統健康 ─────────────────────────────────────────────┐
+│  帳戶 5（啟用 4）   今日排程 ✅ success  下次 05:30 台灣 │
+│  缺 Secret：2 項 ⚠   未 push 變更：0      gh：已登入 ✅  │
+├ 各帳戶最新狀態 ───────────────────────────────────────┤
+│ #1 top10      $99,988  ▲0.3%  06-01  ✅                 │
+│ #2 d2p2t6     $100,012 ▲0.1%  06-01  ✅                 │
+│ #3 mom_6m_t20 待產生           —      ⏳                 │
+│ #4 weekly     待產生           —      ⏳                 │
+├ 最近活動（本 App 做過的事）──────────────────────────┤
+│ 06-02 14:20  改帳戶#2 email 收件人                      │
+│ 06-02 14:05  設定 ACC6_TRADIER_TOKEN                    │
+└────────────────────────────────────────────────────────┘</div>
+  <h4>元件</h4>
+  <ul>
+    <li><b>健康卡片列</b>：帳戶數、今日排程結果（讀 <code>gh run list</code>）、下次 cron 時間（換算本地時區）、缺 Secret 數、未 push 變更數、gh 狀態。任一紅項可點擊跳到對應分頁。</li>
+    <li><b>帳戶狀態表</b>：每帳戶最新 NAV + 當日漲跌 + 日期 + 健康燈（✅正常 / ⏳待產生 / ⚠過期 / ❌異常）。</li>
+    <li><b>活動日誌</b>：本 App 自己做過的變更（改帳戶、設 Secret、改 cron），純本機紀錄，<b>不含任何金鑰值</b>。</li>
+  </ul>
+  <div class="box info"><strong>互動</strong>：全唯讀；只負責「呈現 + 把你導到該去的分頁」。重的操作都在各自分頁做。</div>
+</section>
+
+<!-- ══════════════════════════════════════════════════ -->
+<section id="scr2">
+  <h2><span class="num">2</span>帳戶 Accounts</h2>
+  <div class="meta">用途：所有帳戶的 CRUD —— 本 App 最常用的一頁</div>
+  <div class="wire">┌ 帳戶清單 ──────────────────────────────── 搜尋[____] ┐
+│ id │啟用│ 券商   │環境  │ 策略       │ 最後NAV  │日期 │Secret│
+│ 1  │ ✅ │ alpaca │paper │ top10      │ $99,988  │06-01│ ✅  │
+│ 2  │ ✅ │ alpaca │paper │ d2p2t6     │ $100,012 │06-01│ ✅  │
+│ 3  │ ✅ │ alpaca │paper │ mom_6m_t20 │ 待產生   │ —   │ ✅  │
+│ 4  │ ✅ │ alpaca │paper │ weekly_top10│待產生   │ —   │ ✅  │
+│ 6  │ ⛔ │ tradier│sandbox│ top10     │ $100,000 │06-01│ ❌  │
+├────────────────────────────────────────────────────────┤
+│[＋新增] [✎編輯] [🗑刪除] [⏻啟用/停用] [▶立即 dry-run]   │
+└────────────────────────────────────────────────────────┘</div>
+  <h4>元件</h4>
+  <ul>
+    <li><b>表格（QTableView）</b>：每列一個帳戶，欄位 = id / 啟用 / 券商 / 環境 / 策略 / 最後 NAV / 日期 / <b>Secret 齊全燈</b>（該帳戶該有的 Secret 是否都設了）。可排序、可搜尋。</li>
+    <li><b>啟用欄</b>：直接在表格切換 <code>enabled</code>（即時寫回 accounts.json）。</li>
+    <li><b>底部按鈕</b>：新增（開精靈）、編輯（或雙擊列）、刪除（二次確認）、啟用/停用、立即 dry-run（呼叫 <code>python run_account.py --account N --dry-run</code> 並把輸出顯示在對話框）。</li>
+  </ul>
+  <h4>互動 / 狀態</h4>
+  <ul>
+    <li>雙擊任一列 → 開「帳戶編輯表單」（見對話框區）。</li>
+    <li>Secret 燈 ❌ → hover 顯示缺哪幾個；點擊跳 Secrets 分頁並過濾到該帳戶。</li>
+    <li>刪除：只移除 accounts.json 條目，<b>保留 data/ 目錄</b>（歷史不刪）；確認框會明說這點。</li>
+  </ul>
+</section>
+
+<!-- ══════════════════════════════════════════════════ -->
+<section id="scr3">
+  <h2><span class="num">3</span>Secrets</h2>
+  <div class="meta">用途：看哪些金鑰已設 / 設定金鑰 —— 值永遠看不到</div>
+  <div class="wire">┌ GitHub Secrets（itemhsu/tech-rebalance）── 篩選[全部▾] ┐
+│ Secret 名稱            來自        狀態      動作        │
+│ ACC1_ALPACA_KEY       帳戶#1      ✅ 已設   [ 更新 ]    │
+│ ACC1_ALPACA_SECRET    帳戶#1      ✅ 已設   [ 更新 ]    │
+│ ACC6_TRADIER_TOKEN    帳戶#6      ❌ 未設   [ 設定 ]    │
+│ ACC6_TRADIER_ACCOUNT  帳戶#6      ❌ 未設   [ 設定 ]    │
+│ EMAIL_SENDER          全域        ✅ 已設   [ 更新 ]    │
+│ EMAIL_PASSWORD        全域        ✅ 已設   [ 更新 ]    │
+│ SENDGRID_API_KEY      全域(選填)  ⚪ 未設   [ 設定 ]    │
+├────────────────────────────────────────────────────────┤
+│ ⚠ 帳戶 #6 有 2 個必填 Secret 未設 → 該帳戶無法執行      │
+└────────────────────────────────────────────────────────┘</div>
+  <h4>元件</h4>
+  <ul>
+    <li><b>Secret 清單</b>：把「每個帳戶<b>應有</b>的 Secret（由 <code>secret_prefix</code> + broker spec 的 <code>required_env</code> 推導）」＋「全域 Secret（EMAIL_*、SENDGRID 等）」全列出。</li>
+    <li><b>狀態欄</b>：✅已設 / ❌必填未設 / ⚪選填未設。資料來自 <code>gh secret list</code>（只知道存在與否，<b>拿不到值</b>）。</li>
+    <li><b>動作</b>：設定 / 更新 → 開「Secret 設定對話框」。</li>
+    <li><b>底部告警</b>：彙總「哪些帳戶因缺必填 Secret 而無法執行」。</li>
+  </ul>
+  <div class="box danger"><strong>安全</strong>：本頁<b>從不顯示任何 Secret 的值</b>，只顯示「有沒有設」。
+  設定時的值經對話框 → stdin → <code>gh</code>，不落任何檔。</div>
+</section>
+
+<!-- ══════════════════════════════════════════════════ -->
+<section id="scr4">
+  <h2><span class="num">4</span>排程 Schedule</h2>
+  <div class="meta">用途：改 cron 執行時間，不用手碰 YAML</div>
+  <div class="wire">┌ 每日排程 daily_all_accounts.yml ──────────────────────┐
+│ 主排程   星期 [一✔二✔三✔四✔五✔六☐日☐]  [21]:[30] UTC │
+│                                    = 台灣 隔日 05:30    │
+│ 備援排程 星期 [一✔二✔三✔四✔五✔六☐日☐]  [22]:[00] UTC │
+│                                    = 台灣 隔日 06:00    │
+│ cron 原文：30 21 * * 1-5  /  0 22 * * 1-5               │
+├ 其他 workflow ────────────────────────────────────────┤
+│ harvest.yml          （手動觸發，無排程）   [ 檢視 ]    │
+│ momentum_tool_v2.yml （每週日 02:00 UTC）   [ 編輯 ]    │
+├────────────────────────────────────────────────────────┤
+│ [ 預覽 diff ]                      [ 套用並 push → ]    │
+└────────────────────────────────────────────────────────┘</div>
+  <h4>元件</h4>
+  <ul>
+    <li><b>視覺化編輯器</b>：星期勾選 + 時/分數字框（UTC），下方<b>即時換算使用者本地時區</b>，並顯示對應的 cron 原文。</li>
+    <li><b>多 workflow 列表</b>：列出所有有排程的 workflow，可分別編輯。</li>
+    <li><b>預覽 diff</b>：開 diff 對話框，顯示 YAML 將如何變動（紅減綠加）。</li>
+    <li><b>套用並 push</b>：寫回 YAML → git commit → push（含 token 掃描攔截）。</li>
+  </ul>
+  <div class="box warn"><strong>防呆</strong>：改完先 <code>yaml.safe_load</code> 驗證合法，再讓你 push；
+  保留備援 cron 概念，避免單一排程失敗就完全不跑。</div>
+</section>
+
+<!-- ══════════════════════════════════════════════════ -->
+<section id="scr5">
+  <h2><span class="num">5</span>設定 Settings</h2>
+  <div class="meta">用途：全域參數 + 環境自檢</div>
+  <div class="wire">┌ 全域 Email ───────────────────────────────────────────┐
+│ 寄件人 EMAIL_SENDER     [ 已設 ✅ ]          [ 更新 ]   │
+│ App 密碼 EMAIL_PASSWORD [ 已設 ✅ ]          [ 更新 ]   │
+│ 預設收件人（新帳戶用）  [ you@x.com         ]           │
+├ 執行預設 ─────────────────────────────────────────────┤
+│ dry_run 預設            ( )開  (•)關                     │
+│ 排程的時區顯示          [ Asia/Taipei ▾ ]               │
+├ 環境自檢 ─────────────────────────────────────────────┤
+│ git           ✅ 2.43   gh ✅ 已登入   Python ✅ 3.11   │
+│ repo 路徑     ~/Downloads/tradecopy        [ 變更 ]     │
+│ 可 push       ✅（origin/main 可寫）                    │
+└────────────────────────────────────────────────────────┘</div>
+  <h4>元件</h4>
+  <ul>
+    <li><b>全域 Email</b>：寄件人 / App 密碼（走 Secrets）、新帳戶預設收件人。</li>
+    <li><b>執行預設</b>：dry_run 預設、排程時區顯示偏好。</li>
+    <li><b>環境自檢</b>：git / gh / Python 版本與登入狀態、repo 路徑、push 權限 —— 缺什麼一眼看到並給修復指引。</li>
+  </ul>
+</section>
+
+<!-- ══════════════════════════════════════════════════ -->
+<section id="scr-dialogs">
+  <h2>🪟 對話框（5）＋ 首次啟動精靈</h2>
+  <div class="meta">非分頁，但同樣要講清楚</div>
+
+  <h3>D1 · 帳戶新增/編輯表單</h3>
+  <div class="wire">id            [ 6        ]   （新增時即時檢查不重複）
+啟用          [✔]
+券商          [ tradier ▾]   ← brokers/*.json
+環境          [ sandbox ▾]   ← 該 broker 的 environments
+策略          [ top10   ▾]   ← strategies/*.json（右側顯示策略摘要）
+secret_prefix [ ACC6     ]   （改動時連動下方 Secret 檢查）
+data_dir      [ data/6   ]
+email 收件人  [ you@x.com ; ops@x.com ]
+use_new_runner[✔]
+──────────────────────────────────────────────
+需要的 Secret：ACC6_TRADIER_TOKEN ❌  ACC6_TRADIER_ACCOUNT ❌
+              [ 去 Secrets 設定 → ]
+        [ 取消 ]                            [ 儲存 ]</div>
+  <ul>
+    <li>下拉選單全部<b>動態</b>：券商←brokers/、環境←該券商 spec、策略←strategies/。</li>
+    <li>選券商/改 prefix 時，下方即時算出「該有哪些 Secret」並標示已設/未設。</li>
+    <li>儲存前做 schema 驗證；id 重複、缺必填 → 擋下並標紅。</li>
+  </ul>
+
+  <h3>D2 · Secret 設定對話框</h3>
+  <div class="wire">設定 Secret：ACC6_TRADIER_TOKEN
+值 [ •••••••••••••••• ]  (遮罩，可暫顯)
+   ⚠ 值只會經 gh 寫入 GitHub Secrets，不存任何本機檔。
+        [ 取消 ]              [ 設定 ]</div>
+  <ul><li>遮罩輸入 → 以 stdin 餵 <code>gh secret set</code>；成功後清空記憶體；全程不寫檔/不寫 log。</li></ul>
+
+  <h3>D3 · Cron diff 預覽 / push 確認</h3>
+  <div class="wire">將變更 .github/workflows/daily_all_accounts.yml：
+- - cron: '30 21 * * 1-5'
++ - cron: '0 22 * * 1-5'
+這會 commit + push 到 itemhsu/tech-rebalance。
+        [ 取消 ]              [ 確認 push ]</div>
+
+  <h3>D4 · 刪除確認</h3>
+  <div class="wire">確定刪除帳戶 #6（tradier / top10）？
+• 會從 accounts.json 移除此帳戶
+• 不會刪除 data/6/ 的歷史資料
+        [ 取消 ]              [ 刪除 ]</div>
+
+  <h3>D5 · 立即 dry-run 輸出</h3>
+  <div class="wire">執行：python run_account.py --account 6 --dry-run
+────────────────────────────────────────────
+[INFO] runner.top10: 守門通過...
+[INFO] 將下 0 筆訂單（dry-run）
+────────────────────────────────────────────
+                              [ 關閉 ]</div>
+
+  <h3>W · 首次啟動精靈</h3>
+  <div class="wire">歡迎！先做 3 件事：
+1. 選 repo 路徑      [ ~/Downloads/tradecopy ]  ✅ 找到 accounts.json
+2. 檢查 gh 登入      gh auth status … ✅ 已登入
+3. 檢查 git 可 push  origin/main … ✅
+                              [ 開始使用 → ]</div>
+  <ul><li>首次開啟引導定位 repo、確認 <code>gh</code>/<code>git</code> 就緒；缺則給安裝/登入指引，不讓使用者卡在空白畫面。</li></ul>
+</section>
+
+<!-- ══════════════════════════════════════════════════ -->
+<section id="phases">
+  <h2>🛠 階段概覽</h2>
+  <div class="meta">4 階段，可獨立交付</div>
+  <div class="phase-grid">
+    <div class="phase-card"><span class="pn">A</span>
+      <h4>骨架 + 帳戶 CRUD</h4>
+      <ul><li>PySide6 主視窗 + 分頁</li><li>accounts_repo 讀寫+驗證</li><li>帳戶表格/編輯/新增/刪除</li><li>state 唯讀顯示</li></ul>
+      <div class="dur">⏱️ ~3 天</div>
+    </div>
+    <div class="phase-card"><span class="pn">B</span>
+      <h4>Secrets</h4>
+      <ul><li>gh_client 封裝</li><li>存在狀態檢視</li><li>設定（stdin 餵 gh，不落地）</li><li>缺 Secret 標紅連動</li></ul>
+      <div class="dur">⏱️ ~2 天</div>
+    </div>
+    <div class="phase-card"><span class="pn">C</span>
+      <h4>Cron + 其他參數</h4>
+      <ul><li>cron_editor YAML 改寫</li><li>cron↔可讀+時區換算</li><li>git diff 預覽 + push</li><li>email/全域設定</li></ul>
+      <div class="dur">⏱️ ~2 天</div>
+    </div>
+    <div class="phase-card"><span class="pn">D</span>
+      <h4>打包跨平台</h4>
+      <ul><li>PyInstaller 三平台</li><li>圖示/簽章(選)</li><li>使用手冊</li></ul>
+      <div class="dur">⏱️ ~1.5 天</div>
+    </div>
+  </div>
+</section>
+
+<section id="phaseA">
+  <h2><span class="num">A</span>骨架 + 帳戶 CRUD</h2>
+  <div class="meta">⏱️ ~3 天 · 先讓「看 + 改 + 新增 + 刪」可用</div>
+  <ol>
+    <li><code>admin_gui/app.py</code>：QApplication、主視窗、5 分頁殼（總覽/帳戶/Secrets/排程/設定）+ 首啟精靈</li>
+    <li><code>accounts_repo.py</code>：load/save accounts.json，原子寫檔，套用與 run_account 一致的欄位驗證（id 唯一、broker/strategy 存在、secret_prefix 非空）</li>
+    <li>帳戶表格（QTableView）＋ 編輯表單（broker/strategy 下拉動態載入）</li>
+    <li>刪除＝移除 accounts.json 條目，<b>保留 data/ 目錄</b>（不刪歷史），二次確認</li>
+    <li><code>state_reader.py</code>：讀每帳戶 portfolio_state 顯示 NAV/日期（缺檔顯示「待產生」）</li>
+  </ol>
+  <div class="box ok"><strong>Gate A</strong>：能完整對 accounts.json 做 CRUD，存檔後 <code>python -c "import json"</code> 可解析、且通過既有欄位驗證；不破壞既有 4 帳戶。</div>
+</section>
+
+<section id="phaseB">
+  <h2><span class="num">B</span>Secrets</h2>
+  <div class="meta">⏱️ ~2 天 · 金鑰安全是重點</div>
+  <ol>
+    <li><code>gh_client.py</code>：<code>gh secret list</code> 解析存在狀態；<code>gh secret set NAME --body -</code> 以 stdin 餵值</li>
+    <li>Secrets 分頁：列出「應有 Secret（由帳戶推導）+ 全域 Secret」與其存在狀態</li>
+    <li>設定對話框：遮罩輸入 → gh → 成功後清空記憶體；<b>全程不寫檔</b></li>
+    <li>帳戶編輯表單連動：缺對應 Secret 標紅 + 跳轉</li>
+  </ol>
+  <div class="box danger"><strong>Gate B</strong>：靜態掃描確認程式內無任何「把 secret 寫入檔案/log」的路徑；
+  設 Secret 後本機 repo 無新增明文。</div>
+</section>
+
+<section id="phaseC">
+  <h2><span class="num">C</span>Cron + 其他參數</h2>
+  <div class="meta">⏱️ ~2 天</div>
+  <ol>
+    <li><code>cron_editor.py</code>：定位 workflow 的 <code>cron:</code> 行，安全改寫（保留其餘 YAML）</li>
+    <li>cron ↔ 人類可讀（「週一~五 21:30 UTC」）+ 換算使用者本地時區顯示</li>
+    <li><code>git_ops.py</code>：commit 前顯示 diff、要求確認、push；含 secret 字串掃描攔截</li>
+    <li>設定分頁：email 收件人（全域/帳戶級）、dry_run 預設、其他 workflow input 預設</li>
+  </ol>
+  <div class="box ok"><strong>Gate C</strong>：改 cron 後 workflow YAML 仍能被 <code>yaml.safe_load</code> 解析、GitHub Actions 接受；diff 預覽與實際變更一致。</div>
+</section>
+
+<section id="phaseD">
+  <h2><span class="num">D</span>打包跨平台</h2>
+  <div class="meta">⏱️ ~1.5 天</div>
+  <ul>
+    <li>PyInstaller 出 macOS <code>.app</code> / Windows <code>.exe</code> / Linux 可執行檔</li>
+    <li>首次啟動引導：選 repo 路徑、檢查 <code>gh auth status</code>、檢查 git 可 push</li>
+    <li>使用手冊（HTML，併入 dashboard）</li>
+  </ul>
+  <div class="box info"><strong>相依</strong>：執行需本機有 <code>git</code> 與 <code>gh</code>（已登入）。
+  App 啟動時自檢，缺則引導安裝/登入。</div>
+</section>
+
+<!-- ══════════════════════════════════════════════════ -->
+<section id="test">
+  <h2>🧪 測試計劃</h2>
+  <div class="meta">邏輯層可單測；GUI 層手動 + 少量自動</div>
+  <table>
+    <thead><tr><th>ID</th><th>測試</th><th>層級</th><th>嚴重度</th></tr></thead>
+    <tbody>
+      <tr><td><span class="tid">G-01</span></td><td>accounts_repo 載入既有 accounts.json 無損 round-trip（讀→寫→比對相同）</td><td>單元</td><td><span class="severity-h">高</span></td></tr>
+      <tr><td><span class="tid">G-02</span></td><td>新增重複 id → 驗證擋下</td><td>單元</td><td><span class="severity-h">高</span></td></tr>
+      <tr><td><span class="tid">G-03</span></td><td>broker/strategy 下拉確實由 brokers/、strategies/ 目錄動態產生</td><td>單元</td><td><span class="severity-m">中</span></td></tr>
+      <tr><td><span class="tid">G-04</span></td><td>刪帳戶只移除 json 條目、不刪 data/ 目錄</td><td>單元</td><td><span class="severity-h">高</span></td></tr>
+      <tr><td><span class="tid">G-05</span></td><td>gh_client 設 secret 用 stdin、指令參數不含值（避免 ps/log 外洩）</td><td>單元(mock)</td><td><span class="severity-h">高</span></td></tr>
+      <tr><td><span class="tid">G-06</span></td><td>程式碼路徑掃描：無「secret → 檔案/log」寫入</td><td>靜態</td><td><span class="severity-h">高</span></td></tr>
+      <tr><td><span class="tid">G-07</span></td><td>cron_editor 改 cron 後 YAML 仍 valid、其餘內容不變</td><td>單元</td><td><span class="severity-h">高</span></td></tr>
+      <tr><td><span class="tid">G-08</span></td><td>cron ↔ 可讀字串雙向轉換正確（含時區換算）</td><td>單元</td><td><span class="severity-m">中</span></td></tr>
+      <tr><td><span class="tid">G-09</span></td><td>git_ops 在 diff 含疑似 token 時攔截 commit</td><td>單元</td><td><span class="severity-h">高</span></td></tr>
+      <tr><td><span class="tid">G-10</span></td><td>state_reader 缺 state 檔時回「待產生」不丟例外</td><td>單元</td><td><span class="severity-l">低</span></td></tr>
+      <tr><td><span class="tid">G-11</span></td><td>三平台冒煙：開啟、列帳戶、存檔（PyInstaller 產物）</td><td>手動</td><td><span class="severity-m">中</span></td></tr>
+    </tbody>
+  </table>
+  <div class="box info"><strong>策略</strong>：把邏輯全放 <code>services/</code>（純函式、可單測），
+  <code>views/</code> 盡量薄 → 大部分驗證不需啟動 GUI。GUI 互動以手動冒煙 + 截圖檢查。</div>
+</section>
+
+<!-- ══════════════════════════════════════════════════ -->
+<section id="risks">
+  <h2>🚨 風險</h2>
+  <table>
+    <thead><tr><th>風險</th><th>緩解</th></tr></thead>
+    <tbody>
+      <tr><td>金鑰不慎落地 / 被 commit</td><td>stdin 餵 gh + 不寫檔 + commit 前 diff 掃描攔截（G-05/06/09）</td></tr>
+      <tr><td>誤改 accounts.json 弄壞 production</td><td>原子寫檔、存檔前 schema 驗證、保留 git 歷史可 revert</td></tr>
+      <tr><td>誤改 cron 導致排程壞 / 不跑</td><td>改完驗證 YAML、diff 預覽、可一鍵還原；保留備援 cron</td></tr>
+      <tr><td>GUI 與交易路徑耦合</td><td>嚴格分離：GUI 只編輯設定，交易仍由 cron+runner 執行，App 不在交易路徑上</td></tr>
+      <tr><td>跨平台打包問題</td><td>Phase D 三平台各自冒煙；備案 Tkinter 打包更穩</td></tr>
+      <tr><td>過度開發（單一使用者卻做很重的 App）</td><td>先做 Phase A（最高頻：看+改帳戶）就有價值，B/C/D 視需要再上</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ══════════════════════════════════════════════════ -->
+<section id="execution-status">
+  <h2>✅ 執行狀況（完成紀錄）</h2>
+  <div class="meta">更新：2026-06-02 · 框架定 PySide6 · Phase A 完成</div>
+  <table>
+    <thead><tr><th>Phase</th><th>內容</th><th>狀態</th></tr></thead>
+    <tbody>
+      <tr><td>A</td><td>骨架 + 帳戶 CRUD</td><td>✅ 完成（見下方工程 log）</td></tr>
+      <tr><td>B</td><td>Secrets 設定</td><td>⬜ 下一步</td></tr>
+      <tr><td>C</td><td>Cron + 其他參數</td><td>⬜ 待動工</td></tr>
+      <tr><td>D</td><td>打包跨平台</td><td>⬜ 待動工</td></tr>
+    </tbody>
+  </table>
+  <div class="box ok"><strong>決議</strong>：框架採 <b>PySide6</b>；逐階段實作，每階段工程 log 記於下。</div>
+</section>
+
+<!-- ══════════════════════════════════════════════════ -->
+<section id="eng-log">
+  <h2>🛠 工程 Log</h2>
+  <div class="meta">逐階段實作紀錄</div>
+
+  <h3>Phase A — 骨架 + 帳戶 CRUD（2026-06-02）</h3>
+
+  <h4>產出檔案</h4>
+  <table>
+    <thead><tr><th>檔案</th><th>角色</th></tr></thead>
+    <tbody>
+      <tr><td><code>admin_gui/app.py</code></td><td>進入點：QMainWindow + 5 分頁（總覽/帳戶 已實作；Secrets/排程/設定 佔位）</td></tr>
+      <tr><td><code>admin_gui/models/account.py</code></td><td>Account dataclass + <code>validate_account()</code>（純函式驗證）</td></tr>
+      <tr><td><code>admin_gui/services/accounts_repo.py</code></td><td>accounts.json 讀寫：load/add/update/delete，<b>原子寫檔</b>、round-trip 無損、保留未知欄位</td></tr>
+      <tr><td><code>admin_gui/services/catalog.py</code></td><td>動態列 broker/strategy/environment、由 broker spec 推導 required secrets</td></tr>
+      <tr><td><code>admin_gui/services/state_reader.py</code></td><td>讀各 data/ 的 portfolio_state（缺檔回 not-exists，不丟例外）</td></tr>
+      <tr><td><code>admin_gui/views/overview_view.py</code></td><td>總覽分頁（健康摘要 + 帳戶狀態表）</td></tr>
+      <tr><td><code>admin_gui/views/accounts_view.py</code></td><td>帳戶表格 + CRUD + AccountDialog 表單（下拉動態、Secret 提示）</td></tr>
+      <tr><td><code>tests/admin_gui/test_accounts_repo.py</code></td><td>service 單元測試 10 個</td></tr>
+      <tr><td><code>tests/admin_gui/test_gui_smoke.py</code></td><td>GUI 冒煙（importorskip PySide6）</td></tr>
+    </tbody>
+  </table>
+
+  <h4>設計決策</h4>
+  <ul>
+    <li><b>邏輯/GUI 分離</b>：所有邏輯放 <code>services/</code>（純函式、可單測）；<code>views/</code> 只做呈現。
+        故 PySide6 未安裝也能跑 service 測試。</li>
+    <li><b>round-trip 無損</b>：update 用 <code>{**原dict, **改動}</code> 合併，保留 <code>alpaca_secret_prefix</code>、
+        <code>runner_sub_id</code> 等未知欄位（已測 G-01b）。</li>
+    <li><b>原子寫檔</b>：temp + <code>os.replace</code>，避免半寫壞掉 production 的 accounts.json。</li>
+    <li><b>刪除不刪 data/</b>：只移除 accounts.json 條目，歷史保留（已測 G-04）。</li>
+    <li><b>下拉動態</b>：券商←<code>brokers/*.json</code>、環境←該券商 spec、策略←<code>strategies/*.json</code>，零硬編。</li>
+  </ul>
+
+  <h4>測試結果</h4>
+  <pre>tests/admin_gui/  →  10 passed, 1 skipped
+  G-01  round-trip 無損 ✅      G-01b 未知欄位保留 ✅
+  G-02  重複 id 擋下 ✅          G-02b 缺必填擋下 ✅
+  G-03  下拉來自目錄 ✅          G-03b required secrets 推導 ✅
+  G-04  刪除保留 data/ ✅        G-04b add→delete ✅
+  G-10  缺 state 回待產生 ✅     G-10b 讀現有 state ✅
+  GUI smoke（overview/accounts/mainwindow 建構）→ skip（PySide6 未裝）
+全專案：527 passed, 0 regression</pre>
+
+  <h4>如何執行</h4>
+  <pre><span class="c"># 安裝 GUI 相依（一次）</span>
+pip install PySide6
+<span class="c"># 啟動</span>
+python -m admin_gui.app                 <span class="c"># 用預設 repo</span>
+python -m admin_gui.app /path/to/repo</pre>
+
+  <h4>已知限制 / 待 Phase B+</h4>
+  <ul>
+    <li>Secrets / 排程 / 設定 分頁為佔位（Phase B/C）。</li>
+    <li>帳戶表格的「Secret 齊全燈」目前只判斷「spec 有沒有要求」，<b>尚未實際查 gh</b> 是否已設（需 Phase B 的 gh_client）。</li>
+    <li>「立即 dry-run」按鈕、活動日誌、頂部 repo/gh 狀態列待補。</li>
+    <li>CI runner 未裝 PySide6 → GUI smoke 在 CI 會 skip（service 測試仍跑）。</li>
+  </ul>
+  <div class="box ok"><strong>Gate A ✅</strong>：accounts.json CRUD 全可用、round-trip 無損、不破壞既有 5 帳戶；service 測試全綠。</div>
+</section>
+
+<footer>
+  Tech-Rebalance · 管理者 GUI 桌面 App 計劃書 v1 · 2026-06-02 · 11 test cases
+</footer>
+
+</main>
+
+<script>
+const links = document.querySelectorAll('.sidebar a[href^="#"]');
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if(e.isIntersecting){
+      links.forEach(l => l.classList.remove('active'));
+      const m = document.querySelector(`.sidebar a[href="#${e.target.id}"]`);
+      if(m) m.classList.add('active');
+    }
+  });
+},{threshold:0.15,rootMargin:'-60px 0px -60% 0px'});
+document.querySelectorAll('section[id]').forEach(s=>obs.observe(s));
+</script>
+</body>
+</html>

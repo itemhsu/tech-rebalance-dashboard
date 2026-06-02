@@ -104,6 +104,7 @@ footer{text-align:center;color:#1e293b;font-size:11px;padding:36px 0 18px;}
   <h3>🛠 實作</h3>
   <a href="#migration">遷移路線圖</a>
   <a href="#risks">風險與限制</a>
+  <a href="#execution-status">✅ 執行狀況</a>
 </nav>
 
 <main>
@@ -757,8 +758,29 @@ ACC7_PERSON_ID  = "A123..."</pre>
   </div>
 </section>
 
+<!-- ══════════════════════════════════════════════════ -->
+<section id="execution-status">
+  <h2>✅ 執行狀況（完成紀錄）</h2>
+  <div class="meta">更新：2026-06-01 · 設計已落實</div>
+
+  <div class="box ok">
+    <strong>✅ 設計已落地</strong>
+    本份分析的 schema 設計已實作為 <code>brokers/broker-schema-v1.json</code> +
+    <code>brokers/alpaca.json</code>，並由 <code>brokers/registry.py</code> 載入驗證。
+    Alpaca 為第一個落地的 broker spec（<code>brokers/alpaca_client.py</code>，55 個測試 PASS）。
+  </div>
+
+  <div class="box info">
+    <strong>📌 與 broker-integration-plan 的關係</strong>
+    本文是「設計分析」（schema 長怎樣、6 家券商比較）；實際分階段交付見
+    <a href="broker-integration-plan.html#execution-status">broker-integration-plan 的執行狀況</a>。
+    目前 Phase 1（抽象層 + Alpaca）+ Phase 3（accounts 接線）完成，
+    Phase 2（第二家券商）待產品決定。
+  </div>
+</section>
+
 <footer>
-  Tech-Rebalance Broker Schema 分析 v1 · 2026-05-30
+  Tech-Rebalance Broker Schema 分析 v1 · 2026-05-30 · ✅ 設計已落實於 2026-06-01
 </footer>
 
 </main>

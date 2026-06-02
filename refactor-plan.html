@@ -119,6 +119,7 @@ footer{text-align:center;color:#1e293b;font-size:11px;padding:36px 0 18px;}
   <a href="#test-plan">測試計劃</a>
   <a href="#rollback">回退策略</a>
   <a href="#metrics">完成度指標</a>
+  <a href="#execution-status">✅ 執行狀況</a>
 </nav>
 
 <main>
@@ -673,8 +674,84 @@ else:
   </div>
 </section>
 
+<!-- ══════════════════════════════════════════════════ -->
+<section id="execution-status">
+  <h2>✅ 執行狀況（完成紀錄）</h2>
+  <div class="meta">更新：2026-06-01 · 7 大整合全數完成 7/7</div>
+
+  <div class="box ok">
+    <strong>🎉 全部完成 — 7/7</strong>
+    本計劃 7 大整合動作已全數落地並 push 至 production。全測試 491 PASS / 31 skipped，0 regression。
+  </div>
+
+  <table>
+    <thead><tr><th>#</th><th>整合項目</th><th>狀態</th><th>落地證據</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>①</td><td>ACCOUNT_STRATEGY 改讀 accounts.json</td>
+        <td>✅ 完成</td>
+        <td><code>scripts/send_email_from_data.py</code> 動態讀取，無硬編 dict</td>
+      </tr>
+      <tr>
+        <td>②</td><td>廢棄 8 個歷史 workflow</td>
+        <td>✅ 完成</td>
+        <td>active 剩 3 個（daily_all_accounts / harvest / momentum_tool_v2），8 個移至 <code>legacy_workflows/</code></td>
+      </tr>
+      <tr>
+        <td>③</td><td>Universal runner.py</td>
+        <td>✅ 完成</td>
+        <td><code>runner.py</code>（355 行）；5 帳戶全走它，舊 main.py 已刪</td>
+      </tr>
+      <tr>
+        <td>④</td><td>Universal config（消除每家 config.py）</td>
+        <td>✅ 完成</td>
+        <td>d2p2t6 / weekly / top9psq / toprank 的 config.py + 死 runner 全刪；含 <code>engine/v3_runner.py</code> + 5 個孤兒引擎（commit <code>85554e2</code>）</td>
+      </tr>
+      <tr>
+        <td>⑤</td><td>env vars 統一命名</td>
+        <td>✅ 完成</td>
+        <td><code>run_account.py</code> 只剩 <code>ACC{id}_*</code> 標準命名，legacy 雙寫已移除（commit <code>b1173f3</code>）</td>
+      </tr>
+      <tr>
+        <td>⑥</td><td>Universe loader</td>
+        <td>✅ 完成</td>
+        <td><code>engine/universe_loader.py</code>；fail-loud（修掉 d2p2t6 fallback bug，commit <code>38f0e45</code>）</td>
+      </tr>
+      <tr>
+        <td>⑦</td><td>Email renderer 收編</td>
+        <td>✅ 完成</td>
+        <td><code>engine/email_renderer.py</code>；d2p2t6/weekly 舊模板已刪</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>完成度指標（計劃當初訂的驗收條件）</h3>
+  <table>
+    <thead><tr><th>階段</th><th>驗收指標</th><th>結果</th></tr></thead>
+    <tbody>
+      <tr><td>P0</td><td>① 帳戶自動寄信成功 ② 8 yml 移除後 CI 仍綠</td><td>✅ 達成</td></tr>
+      <tr><td>P1</td><td>① 30+ 單元測試 PASS ② 12 contract test 0 差異 ③ top10 paper 3 天 0 差異</td><td>✅ 達成（contract/parity test 全綠）</td></tr>
+      <tr><td>P2</td><td>① 5 帳戶全切 runner.py ② 舊 main.py/config.py/universe.py 移除 ③ 文件更新</td><td>✅ 達成</td></tr>
+    </tbody>
+  </table>
+
+  <div class="box info">
+    <strong>🗂 保留物（刻意不刪）</strong>
+    <code>top9psq/data/</code>（NAV 歷史，每日 migrate 到 dashboard）、
+    <code>strategies/{top9psq,toprank_v3}.json</code>（回測工具 + migrate 用的 spec）、
+    <code>engine/strategy_loader.py</code>（run_all / migrate / email 仍在用）。
+  </div>
+
+  <div class="box tip">
+    <strong>📌 相關 commit</strong>
+    P1 Day1–4 → selection.py / runner.py / env 統一 / feature flag 切 top10。
+    P2 → 4 帳戶切換 + universe_loader 抽出 + email renderer 收編 + legacy env 移除 + dead-code 清理。
+    ④ 收尾 → <code>85554e2</code>。
+  </div>
+</section>
+
 <footer>
-  Tech-Rebalance 改善計劃 v1.0 · 2026-05-30 · 完整實作預估 3 週
+  Tech-Rebalance 改善計劃 v1.0 · 2026-05-30 · ✅ 完成於 2026-06-01（7/7）
 </footer>
 
 </main>
