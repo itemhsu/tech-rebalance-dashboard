@@ -25,7 +25,7 @@
 
 <h1>🔀 Fork 相容性與上游變更影響管理 <span style="font-size:16px;color:#93a4bd">v2</span></h1>
 <p class="sub">當 itemhsu（上游）改動時，其他 fork 如何不被弄壞 — 完整契約面盤點 + 測試計劃 · 2026-06-03</p>
-<span class="badge">狀態：實作中</span><span class="badge">v1 → v2：補齊全部契約面 + 測試計劃</span><span class="badge">已完成：CT-ALIGN · CT-VER · CT-SEL/EVT · CT-FWD-TOLERANT</span>
+<span class="badge">狀態：實作中</span><span class="badge">v1 → v2：補齊全部契約面 + 測試計劃</span><span class="badge">已完成：CT-ALIGN · CT-VER · CT-SEL/EVT · CT-FWD-TOLERANT · CT-BACK-CORPUS</span>
 
 <div class="toc">
  <a href="#s1">1 生態系</a><a href="#s2">2 完整契約面盤點(27)</a><a href="#s3">3 逐類衝擊×預防</a>
@@ -165,7 +165,7 @@ git merge upstream/main -m "sync: pull upstream fixes" \
  <tr><td>① Schema 合法性</td><td class="tid">CT-SCHEMA-{strat,broker,data}</td><td>所有 <code>strategies/*.json</code>/<code>brokers/*.json</code> 通過各自 schema；data.json 通過 data-schema</td><td>engine tests</td><td class="ok">大致已有（unit1/3, brokers/schema）</td></tr>
  <tr><td>② 版本標記 lint</td><td class="tid">CT-VER-PRESENT</td><td>每個 schema 有 <code>$id</code>+<code>version</code>；每個策略/券商 JSON 有版本欄位</td><td>engine tests</td><td class="ok">✅ 已實作（test_compat_contracts；補了 broker schema $id）</td></tr>
  <tr><td>③ 破壞性變更偵測</td><td class="tid">CT-BREAK-DETECT</td><td>對比上一個 git tag 的 schema：<b>禁止</b>新增 required、移除欄位、收窄 enum；違反則 fail（除非 bump 主版本）</td><td>CI（git diff schema）</td><td class="no">新增 ★關鍵</td></tr>
- <tr><td>④ 向後相容（舊資料×新碼）</td><td class="tid">CT-BACK-CORPUS</td><td>保存每個發佈版的 golden 樣本（accounts/strategy/state/data.json）→ 新碼都能讀/產出</td><td>tests/fixtures/golden/</td><td class="no">新增 ★關鍵</td></tr>
+ <tr><td>④ 向後相容（舊資料×新碼）</td><td class="tid">CT-BACK-CORPUS</td><td>保存每個發佈版的 golden 樣本（accounts/strategy/state/data.json）→ 新碼都能讀/產出</td><td>tests/fixtures/golden/</td><td class="ok">✅ 已實作（test_compat_golden；v2026-06 真實去敏樣本，含 v1+v3 策略）</td></tr>
  <tr><td>⑤ 向前相容（寬鬆讀）</td><td class="tid">CT-FWD-TOLERANT</td><td>注入「未來未知欄位」→ Account/broker/universe 載入器忽略不崩</td><td>engine tests</td><td class="ok">✅ 已實作（test_compat_tolerant，5 案全綠）</td></tr>
  <tr><td>⑥ 跨產物契約對齊</td><td class="tid">CT-ALIGN-{ver,run,sec}</td><td>data_writer.SCHEMA_VERSION ⊆ dashboard SUPPORTED；每 enabled 帳戶有 workflow 跑它；required_env ⊆ workflow secrets</td><td>engine tests</td><td class="ok">✅ 已實作（test_compat_align）— 首跑抓到 #4 未接線→已停用</td></tr>
  <tr><td>⑦ 字串耦合完整性</td><td class="tid">CT-SEL / CT-EVT</td><td>策略用到的 method 都已註冊；event type 三消費端都能解析</td><td>engine tests</td><td class="ok">✅ 已實作（test_compat_contracts）</td></tr>
@@ -208,8 +208,8 @@ def test_workflow_provides_required_secrets():
 <ol><li><b>CT-ALIGN</b> <span class="ok">✅ 完成</span>（純讀現有值，首跑即抓到 #4 未接線 → 已停用）</li>
  <li><b>CT-VER-PRESENT + CT-SEL/EVT 枚舉</b> <span class="ok">✅ 完成</span>（字串耦合與版本欄位 lint；補了 broker schema $id）</li>
  <li><b>CT-FWD-TOLERANT</b> <span class="ok">✅ 完成</span>（5 案全綠，純回歸鎖、無生產碼改動）</li>
- <li><b>CT-BACK-CORPUS</b> <span class="part">⬜ 下一步</span>（建 golden fixtures 目錄 + 回放）</li>
- <li><b>CT-BREAK-DETECT</b>（寫 <code>schema_compat.py</code> + CI step）</li>
+ <li><b>CT-BACK-CORPUS</b> <span class="ok">✅ 完成</span>（golden/v2026-06 真實去敏樣本 + 回放，6 案全綠）</li>
+ <li><b>CT-BREAK-DETECT</b> <span class="part">⬜ 下一步</span>（寫 <code>schema_compat.py</code> + CI step）</li>
  <li><b>B 類補形式 schema</b>（accounts/universe/shares/state/event 各補一份 <code>*-schema</code>，接 ① 驗證）</li>
  <li><b>CT-GUI-CONTRACT</b>（跨倉，最後）</li></ol>
 
