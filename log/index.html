@@ -37,7 +37,14 @@ tr:hover td{background:#0c1220;}
 .t-submit {background:#06b6d422;color:#06b6d4;border:1px solid #06b6d4;}
 .t-fill   {background:#10b98122;color:#10b981;border:1px solid #10b981;}
 .t-reject {background:#ef444422;color:#ef4444;border:1px solid #ef4444;}
+.t-stale  {background:#f59e0b22;color:#fbbf24;border:1px solid #f59e0b;}
 .t-summary{background:#f59e0b22;color:#f59e0b;border:1px solid #f59e0b;}
+.dry-row{opacity:.42;}
+.dry-badge{display:inline-block;margin-left:6px;font-size:9px;padding:1px 5px;border-radius:6px;
+   background:#334155;color:#cbd5e1;border:1px solid #475569;}
+.lc-card{background:#0f172a;border:1px solid #334155;border-radius:10px;padding:12px 14px;margin:0 0 14px}
+.lc-card h3{margin:0 0 8px;font-size:13px;color:#94a3b8;text-transform:uppercase;letter-spacing:.4px}
+.lc-FILLED{color:#10b981} .lc-REJECTED{color:#ef4444} .lc-STALE{color:#fbbf24} .lc-PENDING{color:#94a3b8}
 
 .act-buy {color:#10b981;font-weight:700;}
 .act-sell{color:#f87171;font-weight:700;}
@@ -77,6 +84,7 @@ details pre{background:#020617;border:1px solid #1e293b;padding:10px;
     <option value="ORDER_SUBMITTED">📤 已送出</option>
     <option value="ORDER_FILLED">✅ 已成交</option>
     <option value="ORDER_REJECTED">❌ 被拒</option>
+    <option value="ORDER_STALE">⏳ 未結告警</option>
     <option value="REBALANCE_SUMMARY">📊 總結</option>
   </select>
   <input id="symbol-filter" placeholder="🔍 篩選 symbol" oninput="render()" style="width:140px">
@@ -86,6 +94,7 @@ details pre{background:#020617;border:1px solid #1e293b;padding:10px;
 </header>
 
 <main>
+  <div id="lifecycle"></div>
   <div id="content"></div>
 </main>
 
@@ -140,6 +149,8 @@ function render() {
   document.getElementById('stat').textContent =
     `${filt.length} 筆事件 / 共 ${EVENTS.length}`;
 
+  document.getElementById('lifecycle').innerHTML = renderLifecycle();
+
   const wrap = document.getElementById('content');
   if (!filt.length) {
     wrap.innerHTML = '<div class="empty">📭 沒有符合條件的事件</div>';
@@ -158,6 +169,46 @@ function render() {
   wrap.innerHTML = html;
 }
 
+function renderLifecycle() {
+  // 串 SUBMITTED → FILLED/REJECTED/STALE（by order_id）+ dry-run 規劃單
+  const byId = {};
+  const dry = [];
+  for (const e of EVENTS) {
+    const oid = e.order_id;
+    if (e.type === 'ORDER_SUBMITTED' && oid) byId[oid] = Object.assign({}, e, {_status:'PENDING'});
+    else if (e.type === 'ORDER_FILLED' && oid) byId[oid] = Object.assign(byId[oid]||{symbol:e.symbol,action:e.action}, {_status:'FILLED', _fill:e});
+    else if (e.type === 'ORDER_REJECTED' && oid) byId[oid] = Object.assign(byId[oid]||{symbol:e.symbol,action:e.action}, {_status:'REJECTED', _rej:e});
+    else if (e.type === 'ORDER_STALE' && oid && byId[oid]) byId[oid]._status = 'STALE';
+    else if (e.type === 'ORDER_PLANNED' && /dryrun/i.test(e.trigger||'')) dry.push(e);
+  }
+  const rows = Object.values(byId);
+  if (!rows.length && !dry.length) return '';
+
+  const fmt = {FILLED:'✅ 已成交', REJECTED:'❌ 被拒', STALE:'⏳ 未結告警', PENDING:'📤 待成交'};
+  let body = '';
+  for (const r of rows) {
+    const fp = r._fill ? `$${Number(r._fill.filled_avg_price||0).toFixed(2)}` : '—';
+    const fq = r._fill ? Math.round(r._fill.qty||0) : (r.qty!=null?Math.round(r.qty):'—');
+    const act = r.action==='BUY' ? '<span class="act-buy">BUY</span>' : r.action==='SELL' ? '<span class="act-sell">SELL</span>' : '—';
+    body += `<tr>
+      <td><span class="symbol">${r.symbol||'—'}</span> · ${act}</td>
+      <td>${fq} 股</td>
+      <td class="lc-${r._status}">${fmt[r._status]||r._status}</td>
+      <td>${fp}</td></tr>`;
+  }
+  for (const e of dry) {
+    const act = e.action==='BUY' ? '<span class="act-buy">BUY</span>' : '<span class="act-sell">SELL</span>';
+    body += `<tr class="dry-row">
+      <td><span class="symbol">${e.symbol}</span> · ${act}</td>
+      <td>${Math.round(e.qty||0)} 股</td>
+      <td class="muted">📝 規劃（dry-run，未送出）</td>
+      <td>—</td></tr>`;
+  }
+  return `<div class="lc-card"><h3>📋 訂單下落（${rows.length} 送出 / ${dry.length} 規劃）</h3>
+    <table><thead><tr><th>標的 · 動作</th><th>數量</th><th>狀態</th><th>成交價</th></tr></thead>
+    <tbody>${body}</tbody></table></div>`;
+}
+
 function renderRow(e) {
   const ts = (e.ts || '').replace('T',' ').replace('Z','');
   const tag = typeTag(e.type);
@@ -170,10 +221,11 @@ function renderRow(e) {
   const symAct = `${sym} ${act !== '<span class="muted">—</span>' ? '· '+act : ''}`;
   const weight = renderWeight(e);
   const reason = e.reason ? `<span class="reason">${e.reason}</span>` : '—';
-  const trig = e.trigger || (e.type === 'REBALANCE_TRIGGER' ? '—' : '—');
+  const isDry = /dryrun/i.test(e.trigger || '');
+  const trig = (e.trigger || '—') + (isDry ? '<span class="dry-badge">規劃·未送出</span>' : '');
   const detail = renderDetail(e);
 
-  return `<tr>
+  return `<tr class="${isDry ? 'dry-row' : ''}">
     <td class="muted">${ts}</td>
     <td>${tag}</td>
     <td class="muted">${strat}</td>
@@ -194,6 +246,7 @@ function typeTag(t) {
     ORDER_SUBMITTED:   ['t-submit','📤 送出'],
     ORDER_FILLED:      ['t-fill','✅ 成交'],
     ORDER_REJECTED:    ['t-reject','❌ 拒'],
+    ORDER_STALE:       ['t-stale','⏳ 未結'],
     REBALANCE_SUMMARY: ['t-summary','📊 總結'],
   };
   const [cls, label] = map[t] || ['t-skip', t];
