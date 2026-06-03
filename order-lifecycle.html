@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="zh-Hant"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>訂單生命週期可觀測性 — 設計與實作</title>
+<style>
+ body{margin:0;background:#0b1220;color:#e5edf7;font-family:-apple-system,"PingFang TC","Noto Sans TC",sans-serif;line-height:1.7}
+ .w{max-width:960px;margin:0 auto;padding:32px 20px 80px}
+ h1{font-size:28px;margin:0 0 4px} h2{font-size:21px;margin:30px 0 10px;border-left:4px solid #38bdf8;padding-left:10px}
+ h3{font-size:16px;margin:18px 0 6px;color:#cfe3fb} .sub{color:#93a4bd;margin:0 0 20px}
+ table{width:100%;border-collapse:collapse;margin:10px 0;font-size:14px}
+ th,td{border:1px solid #22324d;padding:8px 10px;text-align:left;vertical-align:top}
+ th{background:#15233b;color:#cfe3fb} code{background:#0e1a2e;border:1px solid #22324d;border-radius:5px;padding:1px 6px;font-size:13px}
+ pre{background:#0e1a2e;border:1px solid #22324d;border-radius:10px;padding:14px;overflow:auto;font-size:13px}
+ .box{border-radius:10px;padding:12px 14px;margin:12px 0;border:1px solid}
+ .bad{background:#2a1416;border-color:#7f1d1d} .good{background:#0e2a1f;border-color:#14532d}
+ .badge{display:inline-block;background:#15233b;border:1px solid #22324d;color:#38bdf8;border-radius:999px;padding:2px 12px;font-size:13px;margin:2px 4px 2px 0}
+ .flow{font-family:monospace;background:#0e1a2e;border:1px solid #22324d;border-radius:10px;padding:14px;color:#cfe3fb}
+</style></head><body><div class="w">
+
+<h1>📋 訂單生命週期可觀測性</h1>
+<p class="sub">「交易指令的下落」追蹤 — 設計與實作 · 2026-06-03</p>
+<span class="badge">trader.py</span><span class="badge">trade_log.py</span><span class="badge">狀態：核心已實作 · 含跨日對帳</span>
+
+<h2>1. 問題</h2>
+<div class="box bad">
+ 帳號 #3 的 <code>trade_events.jsonl</code> 只有 <code>ORDER_PLANNED</code>（規劃），<b>沒有任何「下落」</b>：
+ 訂單到底有沒有送出？成交了嗎？成交價多少？被拒絕了嗎？無從得知。
+</div>
+<ul>
+ <li><code>portfolio.calculate_rebalance</code> 寫 <code>ORDER_PLANNED</code>（意圖）—— <b>dry-run 也會寫</b>（trigger 帶 <code>_dryrun</code>）。</li>
+ <li><code>trader.execute_rebalance</code> 只寫 <code>ORDER_SUBMITTED</code>，而且 <b><code>wait_for_fills()</code> 回傳的成交資料被丟棄</b>。</li>
+ <li><code>record_order_fill</code> / <code>record_order_reject</code> 函式<b>早就存在，卻從沒被呼叫</b>。</li>
+ <li>休市時下單會排隊、<b>開盤後才成交</b> → 當下查不到，需<b>隔日對帳</b>，但沒有這段程式。</li>
+</ul>
+
+<h2>2. 訂單狀態機</h2>
+<div class="flow">PLANNED ──(live 送出)──▶ SUBMITTED ──┬─(filled)────────▶ FILLED（含成交均價/量）
+   │                                    ├─(partial)───────▶ FILLED(partial)
+   │                                    ├─(rejected/expired)▶ REJECTED
+   └─(dry-run)──▶ 不送出、不寫成交事件     └─(休市 pending)──▶ 隔日 reconcile 補記終態</div>
+
+<h2>3. 設計</h2>
+<table>
+ <thead><tr><th>機制</th><th>時機</th><th>做什麼</th></tr></thead>
+ <tbody>
+  <tr><td><b>即時追蹤</b> <code>_record_outcomes</code></td><td>送單 + <code>wait_for_fills</code> 之後</td>
+      <td>逐筆 <code>get_order(oid)</code>：filled→<code>ORDER_FILLED</code>（成交均價/量）、partial→FILLED(partial)、rejected/expired→<code>ORDER_REJECTED</code>、仍 pending→不記終態</td></tr>
+  <tr><td><b>跨日對帳</b> <code>reconcile_outcomes</code></td><td>每次 live run <b>開始時</b></td>
+      <td>讀 <code>trade_events.jsonl</code> 找「已 SUBMITTED 但無 FILLED/REJECTED」的 order_id → 查最新狀態 → 補記下落（解決休市排隊、開盤成交）</td></tr>
+  <tr><td><b>dry-run 區隔</b></td><td>dry-run</td>
+      <td>不寫任何成交事件；ORDER_PLANNED 以 trigger <code>_dryrun</code> 標示，log viewer 應淡化顯示「規劃（未送出）」</td></tr>
+ </tbody>
+</table>
+
+<h2>4. 實作（已完成）</h2>
+<pre># trader.execute_rebalance（live 路徑）
+reconcile_outcomes(client, account_id, strategy)   # ① 開始：補記昨日 pending
+... 送 SELL / BUY，記 ORDER_SUBMITTED（含 order_id）...
+_record_outcomes(client, submitted, ...)           # ② 結束：記今日 FILLED/REJECTED/PARTIAL
+
+# trade_log 新增 read_events() 供對帳去重（已 FILLED/REJECTED 的 order_id 不重記）</pre>
+<div class="box good">
+ 結果：每個 order_id 形成完整鏈 <code>PLANNED → SUBMITTED → FILLED/REJECTED</code>，
+ 含<b>成交均價、成交量、最終狀態</b>。dry-run 不再混入成交事件、且明確標示。
+</div>
+
+<h2>5. 測試（7 案例，全綠）</h2>
+<table>
+ <thead><tr><th>測試</th><th>驗證</th></tr></thead>
+ <tbody>
+  <tr><td>_record_outcomes filled / rejected / partial / pending</td><td>各狀態記對的事件；pending 不記終態</td></tr>
+  <tr><td>reconcile 補記 fill / reject</td><td>昨日 SUBMITTED 未結 → 查到成交/拒絕 → 補記</td></tr>
+  <tr><td>reconcile 去重</td><td>已有 FILLED 的 order_id 不重複記</td></tr>
+ </tbody>
+</table>
+
+<h2>6. 後續（建議）</h2>
+<ul>
+ <li><b>報告/dashboard「訂單下落」視圖</b>：把 PLANNED→SUBMITTED→FILLED 串成一列顯示成交價與滑價。</li>
+ <li><b>log viewer 淡化 dry-run</b>：trigger 含 <code>_dryrun</code> 的 PLANNED 以灰色標「規劃（未送出）」。</li>
+ <li><b>未成交告警</b>：對帳發現超過 N 天仍未結的 SUBMITTED → 開 issue / email 告警。</li>
+</ul>
+
+</div></body></html>
