@@ -157,6 +157,77 @@ def generate_for_account(account, output_dir):
   </table>
   <p class="muted">這次已先加的守門測試（email section 名有效、subject 可套版、含 cta、migrate 有對應產生器）併入 R-04 範圍。</p>
 
+  <h3>遷移測試（實際程式碼）</h3>
+  <p><b>R-03 · Parity 測試</b>（最關鍵）：對每個既有帳戶，新泛用產生器的輸出必須與舊硬寫函式
+  <strong>逐欄一致</strong>（忽略產生時間戳）。這是讓我們敢刪掉 6 個 <code>migrate_*</code> 的安全網。</p>
+<pre>tests/test_report_generator_parity.py
+─────────────────────────────────────
+import json, pytest
+from scripts.migrate_to_mvp import (        # 舊：硬寫函式（遷移期間並存）
+    migrate_top10, migrate_d2p2t6, migrate_weekly_top10)
+from engine.report_generator import generate_for_account   # 新：單一泛用產生器
+from engine.accounts import load_account
+
+# 忽略每次都會變的欄位（產生時間戳），其餘逐欄比對
+_VOLATILE = {"generated_at", "rendered_at"}
+def _canon(d):
+    return {k: v for k, v in d.items() if k not in _VOLATILE}
+
+@pytest.mark.parametrize("acct,old_fn", [
+    ("1", migrate_top10),          # TOP10        → ranked_stocks
+    ("2", migrate_d2p2t6),         # D2P2T6       → universe_groups
+    ("4", migrate_weekly_top10),   # Weekly TOP10 → scorecard
+])
+def test_parity_new_equals_old(tmp_path, acct, old_fn):
+    old_fn(tmp_path / "old")                                  # 舊輸出
+    generate_for_account(load_account(acct), tmp_path / "new")  # 新輸出
+    old = json.loads((tmp_path / "old" / acct / "data.json").read_text("utf-8"))
+    new = json.loads((tmp_path / "new" / acct / "data.json").read_text("utf-8"))
+    assert _canon(new) == _canon(old), f"帳戶 #{acct} 新舊輸出不一致"</pre>
+
+  <p><b>R-04 · 每個 enabled 帳戶都能產出有效報告</b>（這正是 #3 漏接時會被擋下的測試）：</p>
+<pre>@pytest.mark.parametrize("account", load_accounts(enabled=True))
+def test_every_account_generates_valid(tmp_path, account):
+    status = generate_for_account(account, tmp_path)
+    if status == "skip":                       # 無資料帳戶 → 合法略過
+        return
+    data = json.loads((tmp_path / account["id"] / "data.json").read_text("utf-8"))
+    validate_data_json(data)                                   # schema 全過
+    assert data["date"] == load_state(account["data_dir"])["date"]   # 日期=最新，不會停在舊資料
+    strat = load_and_validate(account["strategy"])
+    subj  = data["email"]["subject"]
+    assert account["id"] in subj and data["date"] in subj      # 主旨正確（含 id + 當日）
+    secs  = strat["email"]["sections"]
+    if "cta" in secs:
+        assert data["email"].get("dashboard_url")              # cta 三按鈕有 URL 可渲染</pre>
+
+  <p><b>R-01 / R-02 · resolver 單元測試</b>：</p>
+<pre>def test_resolve_holdings_fallback():
+    assert resolve_holdings({"top10": ["AAPL","MSFT"]}) == ["AAPL","MSFT"]
+    assert resolve_holdings({"target_weights": {"RTX": .5, "LLY": .5}}) == ["RTX","LLY"]
+    assert resolve_holdings({"positions": [{"symbol":"NVDA"}]}) == ["NVDA"]
+
+@pytest.mark.parametrize("state,strat,expect_type", [
+    ({"ranked_stocks":[{"rank":1,"symbol":"AAPL"}]}, {}, "flat"),
+    ({"scorecard":[{"symbol":"AAPL","score":3}]},    {}, "flat"),       # score→rank
+    ({}, {"dashboard":{"rankings":{"source":"universe_groups"}}}, "groups"),
+])
+def test_resolve_rankings_by_adapter(state, strat, expect_type):
+    out = resolve_rankings(state, strat)
+    assert out["type"] == expect_type</pre>
+
+  <p><b>R-05 · 證明「新增策略 = 0 Python」</b>：丟一份假的 strategy JSON，不寫任何 Python，
+  產生器即能產出通過 schema 的 data.json：</p>
+<pre>def test_new_strategy_zero_python(tmp_path, write_fake_strategy):
+    write_fake_strategy("foo_new", sections=["header","kpi","positions_table","cta","footer"])
+    acct = {"id": "99", "strategy": "foo_new", "data_dir": "data/99"}
+    seed_state("data/99", date="2026-06-02", nav=10000, top10=["AAPL"])
+    generate_for_account(acct, tmp_path)                       # 完全沒寫產生器
+    validate_data_json(json.loads((tmp_path/"99"/"data.json").read_text("utf-8")))</pre>
+
+  <div class="box good"><b>驗收門檻：</b>R-03 Parity 全綠（新舊一致）才允許進入 P3 切換；
+  R-04 對 accounts.json 每個帳戶全綠才允許刪除舊 <code>migrate_*</code> 函式。</div>
+
   <h2>7. 對比（重構前 / 後）</h2>
   <table>
     <thead><tr><th></th><th>現在（每策略硬寫）</th><th>重構後（資料驅動）</th></tr></thead>
