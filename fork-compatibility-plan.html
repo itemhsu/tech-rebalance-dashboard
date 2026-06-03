@@ -25,7 +25,7 @@
 
 <h1>🔀 Fork 相容性與上游變更影響管理 <span style="font-size:16px;color:#93a4bd">v2</span></h1>
 <p class="sub">當 itemhsu（上游）改動時，其他 fork 如何不被弄壞 — 完整契約面盤點 + 測試計劃 · 2026-06-03</p>
-<span class="badge">狀態：§6.4 七步全完成 ✅（9 類中 8 類，剩 ⑧ 遷移往返）</span><span class="badge">v1 → v2：補齊全部契約面 + 測試計劃</span><span class="badge">已完成：CT-ALIGN · CT-VER · CT-SEL/EVT · CT-FWD-TOLERANT · CT-BACK-CORPUS · CT-BREAK-DETECT · B類schema · CT-GUI-CONTRACT</span>
+<span class="badge">狀態：9 類測試全數完成 ✅</span><span class="badge">v1 → v2：補齊全部契約面 + 測試計劃</span><span class="badge">已完成：CT-ALIGN · CT-VER · CT-SEL/EVT · CT-FWD-TOLERANT · CT-BACK-CORPUS · CT-BREAK-DETECT · B類schema · CT-GUI-CONTRACT · CT-MIGRATE-RT</span>
 
 <div class="toc">
  <a href="#s1">1 生態系</a><a href="#s2">2 完整契約面盤點(27)</a><a href="#s3">3 逐類衝擊×預防</a>
@@ -169,7 +169,7 @@ git merge upstream/main -m "sync: pull upstream fixes" \
  <tr><td>⑤ 向前相容（寬鬆讀）</td><td class="tid">CT-FWD-TOLERANT</td><td>注入「未來未知欄位」→ Account/broker/universe 載入器忽略不崩</td><td>engine tests</td><td class="ok">✅ 已實作（test_compat_tolerant，5 案全綠）</td></tr>
  <tr><td>⑥ 跨產物契約對齊</td><td class="tid">CT-ALIGN-{ver,run,sec}</td><td>data_writer.SCHEMA_VERSION ⊆ dashboard SUPPORTED；每 enabled 帳戶有 workflow 跑它；required_env ⊆ workflow secrets</td><td>engine tests</td><td class="ok">✅ 已實作（test_compat_align）— 首跑抓到 #4 未接線→已停用</td></tr>
  <tr><td>⑦ 字串耦合完整性</td><td class="tid">CT-SEL / CT-EVT</td><td>策略用到的 method 都已註冊；event type 三消費端都能解析</td><td>engine tests</td><td class="ok">✅ 已實作（test_compat_contracts）</td></tr>
- <tr><td>⑧ 遷移往返</td><td class="tid">CT-MIGRATE-RT</td><td><code>migrate_vN→vN+1</code> 對 golden 樣本 idempotent + 不丟欄位</td><td>tests/test_unit11_migration</td><td class="part">migration 有、版本往返待補</td></tr>
+ <tr><td>⑧ 遷移往返</td><td class="tid">CT-MIGRATE-RT</td><td><code>migrate_vN→vN+1</code> 對 golden 樣本 idempotent + 不丟欄位</td><td>tests/test_compat_migrate</td><td class="ok">✅ 已實作（生成管線 idempotent+lossless+schema，3 案）</td></tr>
  <tr><td>⑨ GUI↔引擎跨倉</td><td class="tid">CT-GUI-CONTRACT</td><td>App 以「引擎產出的最小合法樣本」解析不丟例外；版本落差顯示警告</td><td>tradingadmin repo</td><td class="ok">✅ 已實作（test_compat_contract，8 案 + compat.py 版本警告）</td></tr>
 </tbody></table>
 
