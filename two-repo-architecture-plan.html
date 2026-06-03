@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="zh-Hant"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>兩 Repo 架構設計提案：引擎 vs 使用者系統</title>
+<style>
+ body{margin:0;background:#0b1220;color:#e5edf7;font-family:-apple-system,"PingFang TC","Noto Sans TC",sans-serif;line-height:1.7}
+ .w{max-width:1080px;margin:0 auto;padding:32px 20px 90px}
+ h1{font-size:27px;margin:0 0 4px} h2{font-size:21px;margin:34px 0 10px;border-left:4px solid #38bdf8;padding-left:10px}
+ h3{font-size:16px;margin:18px 0 6px;color:#cfe3fb} .sub{color:#93a4bd;margin:0 0 18px}
+ table{width:100%;border-collapse:collapse;margin:10px 0;font-size:12.5px}
+ th,td{border:1px solid #22324d;padding:7px 9px;text-align:left;vertical-align:top}
+ th{background:#15233b;color:#cfe3fb} code{background:#0e1a2e;border:1px solid #22324d;border-radius:5px;padding:1px 5px;font-size:12px}
+ pre{background:#0e1a2e;border:1px solid #22324d;border-radius:10px;padding:14px;overflow:auto;font-size:12.5px}
+ .box{border-radius:10px;padding:12px 14px;margin:12px 0;border:1px solid}
+ .bad{background:#2a1416;border-color:#7f1d1d} .good{background:#0e2a1f;border-color:#14532d} .warn{background:#2a2210;border-color:#78510f}
+ .badge{display:inline-block;background:#15233b;border:1px solid #22324d;color:#38bdf8;border-radius:999px;padding:2px 12px;font-size:13px;margin:2px 4px 2px 0}
+ .a{color:#86efac;font-weight:700} .b{color:#fbbf24;font-weight:700}
+ .toc{background:#0e1a2e;border:1px solid #22324d;border-radius:10px;padding:10px 16px;font-size:13.5px}
+ .toc a{color:#7dd3fc;text-decoration:none;margin-right:14px;white-space:nowrap}
+ .diagram{background:#0e1a2e;border:1px solid #22324d;border-radius:12px;padding:18px;margin:14px 0}
+ .repo{border-radius:10px;padding:10px 14px;margin:8px 0;border:1px solid}
+ .repoA{background:#0e2a1f;border-color:#14532d} .repoB{background:#1a1530;border-color:#4c1d95}
+ .repoC{background:#10243a;border-color:#1e3a5f} .repoD{background:#2a2210;border-color:#78510f}
+ .cloud{display:inline-block;font-size:11px;background:#1e3a5f;color:#cfe3fb;border-radius:4px;padding:1px 6px;margin-left:6px}
+ .arrow{text-align:center;color:#7dd3fc;font-size:18px;margin:2px 0}
+ ul{margin:6px 0;padding-left:20px} li{margin:3px 0}
+</style></head><body><div class="w">
+
+<h1>🏗️ 兩 Repo 架構設計提案</h1>
+<p class="sub">引擎碼(共享) vs 使用者系統(設定+資料+執行) — 用「版本引用」取代「fork 複製」 · 2026-06-03</p>
+<span class="badge">狀態：設計提案</span><span class="badge">全程雲端，無本機運算</span><span class="badge">自託管金鑰不變</span>
+
+<div class="toc">
+ <a href="#s1">1 診斷</a><a href="#s2">2 目標架構圖</a><a href="#s3">3 兩條分歧軸×三層散佈</a>
+ <a href="#s4">4 工作目錄解耦 ★</a><a href="#s5">5 遷移分階段</a><a href="#s6">6 compat→release gate</a><a href="#s7">7 風險與決策</a>
+</div>
+
+<h2 id="s1">1. 診斷：錯在「用 fork 散佈需要中央演進的引擎碼」</h2>
+<div class="box bad">fork 是<b>整包複製</b>。但 repo 裡混了生命週期完全不同的東西，其中只有「引擎碼」是需要中央更新的——它卻被複製進每個 fork。
+ 我們做的 <code>sync_upstream</code> / drift 偵測 / 跨版 compat 測試，全是在<b>補救「把該共享的東西複製掉」這個決定</b>。</div>
+<table><thead><tr><th>類別</th><th>範例</th><th>該怎樣</th><th>現在</th></tr></thead><tbody>
+ <tr><td><b>共享引擎碼</b></td><td><code>runner.py</code>、<code>engine/</code>、<code>portfolio.py</code>、<code>schemas/</code>、<code>strategies/</code>、workflow</td><td>中央更新、版本引用</td><td class="b">❌ 被複製進每個 fork</td></tr>
+ <tr><td>個人設定</td><td><code>accounts.json</code>、Secrets</td><td>每人一份</td><td class="a">✅ 對</td></tr>
+ <tr><td>個人資料</td><td><code>data/{id}/</code> state/history/events</td><td>每人一份</td><td class="a">✅ 對</td></tr>
+ <tr><td>執行</td><td>GitHub Actions(自託管金鑰)</td><td>每人自己跑</td><td class="a">✅ 對</td></tr>
+</tbody></table>
+
+<h2 id="s2">2. 目標架構圖（什麼在雲端、版本怎麼流）</h2>
+<div class="diagram">
+ <div class="repo repoA"><b>Repo A — 引擎（public，有版本）</b> <span class="cloud">GitHub</span><br>
+   <code>runner.py · engine/ · portfolio.py · trader.py</code><br>
+   <code>schemas/ · strategies/ · brokers/ · data/shares_outstanding.json · universe.json</code><br>
+   <code>pyproject.toml</code>（打包成 <code>tech-rebalance</code>，entry point <code>run-account</code>）<br>
+   <code>.github/workflows/daily.yml</code>（<code>workflow_call</code> 可重用）<br>
+   <b>無 accounts.json · 無 data/{id} · 無 Secrets</b> ── 發版：<code>v1.3</code> tag</div>
+
+ <div class="arrow">▼ Repo B 按版本 <b>引用</b>（pip install …@v1.3 / uses …@v1），不是 fork</div>
+
+ <div class="repo repoB"><b>Repo B — 你的交易系統（private，每人一份）</b> <span class="cloud">GitHub</span><br>
+   <code>accounts.json</code>　<code>data/1/ data/2/ data/3/</code>（state/history/events）<br>
+   Actions Secrets（券商金鑰）　<code>.github/workflows/daily.yml</code>（3 行薄殼）<br>
+   ── 每日在<b>自己的 Actions 雲端</b>跑：checkout → 裝引擎@v1.3 → <code>run-account --all</code> → commit data/</div>
+
+ <div class="arrow">▼ 引擎寫出 data.json，推到　　　　▼ 桌面 App 純 API 讀/改</div>
+
+ <div class="repo repoC"><b>Repo C — Dashboard（public，Pages）</b> <span class="cloud">GitHub Pages</span>　mvp_data/{id}/data.json + 前端</div>
+ <div class="repo repoD"><b>tradingadmin — 桌面 App（public，DMG）</b> 你的電腦，<b>但只是純 API 管理工具</b>：改 accounts.json / 設 Secrets / 一鍵同步。不跑交易、不裝引擎。</div>
+</div>
+<div class="box good"><b>四件事各歸其位：</b>設定→B　資料→B（引擎寫進去）　執行+金鑰→B 的 Actions（雲端）　引擎碼→A（按版本引用）。
+ <b>分歧問題從根消失</b>：更新 = Repo B 改一行版本號；引擎每天<b>全新安裝指定版本</b>，drift 不可能發生。全程雲端。</div>
+
+<h2 id="s3">3. 兩條分歧軸 × 三層散佈</h2>
+<p>fork 會分歧的有<b>兩種</b>：①引擎碼 ②編排(workflow)。三種散佈機制分屬不同層，可疊加。</p>
+<table><thead><tr><th>機制</th><th>解哪條軸</th><th>跑在哪</th><th>更新動作</th><th>取捨</th></tr></thead><tbody>
+ <tr><td><b>① pip 套件</b></td><td>碼</td><td>Repo B 的 Actions 雲端</td><td><code>@v1.3 → @v1.4</code></td><td>最輕、Python 原生；每跑裝相依(~30s，可快取)</td></tr>
+ <tr><td><b>② 容器</b></td><td>碼+環境</td><td>同上雲端</td><td><code>:1.3 → :1.4</code></td><td>環境完全鎖死；多維護 Dockerfile。啟動~1s，拉映像~15–40s（日批次無感）</td></tr>
+ <tr><td><b>③ 可重用 workflow</b></td><td><b>編排</b></td><td>同上雲端</td><td><code>@v1 → @v2</code></td><td>連 workflow 都不分歧；內部仍用①或②取得碼</td></tr>
+</tbody></table>
+<div class="box good"><b>疊加最終長相</b>（兩條軸一次鎖住）：
+<pre>Repo B workflow（3 行）
+  └─ uses: itemhsu/tech-rebalance/.github/workflows/daily.yml@v1   ← ③ 編排中央化
+        └─ pip install tech-rebalance@v1.3                        ← ① 碼中央化
+              └─ run-account --all</pre>
+<b>建議順序：先 ①（地基）→ 疊 ③（消滅 workflow 分歧）→ ② 當備案（遇難裝原生相依再上）。</b></div>
+
+<h2 id="s4">4. 成敗關鍵：引擎「工作目錄解耦」★</h2>
+<div class="box warn">現在引擎到處用 <code>Path(__file__).resolve().parent[.parent]</code> 假設「碼和資料同 repo」。要分家，引擎必須<b>區分兩種根</b>：
+ <code>package_root()</code>（引擎自帶資產，隨套件走）vs <code>workdir()</code>（使用者設定+資料，注入）。</div>
+<h3>新增 <code>engine/paths.py</code></h3>
+<pre>import os, pathlib
+def package_root():   # 引擎自帶：strategies/ schemas/ brokers/ 參考資料
+    return pathlib.Path(__file__).resolve().parent.parent
+def workdir():        # 使用者：accounts.json + data/（預設 cwd，可用 TR_WORKDIR 覆寫）
+    return pathlib.Path(os.environ.get("TR_WORKDIR", os.getcwd()))</pre>
+<h3>逐檔改寫清單（實掃結果）</h3>
+<table><thead><tr><th>檔案:行</th><th>路徑</th><th>歸屬</th><th>改成</th></tr></thead><tbody>
+ <tr><td>runner.py:210</td><td><code>strategies/{id}.json</code></td><td>引擎</td><td><code>package_root()</code></td></tr>
+ <tr><td>runner.py:58</td><td><code>data/shares_outstanding.json</code></td><td>引擎(共享參考資料)</td><td><code>package_root()</code></td></tr>
+ <tr><td>runner.py:359</td><td><code>data/{account}</code>(state 輸出)</td><td class="b">使用者</td><td><code>workdir()</code></td></tr>
+ <tr><td>run_account.py:196</td><td><code>accounts.json</code></td><td class="b">使用者</td><td><code>workdir()</code></td></tr>
+ <tr><td>run_account.py:74</td><td><code>data_dir</code></td><td class="b">使用者</td><td><code>workdir()</code></td></tr>
+ <tr><td>run_account.py:84</td><td><code>strategies/{id}.json</code></td><td>引擎</td><td><code>package_root()</code></td></tr>
+ <tr><td>engine/accounts.py</td><td><code>accounts.json</code></td><td class="b">使用者</td><td><code>workdir()</code></td></tr>
+ <tr><td>engine/report_generator.py:33</td><td>讀 data_dir + 寫 mvp 輸出</td><td class="b">使用者</td><td><code>workdir()</code></td></tr>
+ <tr><td>engine/email_log.py:16</td><td><code>data/email_send_log.jsonl</code></td><td class="b">使用者</td><td><code>workdir()</code></td></tr>
+ <tr><td>engine/universe_loader.py:22</td><td>universe csv/json</td><td>引擎(預設)，可被 workdir 覆寫</td><td><code>package_root()</code> + override</td></tr>
+ <tr><td>scripts/check_daily_idempotent.py</td><td>data + accounts.json</td><td class="b">使用者</td><td><code>workdir()</code></td></tr>
+ <tr><td>scripts/git_stage_account_dirs.py</td><td>data 目錄收集</td><td class="b">使用者</td><td><code>workdir()</code></td></tr>
+ <tr><td>scripts/copy_trade_events_to_mvp.py</td><td>data</td><td class="b">使用者</td><td><code>workdir()</code></td></tr>
+ <tr><td>scripts/update_all_account_indexes.py</td><td>data</td><td class="b">使用者</td><td><code>workdir()</code></td></tr>
+</tbody></table>
+<div class="box good"><b>順風處：</b>我們在 compat 工程裡已經把多數讀寫參數化了——<code>load_accounts(path=)</code>、<code>StateReader(store=)</code>、
+ <code>write_data_json(output_path=)</code>、<code>resolve_holdings(state)</code> 都接受注入。剩下只是把 <code>runner.py</code> / <code>run_account.py</code> / 幾支 scripts 的寫死 <code>_ROOT</code> 換成 <code>workdir()</code>。範圍中等、全可單測。</div>
+<h3>子策略目錄要拆</h3>
+<p><code>d2p2t6/</code>、<code>weekly_top10/</code> 現在<b>碼(__init__.py 等)和 data/ 混在一起</b>：碼併入引擎(Repo A)，<code>data/</code> 移到 Repo B 的 <code>data/{id}/</code>。</p>
+
+<h2 id="s5">5. 遷移分階段（真錢系統，平行驗證再切）</h2>
+<table><thead><tr><th>階段</th><th>內容</th><th>驗收</th></tr></thead><tbody>
+ <tr><td><b>P0 解耦</b></td><td>加 <code>engine/paths.py</code>；改寫上表寫死路徑；<code>TR_WORKDIR</code> 注入</td><td>現有 639 測試全綠；<code>TR_WORKDIR=/tmp/x</code> 能在外部目錄跑 dry-run</td></tr>
+ <tr><td><b>P1 打包</b></td><td>加 <code>pyproject.toml</code> + entry point <code>run-account</code>；CI 發 <code>v1.x</code> 可 pip 安裝</td><td><code>pip install …@v1.x</code> 後 <code>run-account --account 3 --dry-run</code> 在空目錄可跑</td></tr>
+ <tr><td><b>P2 Repo B 模板</b></td><td>建 <code>tech-rebalance-config</code> 範本：accounts.json + data/ + 3 行薄 workflow（pip 安裝固定版引擎）</td><td>範本 repo 用新引擎跑 <b>dry-run，結果與舊路徑逐欄一致</b></td></tr>
+ <tr><td><b>P3 平行運轉</b></td><td>itemhsu 自己的 data 搬進一個 Repo B；<b>新舊並跑數日</b>對帳（dogfooding）</td><td>NAV/持倉/排名/下單與舊系統相同數日 → 才切</td></tr>
+ <tr><td><b>P4 切換 + 退役</b></td><td>正式切到 Repo B；引擎 repo 移除 accounts.json/data/；<code>sync_upstream</code>/drift 退役</td><td>舊路徑停用；GUI 指向 Repo B</td></tr>
+ <tr><td><b>P5 可選 ③</b></td><td>把 daily.yml 改 <code>workflow_call</code>；Repo B 改 <code>uses: …@v1</code></td><td>Repo B workflow 縮到 3 行</td></tr>
+</tbody></table>
+
+<h2 id="s6">6. compat 測試 → 引擎套件 Release Gate（沒白做）</h2>
+<p class="sub">這套相容性測試從「跨 fork 救火」升級成「<b>引擎套件發版前的品質閘</b>」——這才是它們本來最該待的位置。</p>
+<table><thead><tr><th>測試</th><th>現在角色</th><th>新角色（Repo A 發版 gate）</th></tr></thead><tbody>
+ <tr><td>CT-SCHEMA / unit1·3 / brokers/schema</td><td>fork 內驗證</td><td>發版前驗證所有內建 schema 合法</td></tr>
+ <tr><td>CT-VER-PRESENT</td><td>fork lint</td><td>套件 build 前 lint（$id/version 齊全）</td></tr>
+ <tr><td><b>CT-BREAK-DETECT</b></td><td>跨 fork 防破壞</td><td><b>發版時比對上一個 release tag 的 schema → 決定 semver（破壞=major bump，擋誤發）</b></td></tr>
+ <tr><td><b>CT-BACK-CORPUS（golden）</b></td><td>跨版回放</td><td><b>每次發版存一份 golden；新版套件回放歷年樣本 → 保證讀得了舊使用者資料</b></td></tr>
+ <tr><td>CT-FWD-TOLERANT</td><td>載入器寬鬆</td><td>套件契約測試（吃未來欄位不崩）</td></tr>
+ <tr><td>CT-ALIGN-VER</td><td>data.json↔前端</td><td>套件 SCHEMA_VERSION ↔ 前端支援 對齊 gate</td></tr>
+ <tr><td>CT-ALIGN-SEC / RUN</td><td>fork workflow 對齊</td><td>移到 <b>Repo B 模板</b>的 lint（薄 workflow 金鑰注入正確）</td></tr>
+ <tr><td>CT-SEL / CT-EVT</td><td>字串耦合</td><td>套件契約測試</td></tr>
+ <tr><td>CT-MIGRATE-RT</td><td>生成 idempotent</td><td>套件契約測試</td></tr>
+ <tr><td>CT-GUI-CONTRACT</td><td>App↔fork</td><td>App↔<b>引擎套件版本</b>相容</td></tr>
+ <tr><td>B 類資料檔 schema</td><td>fork 資料驗證</td><td>隨引擎走；Repo B 資料的版本依據</td></tr>
+ <tr><td>sync_upstream / drift / email 落後提示</td><td>fork 救火</td><td class="b">★ <b>退役</b>（版本 pin 取代「拉取分歧修復」）</td></tr>
+</tbody></table>
+<div class="box good">新增的發版 gate：<b>CT-PKG-INSTALL</b>（裝好套件後 <code>run-account --dry-run</code> 在乾淨目錄可跑）、
+ <b>CT-PKG-PARITY</b>（新版套件對 golden 樣本輸出與上一版一致，除預期改動）。</div>
+
+<h2 id="s7">7. 風險與要先決定的點</h2>
+<table><thead><tr><th>決策</th><th>建議</th><th>理由</th></tr></thead><tbody>
+ <tr><td>引擎 repo 公開/私有</td><td><b>公開</b></td><td>純碼無秘密；Repo B pip 安裝免 token（私有要放 PAT，多負擔）</td></tr>
+ <tr><td>散佈機制</td><td><b>① pip 起手 → 疊 ③</b></td><td>最輕、你現在就在雲端 pip；② 容器當備案</td></tr>
+ <tr><td>strategies/ 歸屬</td><td>引擎(Repo A)</td><td>策略定義是共享資產；未來可加 Repo B override 目錄做自訂策略</td></tr>
+ <tr><td>itemhsu 自己</td><td>變成<b>使用者 #0</b></td><td>dogfooding，親身踩使用者的坑</td></tr>
+</tbody></table>
+<div class="box warn"><b>主要風險：</b>① 這是<b>真錢系統</b>，務必走 P3 平行運轉對帳數日再切。
+ ② 子策略目錄碼/資料分離要小心 data 路徑。
+ ③ 遷移期間 schema 跟引擎走，Repo B 資料才有版本依據——golden 回放正是保險。</div>
+
+<div class="box good"><b>一句話：</b>分兩 repo 完全可行且正確——切的線是「引擎碼(A，公開、有版本)」對「設定+資料+執行+金鑰(B，私有、每人一份)」。
+ 全程雲端、自託管金鑰不變。唯一硬前提是先做<b>工作目錄解耦</b>（§4）。做完後，分歧問題消失，我們的 compat 測試轉成引擎的發版品質閘。</div>
+
+</div></body></html>
