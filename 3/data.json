@@ -1,83 +1,76 @@
 {
   "meta": {
     "schema_version": "1.0",
-    "strategy": "mom_6m_t20",
+    "strategy": "top9psq",
     "account_id": "3",
-    "account_label": "帳戶 #3 (MOM-6m-T20)",
-    "generated_at": "2026-06-03T00:04:08Z",
-    "trading_date": "2026-06-02",
+    "account_label": "帳戶 #3 (Monthly TOP10 Live)",
+    "generated_at": "2026-06-03T01:20:47Z",
+    "trading_date": "2026-05-28",
     "dry_run": false,
     "strategy_status": "active",
-    "strategy_start_date": "2026-06-02",
+    "strategy_start_date": "2026-05-18",
     "previous_strategy": null,
     "accent_color": "#3b82f6",
     "same_strategy_accounts": [
       {
         "id": "3",
-        "label": "帳戶 #3 (MOM-6m-T20)"
+        "label": "帳戶 #3 (Monthly TOP10 Live)"
       }
     ]
   },
   "summary": {
-    "nav": 21020.43,
-    "cash": -338.17,
-    "initial_nav": 21020.43,
-    "inception_date": "2026-06-02",
-    "today_change": 0.0,
-    "today_change_pct": 0.0,
-    "total_return": 0.0,
-    "total_return_pct": 0.0,
-    "total_return_pct_twr": 0.0,
+    "nav": 20928.02,
+    "cash": 3776.13,
+    "initial_nav": 19820.37,
+    "inception_date": "2026-05-18",
+    "today_change": 508.27,
+    "today_change_pct": 2.4891,
+    "total_return": 1107.65,
+    "total_return_pct": 5.5884,
+    "total_return_pct_twr": 5.5884,
     "net_contribution": 0.0,
     "total_deposited": 0.0,
     "total_withdrawn": 0.0,
-    "investment_gain": 0.0,
+    "investment_gain": 1107.65,
     "ytd_return_pct": null,
     "monthly_return_pct": null,
-    "max_drawdown_pct": 0.0,
+    "max_drawdown_pct": -1.4828,
     "sharpe_ratio": null,
     "total_paused_days": 0,
     "is_paused": false,
     "paused_since": null
   },
   "strategy_card": {
-    "name": "MOM-6m-T20",
-    "description": "科技25宇宙：市值前20候選池，依6個月動能留前10，等權10%，月度再平衡",
+    "name": "Monthly TOP10",
+    "description": "前10大市值科技股（100%），每月再平衡",
     "tags": [
-      "momentum",
-      "tech",
-      "monthly",
-      "top10"
+      "科技",
+      "市值",
+      "美股"
     ],
     "benchmark": "QQQ",
     "universe_summary": "custom universe",
-    "selection_summary": "多因子加權百分位數，持股 10 檔（等權重，觀察名單 20，最低分 70）",
-    "rebalancing_summary": "每月 09:45 美東",
+    "selection_summary": "依市值排名前 10 檔，等權重",
+    "rebalancing_summary": "每月",
     "risk_highlights": [
-      "單倉上限 10%"
+      "單倉上限 15%"
     ],
-    "ranking_factors": [
-      {
-        "name": "price_momentum_6m",
-        "weight": "100%",
-        "direction": "↑"
-      }
-    ],
+    "ranking_factors": [],
     "filter_summary": {}
   },
   "portfolio": {
-    "label": "動能前10",
+    "label": "Monthly TOP10 持股",
     "symbols": [
-      "NVDA",
       "AAPL",
-      "MSFT",
-      "AMZN",
-      "TSM",
-      "GOOGL",
-      "AVGO",
-      "META",
       "AMD",
-      "V"
+      "AMZN",
+      "AVGO",
+      "GOOGL",
+      "INTC",
+      "META",
+      "MSFT",
+      "NVDA",
+      "TSM"
     ],
     "rebalance_count": 0
   },
@@ -86,253 +79,506 @@
       "symbol": "ORCL",
       "qty": 10.0,
       "avg_entry_price": 189.71,
-      "current_price": 238.85,
-      "market_value": 2388.5,
-      "unrealized_pl": 491.4,
-      "unrealized_plpc": 25.903,
-      "weight": 11.3628,
+      "current_price": 209.15,
+      "market_value": 2091.5,
+      "unrealized_pl": 194.4,
+      "unrealized_plpc": 10.247219,
+      "weight": 9.9938,
       "in_portfolio": false
-    },
-    {
-      "symbol": "AVGO",
-      "qty": 5.0,
-      "avg_entry_price": 423.448,
-      "current_price": 474.5,
-      "market_value": 2372.5,
-      "unrealized_pl": 255.26,
-      "unrealized_plpc": 12.056,
-      "weight": 11.2866,
-      "in_portfolio": true
-    },
-    {
-      "symbol": "MSFT",
-      "qty": 5.0,
-      "avg_entry_price": 419.108,
-      "current_price": 451.11,
-      "market_value": 2255.55,
-      "unrealized_pl": 160.01,
-      "unrealized_plpc": 7.636,
-      "weight": 10.7303,
-      "in_portfolio": true
-    },
-    {
-      "symbol": "GOOGL",
-      "qty": 6.0,
-      "avg_entry_price": 393.933333,
-      "current_price": 371.91,
-      "market_value": 2231.46,
-      "unrealized_pl": -132.14,
-      "unrealized_plpc": -5.591,
-      "weight": 10.6157,
-      "in_portfolio": true
-    },
-    {
-      "symbol": "NVDA",
-      "qty": 10.0,
-      "avg_entry_price": 226.724,
-      "current_price": 222.5,
-      "market_value": 2225.0,
-      "unrealized_pl": -42.24,
-      "unrealized_plpc": -1.863,
-      "weight": 10.5849,
-      "in_portfolio": true
-    },
-    {
-      "symbol": "TSM",
-      "qty": 5.0,
-      "avg_entry_price": 409.968,
-      "current_price": 435.96,
-      "market_value": 2179.8,
-      "unrealized_pl": 129.96,
-      "unrealized_plpc": 6.34,
-      "weight": 10.3699,
-      "in_portfolio": true
-    },
-    {
-      "symbol": "AMZN",
-      "qty": 8.0,
-      "avg_entry_price": 264.9175,
-      "current_price": 259.25,
-      "market_value": 2074.0,
-      "unrealized_pl": -45.34,
-      "unrealized_plpc": -2.139,
-      "weight": 9.8666,
-      "in_portfolio": true
     },
     {
       "symbol": "AMD",
       "qty": 4.0,
       "avg_entry_price": 429.6,
-      "current_price": 501.06,
-      "market_value": 2004.24,
-      "unrealized_pl": 285.84,
-      "unrealized_plpc": 16.634,
-      "weight": 9.5347,
+      "current_price": 522.307,
+      "market_value": 2089.23,
+      "unrealized_pl": 370.83,
+      "unrealized_plpc": 21.579842,
+      "weight": 9.9829,
       "in_portfolio": true
     },
     {
-      "symbol": "INTC",
-      "qty": 17.0,
-      "avg_entry_price": 123.300588,
-      "current_price": 107.48,
-      "market_value": 1827.16,
-      "unrealized_pl": -268.95,
-      "unrealized_plpc": -12.831,
-      "weight": 8.6923,
-      "in_portfolio": false
+      "symbol": "GOOGL",
+      "qty": 5.0,
+      "avg_entry_price": 395.72,
+      "current_price": 389.8,
+      "market_value": 1949.0,
+      "unrealized_pl": -29.6,
+      "unrealized_plpc": -1.496007,
+      "weight": 9.3129,
+      "in_portfolio": true
+    },
+    {
+      "symbol": "AMZN",
+      "qty": 7.0,
+      "avg_entry_price": 264.0,
+      "current_price": 273.5,
+      "market_value": 1914.5,
+      "unrealized_pl": 66.5,
+      "unrealized_plpc": 3.598485,
+      "weight": 9.148,
+      "in_portfolio": true
     },
     {
       "symbol": "META",
       "qty": 3.0,
       "avg_entry_price": 609.35,
-      "current_price": 600.13,
-      "market_value": 1800.39,
-      "unrealized_pl": -27.66,
-      "unrealized_plpc": -1.513,
-      "weight": 8.565,
+      "current_price": 633.5001,
+      "market_value": 1900.5,
+      "unrealized_pl": 72.45,
+      "unrealized_plpc": 3.963256,
+      "weight": 9.0811,
+      "in_portfolio": true
+    },
+    {
+      "symbol": "AVGO",
+      "qty": 4.0,
+      "avg_entry_price": 421.06,
+      "current_price": 430.3897,
+      "market_value": 1721.56,
+      "unrealized_pl": 37.32,
+      "unrealized_plpc": 2.215765,
+      "weight": 8.2261,
+      "in_portfolio": true
+    },
+    {
+      "symbol": "NVDA",
+      "qty": 8.0,
+      "avg_entry_price": 229.83,
+      "current_price": 214.12,
+      "market_value": 1712.96,
+      "unrealized_pl": -125.68,
+      "unrealized_plpc": -6.835487,
+      "weight": 8.185,
+      "in_portfolio": true
+    },
+    {
+      "symbol": "MSFT",
+      "qty": 4.0,
+      "avg_entry_price": 415.76,
+      "current_price": 427.2,
+      "market_value": 1708.8,
+      "unrealized_pl": 45.76,
+      "unrealized_plpc": 2.751587,
+      "weight": 8.1651,
+      "in_portfolio": true
+    },
+    {
+      "symbol": "TSM",
+      "qty": 4.0,
+      "avg_entry_price": 405.81,
+      "current_price": 425.0,
+      "market_value": 1700.0,
+      "unrealized_pl": 76.76,
+      "unrealized_plpc": 4.728814,
+      "weight": 8.1231,
+      "in_portfolio": true
+    },
+    {
+      "symbol": "INTC",
+      "qty": 3.0,
+      "avg_entry_price": 119.616667,
+      "current_price": 121.28,
+      "market_value": 363.84,
+      "unrealized_pl": 4.99,
+      "unrealized_plpc": 1.390553,
+      "weight": 1.7385,
       "in_portfolio": true
     }
   ],
   "nav_history": [
     {
-      "date": "2026-06-02",
-      "nav": 21020.43
+      "date": "2026-05-18",
+      "nav": 19820.37
+    },
+    {
+      "date": "2026-05-19",
+      "nav": 19526.48
+    },
+    {
+      "date": "2026-05-20",
+      "nav": 19923.2
+    },
+    {
+      "date": "2026-05-21",
+      "nav": 20069.17
+    },
+    {
+      "date": "2026-05-22",
+      "nav": 20073.78
+    },
+    {
+      "date": "2026-05-26",
+      "nav": 20398.58
+    },
+    {
+      "date": "2026-05-27",
+      "nav": 20419.75
+    },
+    {
+      "date": "2026-05-28",
+      "nav": 20928.02
     }
   ],
   "drawdown": {
     "dates": [
-      "2026-06-02"
+      "2026-05-18",
+      "2026-05-19",
+      "2026-05-20",
+      "2026-05-21",
+      "2026-05-22",
+      "2026-05-26",
+      "2026-05-27",
+      "2026-05-28"
     ],
     "portfolio": [
+      0.0,
+      -1.4828,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
       0.0
     ],
     "nasdaq": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
       null
     ],
     "sp500": [
+      -1.31,
+      -1.97,
+      -0.91,
+      -0.74,
+      -0.37,
+      0.0,
+      0.0,
       null
     ]
   },
   "trade_log": [
     {
-      "date": "2026-06-02",
-      "nav": 21020.43,
+      "date": "2026-05-28",
+      "nav": 20928.02,
       "trades_count": 0,
       "portfolio": [
-        "NVDA",
         "AAPL",
-        "MSFT",
-        "AMZN",
-        "TSM",
-        "GOOGL",
-        "AVGO",
-        "META",
         "AMD",
-        "V"
+        "AMZN",
+        "AVGO",
+        "GOOGL",
+        "INTC",
+        "META",
+        "MSFT",
+        "NVDA",
+        "TSM"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-05-27",
+      "nav": 20419.75,
+      "trades_count": 1,
+      "portfolio": [
+        "AAPL",
+        "AMD",
+        "AMZN",
+        "AVGO",
+        "GOOGL",
+        "INTC",
+        "META",
+        "MSFT",
+        "NVDA",
+        "TSM"
+      ],
+      "orders": [
+        {
+          "symbol": "INTC",
+          "side": "sell",
+          "qty": 7.0,
+          "price": 124.04
+        }
+      ]
+    },
+    {
+      "date": "2026-05-26",
+      "nav": 20398.58,
+      "trades_count": 0,
+      "portfolio": [
+        "AAPL",
+        "AMD",
+        "AMZN",
+        "AVGO",
+        "GOOGL",
+        "INTC",
+        "META",
+        "MSFT",
+        "NVDA",
+        "TSM"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-05-22",
+      "nav": 20073.78,
+      "trades_count": 0,
+      "portfolio": [
+        "AAPL",
+        "AMD",
+        "AMZN",
+        "AVGO",
+        "GOOGL",
+        "INTC",
+        "META",
+        "MSFT",
+        "NVDA",
+        "TSM"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-05-21",
+      "nav": 20069.17,
+      "trades_count": 0,
+      "portfolio": [
+        "AAPL",
+        "AMD",
+        "AMZN",
+        "AVGO",
+        "GOOGL",
+        "INTC",
+        "META",
+        "MSFT",
+        "NVDA",
+        "TSM"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-05-20",
+      "nav": 19923.2,
+      "trades_count": 0,
+      "portfolio": [
+        "AAPL",
+        "AMD",
+        "AMZN",
+        "AVGO",
+        "GOOGL",
+        "INTC",
+        "META",
+        "MSFT",
+        "NVDA",
+        "TSM"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-05-19",
+      "nav": 19526.48,
+      "trades_count": 0,
+      "portfolio": [
+        "AAPL",
+        "AMD",
+        "AMZN",
+        "AVGO",
+        "GOOGL",
+        "INTC",
+        "META",
+        "MSFT",
+        "NVDA",
+        "TSM"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-05-18",
+      "nav": 19820.37,
+      "trades_count": 0,
+      "portfolio": [
+        "AAPL",
+        "AMD",
+        "AMZN",
+        "AVGO",
+        "GOOGL",
+        "INTC",
+        "META",
+        "MSFT",
+        "NVDA",
+        "TSM"
       ],
       "orders": []
     }
   ],
   "rankings": {
     "type": "market_cap_list",
-    "label": "市值前20候選池",
+    "label": "科技股市值排名（前15）",
     "items": [
       {
         "rank": 1,
         "symbol": "NVDA",
-        "price": 100.0,
-        "change_pct": 0.0,
-        "market_cap_b": 100.0,
+        "price": 214.14,
+        "change_pct": 0,
+        "market_cap_b": 5189.3,
         "in_portfolio": true
       },
       {
         "rank": 2,
-        "symbol": "AAPL",
-        "price": 100.0,
-        "change_pct": 0.0,
-        "market_cap_b": 100.0,
+        "symbol": "GOOGL",
+        "price": 389.75,
+        "change_pct": 0,
+        "market_cap_b": 4726.6,
         "in_portfolio": true
       },
       {
         "rank": 3,
-        "symbol": "MSFT",
-        "price": 100.0,
-        "change_pct": 0.0,
-        "market_cap_b": 100.0,
+        "symbol": "AAPL",
+        "price": 312.33,
+        "change_pct": 0,
+        "market_cap_b": 4589.9,
         "in_portfolio": true
       },
       {
         "rank": 4,
-        "symbol": "AMZN",
-        "price": 100.0,
-        "change_pct": 0.0,
-        "market_cap_b": 100.0,
+        "symbol": "MSFT",
+        "price": 427.71,
+        "change_pct": 0,
+        "market_cap_b": 3171.9,
         "in_portfolio": true
       },
       {
         "rank": 5,
-        "symbol": "TSM",
-        "price": 100.0,
-        "change_pct": 0.0,
-        "market_cap_b": 100.0,
+        "symbol": "AMZN",
+        "price": 273.98,
+        "change_pct": 0,
+        "market_cap_b": 2947.4,
         "in_portfolio": true
       },
       {
         "rank": 6,
-        "symbol": "GOOGL",
-        "price": 100.0,
-        "change_pct": 0.0,
-        "market_cap_b": 100.0,
+        "symbol": "TSM",
+        "price": 423.81,
+        "change_pct": 0,
+        "market_cap_b": 2203.5,
         "in_portfolio": true
       },
       {
         "rank": 7,
         "symbol": "AVGO",
-        "price": 100.0,
-        "change_pct": 0.0,
-        "market_cap_b": 100.0,
+        "price": 431.94,
+        "change_pct": 0,
+        "market_cap_b": 2019.7,
         "in_portfolio": true
       },
       {
         "rank": 8,
         "symbol": "META",
-        "price": 100.0,
-        "change_pct": 0.0,
-        "market_cap_b": 100.0,
+        "price": 634.91,
+        "change_pct": 0,
+        "market_cap_b": 1612.6,
         "in_portfolio": true
       },
       {
         "rank": 9,
         "symbol": "AMD",
-        "price": 100.0,
-        "change_pct": 0.0,
-        "market_cap_b": 100.0,
+        "price": 519.44,
+        "change_pct": 0,
+        "market_cap_b": 844.8,
         "in_portfolio": true
       },
       {
         "rank": 10,
-        "symbol": "V",
-        "price": 100.0,
-        "change_pct": 0.0,
-        "market_cap_b": 100.0,
+        "symbol": "INTC",
+        "price": 120.51,
+        "change_pct": 0,
+        "market_cap_b": 607.6,
         "in_portfolio": true
+      },
+      {
+        "rank": 11,
+        "symbol": "ORCL",
+        "price": 209.6,
+        "change_pct": 0,
+        "market_cap_b": 585.9,
+        "in_portfolio": false
+      },
+      {
+        "rank": 12,
+        "symbol": "NFLX",
+        "price": 86.33,
+        "change_pct": 0,
+        "market_cap_b": 363.6,
+        "in_portfolio": false
+      },
+      {
+        "rank": 13,
+        "symbol": "PLTR",
+        "price": 143.2,
+        "change_pct": 0,
+        "market_cap_b": 343.6,
+        "in_portfolio": false
+      },
+      {
+        "rank": 14,
+        "symbol": "TXN",
+        "price": 316.0,
+        "change_pct": 0,
+        "market_cap_b": 287.5,
+        "in_portfolio": false
+      },
+      {
+        "rank": 15,
+        "symbol": "QCOM",
+        "price": 243.25,
+        "change_pct": 0,
+        "market_cap_b": 256.4,
+        "in_portfolio": false
       }
     ]
   },
   "events": [],
   "email": {
-    "subject": "[MOM-6m-T20 #3] 2026-06-02 NAV $21,020 (+0.00%)",
-    "preheader": "帳戶 #3 · 2026-06-02 · NAV $21,020",
+    "subject": "[Monthly TOP10 #3] 2026-05-28 NAV $20,928 (+2.49%)",
+    "preheader": "帳戶 #3 · 2026-05-28 · NAV $20,928",
     "dashboard_url": "https://itemhsu.github.io/tech-rebalance-dashboard/mvp_dashboard.html?a=3",
     "sections_rendered": [
       "header",
       "kpi",
       "strategy_card",
+      "portfolio_badges",
       "positions_table",
       "rankings",
+      "today_events",
       "trades",
       "cta",
       "footer"
+    ]
+  },
+  "benchmark_nav": {
+    "sp500": [
+      19820.37,
+      19688.0,
+      19900.48,
+      19934.61,
+      20008.91,
+      20131.13,
+      20134.45,
+      20250.3
+    ],
+    "nasdaq": [
+      19820.37,
+      19653.23,
+      19956.83,
+      19974.1,
+      20012.75,
+      20249.93,
+      20264.02,
+      20448.42
     ]
   }
 }

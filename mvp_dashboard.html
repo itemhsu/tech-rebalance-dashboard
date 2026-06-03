@@ -195,6 +195,12 @@
       <div id="events-content"></div>
     </div>
 
+    <!-- 策略歷史（帳戶歷經多個策略時） -->
+    <div class="card" id="strategy-history-section" style="display:none">
+      <h2 class="text-sm font-semibold text-slate-400 uppercase tracking-wide mb-3">策略歷史（本帳戶歷經的策略）</h2>
+      <div id="strategy-history-content"></div>
+    </div>
+
     <!-- 交易日誌 -->
     <div class="card">
       <h2 class="text-sm font-semibold text-slate-400 uppercase tracking-wide mb-4">交易日誌</h2>
@@ -341,8 +347,29 @@ function render(d, allAccounts, currentAccount, availableDates = [], selectedDat
   // Events
   renderEvents(d.events, meta.trading_date);
 
+  // 策略歷史
+  renderStrategyHistory(d.strategy_history);
+
   // Trade log
   renderTradeLog(d.trade_log);
+}
+
+function renderStrategyHistory(hist) {
+  const sec = document.getElementById("strategy-history-section");
+  if (!hist || hist.length < 2) { sec.style.display = "none"; return; }
+  sec.style.display = "";
+  const rows = hist.map(seg => `
+    <tr class="border-b border-slate-700">
+      <td class="py-2 pr-4 text-sm text-slate-400 whitespace-nowrap">${seg.from || "?"} ～ ${seg.to || "至今"}</td>
+      <td class="py-2 text-sm font-semibold text-white">${seg.label || seg.strategy || ""}</td>
+    </tr>`).join("");
+  document.getElementById("strategy-history-content").innerHTML = `
+    <table class="w-full">
+      <thead><tr class="text-xs text-slate-500 uppercase tracking-wide">
+        <th class="text-left pb-2 pr-4">期間</th><th class="text-left pb-2">策略</th>
+      </tr></thead>
+      <tbody>${rows}</tbody>
+    </table>`;
 }
 
 // ══════════════════════════════════════════════════════════════════════════════

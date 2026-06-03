@@ -3,38 +3,38 @@
     "schema_version": "1.0",
     "strategy": "mom_6m_t20",
     "account_id": "3",
-    "account_label": "帳戶 #3 (MOM-6m-T20)",
-    "generated_at": "2026-06-03T00:04:08Z",
+    "account_label": "帳戶 #3 (MOM-6m-T20 月度動能 · LIVE 真錢)",
+    "generated_at": "2026-06-03T01:20:47Z",
     "trading_date": "2026-06-02",
     "dry_run": false,
     "strategy_status": "active",
-    "strategy_start_date": "2026-06-02",
+    "strategy_start_date": "2026-05-18",
     "previous_strategy": null,
     "accent_color": "#3b82f6",
     "same_strategy_accounts": [
       {
         "id": "3",
-        "label": "帳戶 #3 (MOM-6m-T20)"
+        "label": "帳戶 #3 (MOM-6m-T20 月度動能 · LIVE 真錢)"
       }
     ]
   },
   "summary": {
     "nav": 21020.43,
     "cash": -338.17,
-    "initial_nav": 21020.43,
-    "inception_date": "2026-06-02",
-    "today_change": 0.0,
-    "today_change_pct": 0.0,
-    "total_return": 0.0,
-    "total_return_pct": 0.0,
-    "total_return_pct_twr": 0.0,
+    "initial_nav": 19820.37,
+    "inception_date": "2026-05-18",
+    "today_change": 92.41,
+    "today_change_pct": 0.4416,
+    "total_return": 1200.06,
+    "total_return_pct": 6.0547,
+    "total_return_pct_twr": 6.0547,
     "net_contribution": 0.0,
     "total_deposited": 0.0,
     "total_withdrawn": 0.0,
-    "investment_gain": 0.0,
+    "investment_gain": 1200.06,
     "ytd_return_pct": null,
-    "monthly_return_pct": null,
-    "max_drawdown_pct": 0.0,
+    "monthly_return_pct": 0.4416,
+    "max_drawdown_pct": -1.4828,
     "sharpe_ratio": null,
     "total_paused_days": 0,
     "is_paused": false,
@@ -195,21 +195,85 @@
   ],
   "nav_history": [
     {
+      "date": "2026-05-18",
+      "nav": 19820.37
+    },
+    {
+      "date": "2026-05-19",
+      "nav": 19526.48
+    },
+    {
+      "date": "2026-05-20",
+      "nav": 19923.2
+    },
+    {
+      "date": "2026-05-21",
+      "nav": 20069.17
+    },
+    {
+      "date": "2026-05-22",
+      "nav": 20073.78
+    },
+    {
+      "date": "2026-05-26",
+      "nav": 20398.58
+    },
+    {
+      "date": "2026-05-27",
+      "nav": 20419.75
+    },
+    {
+      "date": "2026-05-28",
+      "nav": 20928.02
+    },
+    {
       "date": "2026-06-02",
       "nav": 21020.43
     }
   ],
   "drawdown": {
     "dates": [
+      "2026-05-18",
+      "2026-05-19",
+      "2026-05-20",
+      "2026-05-21",
+      "2026-05-22",
+      "2026-05-26",
+      "2026-05-27",
+      "2026-05-28",
       "2026-06-02"
     ],
     "portfolio": [
+      0.0,
+      -1.4828,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
       0.0
     ],
     "nasdaq": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
       null
     ],
     "sp500": [
+      -1.31,
+      -1.97,
+      -0.91,
+      -0.74,
+      -0.37,
+      0.0,
+      0.0,
+      null,
       null
     ]
   },
@@ -240,15 +304,15 @@
       {
         "rank": 1,
         "symbol": "NVDA",
-        "price": 100.0,
-        "change_pct": 0.0,
+        "price": 222.5,
+        "change_pct": -1.86,
         "market_cap_b": 100.0,
         "in_portfolio": true
       },
       {
         "rank": 2,
         "symbol": "AAPL",
-        "price": 100.0,
+        "price": 0.0,
         "change_pct": 0.0,
         "market_cap_b": 100.0,
         "in_portfolio": true
@@ -256,63 +320,63 @@
       {
         "rank": 3,
         "symbol": "MSFT",
-        "price": 100.0,
-        "change_pct": 0.0,
+        "price": 451.11,
+        "change_pct": 7.64,
         "market_cap_b": 100.0,
         "in_portfolio": true
       },
       {
         "rank": 4,
         "symbol": "AMZN",
-        "price": 100.0,
-        "change_pct": 0.0,
+        "price": 259.25,
+        "change_pct": -2.14,
         "market_cap_b": 100.0,
         "in_portfolio": true
       },
       {
         "rank": 5,
         "symbol": "TSM",
-        "price": 100.0,
-        "change_pct": 0.0,
+        "price": 435.96,
+        "change_pct": 6.34,
         "market_cap_b": 100.0,
         "in_portfolio": true
       },
       {
         "rank": 6,
         "symbol": "GOOGL",
-        "price": 100.0,
-        "change_pct": 0.0,
+        "price": 371.91,
+        "change_pct": -5.59,
         "market_cap_b": 100.0,
         "in_portfolio": true
       },
       {
         "rank": 7,
         "symbol": "AVGO",
-        "price": 100.0,
-        "change_pct": 0.0,
+        "price": 474.5,
+        "change_pct": 12.06,
         "market_cap_b": 100.0,
         "in_portfolio": true
       },
       {
         "rank": 8,
         "symbol": "META",
-        "price": 100.0,
-        "change_pct": 0.0,
+        "price": 600.13,
+        "change_pct": -1.51,
         "market_cap_b": 100.0,
         "in_portfolio": true
       },
       {
         "rank": 9,
         "symbol": "AMD",
-        "price": 100.0,
-        "change_pct": 0.0,
+        "price": 501.06,
+        "change_pct": 16.63,
         "market_cap_b": 100.0,
         "in_portfolio": true
       },
       {
         "rank": 10,
         "symbol": "V",
-        "price": 100.0,
+        "price": 0.0,
         "change_pct": 0.0,
         "market_cap_b": 100.0,
         "in_portfolio": true
@@ -321,7 +385,7 @@
   },
   "events": [],
   "email": {
-    "subject": "[MOM-6m-T20 #3] 2026-06-02 NAV $21,020 (+0.00%)",
+    "subject": "[MOM-6m-T20 #3] 2026-06-02 NAV $21,020 (+0.44%)",
     "preheader": "帳戶 #3 · 2026-06-02 · NAV $21,020",
     "dashboard_url": "https://itemhsu.github.io/tech-rebalance-dashboard/mvp_dashboard.html?a=3",
     "sections_rendered": [
@@ -332,7 +396,46 @@
       "rankings",
       "trades",
       "cta",
+      "strategy_history",
       "footer"
     ]
-  }
+  },
+  "benchmark_nav": {
+    "sp500": [
+      19820.37,
+      19688.0,
+      19900.48,
+      19934.61,
+      20008.91,
+      20131.13,
+      20134.45,
+      20250.3,
+      20373.85
+    ],
+    "nasdaq": [
+      19820.37,
+      19653.23,
+      19956.83,
+      19974.1,
+      20012.75,
+      20249.93,
+      20264.02,
+      20448.42,
+      20582.45
+    ]
+  },
+  "strategy_history": [
+    {
+      "strategy": "top9psq",
+      "label": "Top9 PSQ",
+      "from": "2026-05-18",
+      "to": "2026-05-28"
+    },
+    {
+      "strategy": "mom_6m_t20",
+      "label": "MOM-6m-T20",
+      "from": "2026-06-02",
+      "to": null
+    }
+  ]
 }

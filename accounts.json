@@ -41,6 +41,18 @@
       "data_dir": "data/3",
       "email_recipients": [
         "itemhsu@gmail.com"
+      ],
+      "strategy_history": [
+        {
+          "strategy": "top9psq",
+          "label": "Top9 PSQ",
+          "data_dir": "top9psq/data/2"
+        },
+        {
+          "strategy": "mom_6m_t20",
+          "label": "MOM-6m-T20",
+          "data_dir": "data/3"
+        }
       ]
     },
     {
