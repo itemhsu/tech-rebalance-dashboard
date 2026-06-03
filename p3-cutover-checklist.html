@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="zh-Hant"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P3 上線對帳 Checklist — 兩 Repo 切換</title>
+<style>
+ body{margin:0;background:#0b1220;color:#e5edf7;font-family:-apple-system,"PingFang TC","Noto Sans TC",sans-serif;line-height:1.7}
+ .w{max-width:980px;margin:0 auto;padding:32px 20px 90px}
+ h1{font-size:26px;margin:0 0 4px} h2{font-size:20px;margin:30px 0 10px;border-left:4px solid #38bdf8;padding-left:10px}
+ h3{font-size:15px;margin:16px 0 6px;color:#cfe3fb} .sub{color:#93a4bd;margin:0 0 18px}
+ table{width:100%;border-collapse:collapse;margin:10px 0;font-size:13px}
+ th,td{border:1px solid #22324d;padding:7px 9px;text-align:left;vertical-align:top}
+ th{background:#15233b;color:#cfe3fb} code{background:#0e1a2e;border:1px solid #22324d;border-radius:5px;padding:1px 5px;font-size:12px}
+ pre{background:#0e1a2e;border:1px solid #22324d;border-radius:10px;padding:14px;overflow:auto;font-size:12.5px}
+ .box{border-radius:10px;padding:12px 14px;margin:12px 0;border:1px solid}
+ .bad{background:#2a1416;border-color:#7f1d1d} .good{background:#0e2a1f;border-color:#14532d} .warn{background:#2a2210;border-color:#78510f}
+ .badge{display:inline-block;background:#15233b;border:1px solid #22324d;color:#38bdf8;border-radius:999px;padding:2px 12px;font-size:13px;margin:2px 4px 2px 0}
+ ol{padding-left:22px} li{margin:6px 0}
+ .chk{color:#86efac;font-weight:700}
+</style></head><body><div class="w">
+
+<h1>✅ P3 上線對帳 Checklist</h1>
+<p class="sub">用薄殼範本站起 Repo B → paper 平行對帳 → 一致才切真錢 · 2026-06-03</p>
+<span class="badge">引擎 v1.0.0 已就緒</span><span class="badge">金鑰/建 repo 由你親手</span><span class="badge">真錢系統：先 paper、後對帳、再切換</span>
+
+<div class="box bad"><b>安全原則：</b>所有 <b>API 金鑰、PAT、Secrets 都由你本人在 GitHub 介面或 GUI 輸入</b>，
+ 絕不貼進對話或經我執行。本文件只給「步驟與檢查項」，不含任何金鑰。</div>
+
+<h2>步驟 0 — 先決條件</h2>
+<ul>
+ <li>一個 <b>Alpaca paper</b> 帳戶（先用模擬，不碰真錢）。拿到該帳戶的 API Key / Secret。</li>
+ <li>你的 GitHub 帳號（建 Repo B 用）。</li>
+ <li>引擎 Release 已存在：<code>itemhsu/tech-rebalance@v1.0.0</code>（已完成）。</li>
+</ul>
+
+<h2>步驟 1 — 用範本建 private Repo B</h2>
+<ol>
+ <li>把引擎 repo 內 <code>examples/repo-b-template/</code> 的內容複製出來（4 個檔）。</li>
+ <li>在 GitHub 建一個 <b>private</b> repo，例如 <code>{你}/my-trading</code>，把這 4 個檔放進去、預設分支 <code>main</code>。</li>
+ <li>編輯 <code>accounts.json</code>：填你的帳戶 id / 策略（範本是 <code>top10</code>）/ <code>secret_prefix: ACC1</code>。</li>
+</ol>
+<div class="box warn">⚠️ Repo B <b>必須 private</b>（裡面有你的資料；金鑰雖在 Secrets 不在檔案，但資料仍屬個人）。</div>
+
+<h2>步驟 2 — 產生 ENGINE_INSTALL_TOKEN（讀私有引擎用）</h2>
+<p>引擎 repo 目前是 private，Repo B 的 workflow 要 <code>pip install</code> 它需要一個能讀取的 token。</p>
+<ol>
+ <li>GitHub → Settings → Developer settings → <b>Fine-grained personal access tokens</b> → Generate new token。</li>
+ <li>Resource owner = <code>itemhsu</code>；Repository access = <b>Only select repositories</b> → 勾 <code>tech-rebalance</code>。</li>
+ <li>Permissions → Repository permissions → <b>Contents: Read-only</b>（只需這一項）。</li>
+ <li>有效期設短一點（如 90 天），到期再換。產生後<b>立刻複製</b>。</li>
+</ol>
+<div class="box good">若你願意把<b>引擎 repo 設為 public</b>（純碼無秘密），這一整步可省略——Repo B 直接公開安裝、免 token。是否公開由你決定。</div>
+
+<h2>步驟 3 — 在 Repo B 設 Actions Secrets</h2>
+<p>Repo B → Settings → Secrets and variables → Actions → New repository secret。逐一加：</p>
+<table><thead><tr><th>Secret 名稱</th><th>內容</th><th>必填</th></tr></thead><tbody>
+ <tr><td><code>ACC1_ALPACA_KEY</code></td><td>Alpaca <b>paper</b> API Key</td><td>✅</td></tr>
+ <tr><td><code>ACC1_ALPACA_SECRET</code></td><td>Alpaca paper Secret</td><td>✅</td></tr>
+ <tr><td><code>ENGINE_INSTALL_TOKEN</code></td><td>步驟 2 的 PAT（引擎 public 則免）</td><td>視情況</td></tr>
+ <tr><td><code>EMAIL_SENDER</code> / <code>EMAIL_PASSWORD</code> / <code>EMAIL_RECIPIENT</code></td><td>寄報告（先不設也行）</td><td>選用</td></tr>
+</tbody></table>
+<div class="box bad">金鑰只貼進 GitHub Secret 輸入框（值不落檔、不入 log）。<b>不要</b>寫進 accounts.json 或任何檔案。</div>
+
+<h2>步驟 4 — 跑 dry-run（不下單）</h2>
+<ol>
+ <li>Repo B → Actions → <b>Daily rebalance (thin shell)</b> → Run workflow → <code>dry_run: true</code>。</li>
+ <li>看 log：應出現
+   <pre>pip 裝 tech-rebalance@v1.0.0 ✅
+run-account --account all --dry-run
+帳戶 #1 … 計算出持倉/排名（不下單）</pre></li>
+ <li>若卡在安裝 → token 權限不足；卡在金鑰 → Secret 名稱拼錯（要 <code>ACC1_ALPACA_KEY</code>）。</li>
+</ol>
+
+<h2>步驟 5 — 平行對帳（關鍵關卡）★</h2>
+<p>讓 Repo B 的 dry-run 與<b>現有系統</b>跑同一天，<b>逐欄比對</b>。兩邊都不下單，純比計算結果。</p>
+<table><thead><tr><th>比對項</th><th>來源</th><th>通過標準</th></tr></thead><tbody>
+ <tr><td>當日選股（持倉清單）</td><td>dry-run log 的 top10 / portfolio symbols</td><td><b>完全一致</b>（同一組代號）</td></tr>
+ <tr><td>市值排名</td><td>log 的 ranked_stocks 順序</td><td>名次一致</td></tr>
+ <tr><td>NAV / cash</td><td>帳戶狀態</td><td>同一 paper 帳戶 → 應相同</td></tr>
+ <tr><td>計畫下單（數量/方向）</td><td>dry-run 的 orders（SELL/BUY、股數）</td><td>逐筆一致</td></tr>
+ <tr><td>報告 data.json schema</td><td>產出的 data.json</td><td>通過 data-schema、儀表板能讀</td></tr>
+</tbody></table>
+<div class="box good"><b>建議對帳天數：</b>連續 <b>3 個交易日</b>都逐欄一致 → 視為通過。涵蓋「每日」與「換股日」更佳。</div>
+<div class="box warn">若有差異：<b>不要切</b>。記錄差異欄位 → 多半是路徑/版本/資料來源問題，回頭查 <code>TR_WORKDIR</code> 與引擎版本。差異消除前維持舊系統運作。</div>
+
+<h2>步驟 6 — Go / No-Go + 切換</h2>
+<table><thead><tr><th>條件</th><th>動作</th></tr></thead><tbody>
+ <tr><td>3 天 paper 對帳全一致</td><td class="chk">Go：把 Repo B 的 <code>ACC1_*</code> 換成<b>真錢帳戶</b>金鑰；啟用排程</td></tr>
+ <tr><td>任一欄不一致</td><td>No-Go：維持舊系統；查差異</td></tr>
+</tbody></table>
+<h3>切換與並行</h3>
+<ul>
+ <li>切真錢初期，建議<b>舊系統先停排程但不刪</b>（保留可回退）。</li>
+ <li>Repo B 真錢跑穩數日後，再退役舊路徑（P4）。</li>
+</ul>
+
+<h2>步驟 7 — 回退方案（出事就用）</h2>
+<ol>
+ <li>停用 Repo B 的 <code>daily.yml</code> 排程（Actions → 關閉 workflow）。</li>
+ <li>重新啟用舊系統的 <code>daily_all_accounts.yml</code> 排程。</li>
+ <li>因為兩邊操作<b>同一個 Alpaca 帳戶</b>，持倉狀態連續，回退不會遺失資料。</li>
+</ol>
+
+<div class="box good"><b>我能幫的：</b>對帳時把兩邊 log/data.json 貼給我，我幫你<b>逐欄 diff</b> 找差異；
+ 或在切換前幫你檢查 Repo B 的 accounts.json / workflow 設定。<b>金鑰與建 repo 由你；驗證與除錯我陪你做。</b></div>
+
+<h2>進度對照</h2>
+<table><thead><tr><th>階段</th><th>狀態</th></tr></thead><tbody>
+ <tr><td>P0 解耦 / P1 打包 / P2 範本+發版 / engine v1.0.0</td><td class="chk">✅ 已完成（引擎側全就緒）</td></tr>
+ <tr><td>P3 平行對帳（本文件）</td><td>⬜ 進行中（需你建 Repo B + paper 對帳）</td></tr>
+ <tr><td>P4 切真錢 + 退役舊路徑 / P5 可選③ reusable workflow</td><td>⬜ 待 P3 通過</td></tr>
+</tbody></table>
+
+</div></body></html>
