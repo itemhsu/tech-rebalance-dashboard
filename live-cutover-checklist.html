@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="zh-Hant"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Live（真錢）切換清單 — 兩 Repo 架構</title>
+<style>
+ body{margin:0;background:#0b1220;color:#e5edf7;font-family:-apple-system,"PingFang TC","Noto Sans TC",sans-serif;line-height:1.7}
+ .w{max-width:960px;margin:0 auto;padding:32px 20px 90px}
+ h1{font-size:25px;margin:0 0 4px} h2{font-size:19px;margin:28px 0 10px;border-left:4px solid #f87171;padding-left:10px}
+ h3{font-size:15px;margin:16px 0 6px;color:#cfe3fb} .sub{color:#93a4bd;margin:0 0 18px}
+ table{width:100%;border-collapse:collapse;margin:10px 0;font-size:13px}
+ th,td{border:1px solid #22324d;padding:7px 9px;text-align:left;vertical-align:top}
+ th{background:#15233b;color:#cfe3fb} code{background:#0e1a2e;border:1px solid #22324d;border-radius:5px;padding:1px 5px;font-size:12px}
+ pre{background:#0e1a2e;border:1px solid #22324d;border-radius:10px;padding:14px;overflow:auto;font-size:12.5px}
+ .box{border-radius:10px;padding:12px 14px;margin:12px 0;border:1px solid}
+ .bad{background:#2a1416;border-color:#7f1d1d} .good{background:#0e2a1f;border-color:#14532d} .warn{background:#2a2210;border-color:#78510f}
+ .badge{display:inline-block;background:#15233b;border:1px solid #22324d;color:#38bdf8;border-radius:999px;padding:2px 12px;font-size:13px;margin:2px 4px 2px 0}
+ ol{padding-left:22px} li{margin:6px 0} .chk{color:#86efac;font-weight:700}
+</style></head><body><div class="w">
+
+<h1>🔴 Live（真錢）切換清單</h1>
+<p class="sub">paper 驗證通過後，把兩 repo 架構切到真錢帳戶 · 2026-06-04</p>
+<span class="badge">真錢：下單由你親手</span><span class="badge">不用 force，照月度排程</span><span class="badge">paper 不停、可回退</span>
+
+<div class="box bad"><b>最高原則：</b>真錢下單<b>由你本人</b>在 GitHub 觸發/啟用排程，我不代按。金鑰只進 GitHub Secret 輸入框。
+ 本清單只給步驟與檢查項，不含任何金鑰。</div>
+
+<h2>關卡 0 — 先過 paper（必須）</h2>
+<div class="box warn">在做任何 live 設定前，先確認 paper 那筆<b>真的成交且正確</b>：
+ <ul><li>Alpaca paper → Orders：<code>SELL V × 35</code>、<code>BUY ASML × 5</code> 狀態為 <b>filled</b>。</li>
+  <li>Positions：V 歸零、ASML 出現、其餘 8 檔不變。</li>
+  <li>沒有非預期的多筆/重複單。</li></ul>
+ ✅ 都對 → 才往下。任何不對 → 停，先查清楚。</div>
+
+<h2>1. 觀念：live 跟 paper 差在哪</h2>
+<table><thead><tr><th>項目</th><th>paper</th><th>live（真錢）</th></tr></thead><tbody>
+ <tr><td><code>accounts.json</code> 的 <code>environment</code></td><td><code>"paper"</code></td><td class="chk">改成 <code>"live"</code></td></tr>
+ <tr><td>連線網址（引擎自動切）</td><td>paper-api.alpaca.markets</td><td>api.alpaca.markets</td></tr>
+ <tr><td><code>ACC1_ALPACA_KEY/SECRET</code></td><td>paper 金鑰</td><td class="chk">換成 <b>live 帳戶</b>金鑰</td></tr>
+ <tr><td>force 強制再平衡</td><td>驗證時用過</td><td class="bad">不要用 — 讓它照月度排程</td></tr>
+ <tr><td>排程</td><td>關閉（手動）</td><td>開啟（每月第一交易日自動）</td></tr>
+</tbody></table>
+<div class="box good">引擎只看 <code>environment</code> 欄位決定打哪個網址；改 <code>"live"</code> + 換 live 金鑰，就會對真錢帳戶下單。</div>
+
+<h2>2. 建議：開「獨立的 live repo」（不要直接改 paper repo）</h2>
+<p>讓 paper 與 live <b>分開</b>，paper 可繼續當對照、出事可回退。</p>
+<ol>
+ <li>用 <code>examples/repo-b-template/</code>（或複製 <code>tech-rebalance-data</code>）建一個 private repo，例如 <code>tech-rebalance-live</code>。</li>
+ <li>把 <code>vendor/</code> 的引擎 wheel 一起帶過去（目前 v1.0.3）。</li>
+ <li>編輯 <code>accounts.json</code>：把 <code>"environment": "paper"</code> 改成 <code>"live"</code>。</li>
+</ol>
+
+<h2>3. 設 live 金鑰（你親手）</h2>
+<ol>
+ <li>Alpaca → 切到 <b>Live</b>（非 paper）→ 產生 live API Key / Secret。</li>
+ <li>live repo → Settings → Secrets and variables → Actions → New repository secret：
+   <table><thead><tr><th>Name</th><th>值</th></tr></thead><tbody>
+    <tr><td><code>ACC1_ALPACA_KEY</code></td><td>live API Key</td></tr>
+    <tr><td><code>ACC1_ALPACA_SECRET</code></td><td>live Secret</td></tr>
+    <tr><td><code>EMAIL_*</code></td><td>（選用，要收報告才設）</td></tr>
+   </tbody></table></li>
+</ol>
+<div class="box bad">live 金鑰是真錢權限，務必確認貼的是 <b>live</b> 帳戶的（不是 paper）。值只進 Secret 框，不寫進任何檔案。</div>
+
+<h2>4. 先做一次 live dry-run（不下單，再確認一次）</h2>
+<ol>
+ <li>live repo → Actions → Run workflow → <code>dry_run: true</code>、<code>force: false</code>。</li>
+ <li>看 log：應顯示 <code>環境：live</code>、連到 <code>api.alpaca.markets</code>、讀到你 live 帳戶的真實 NAV/持倉、算出計劃（<b>不下單</b>）。</li>
+ <li>確認 NAV/持倉是你 live 帳戶的真實數字 → 金鑰、環境都對。</li>
+</ol>
+
+<h2>5. 啟用每月自動排程（正式上線）</h2>
+<p>top10 是月度策略，<b>真錢就讓它在每月第一個交易日自然換股</b>，不用 force。</p>
+<ol>
+ <li>編輯 live repo 的 <code>.github/workflows/daily.yml</code>，把 schedule 那兩行<b>取消註解</b>：
+  <pre>  schedule:
+    - cron: '15 21 * * 1-5'   # 盤後（台灣 05:15 隔日）</pre></li>
+ <li>之後每個交易日它會跑；守門只在<b>每月第一交易日</b>真的換股，其餘日子空轉（正確行為）。</li>
+ <li><b>不要</b>手動 force 真錢下單；要手動就先 dry-run 看計劃。</li>
+</ol>
+
+<h2>6. 風險控管（強烈建議）</h2>
+<ul>
+ <li><b>小額起步</b>：live 帳戶先放一小部分資金，跑 1～2 個月度週期確認穩定，再加碼。</li>
+ <li><b>paper 不要停</b>：留著當對照，隨時比對 live 與 paper 的選股是否一致。</li>
+ <li><b>第一次月度換股當天盯一下</b>：開盤後到 Alpaca live 看訂單是否如 dry-run 預期成交。</li>
+ <li><b>訂單追蹤已修</b>（v1.0.3 get_order）：成交/拒單/未結會被記錄，這個安全網對真錢很重要。</li>
+</ul>
+
+<h2>7. 回退方案（出事立即用）</h2>
+<ol>
+ <li>live repo → Actions → 該 workflow → <b>關閉（Disable workflow）</b>，立刻停止自動下單。</li>
+ <li>必要時到 Alpaca live 手動取消未成交單 / 平倉。</li>
+ <li>paper repo 一直都在，隨時可回去純觀察。</li>
+</ol>
+
+<div class="box good"><b>我能幫的：</b>幫你建好 live repo 骨架（檔案、wheel、environment 改 live）、檢查 dry-run log、比對 live 與 paper 選股是否一致。
+ <b>真錢的下單觸發與啟用排程由你親手；驗證與除錯我陪你做。</b></div>
+
+<h2>時序總覽</h2>
+<table><thead><tr><th>時間點</th><th>動作</th></tr></thead><tbody>
+ <tr><td>明早開盤後</td><td>確認 paper V/ASML 成交正確（關卡 0）</td></tr>
+ <tr><td>確認後</td><td>建 live repo + 設 live 金鑰 + dry-run 看真實 NAV</td></tr>
+ <tr><td>dry-run 無誤</td><td>開排程（取消 cron 註解）</td></tr>
+ <tr><td>下個月第一交易日</td><td>真錢首次自動換股 → 開盤盯成交</td></tr>
+</tbody></table>
+
+</div></body></html>
