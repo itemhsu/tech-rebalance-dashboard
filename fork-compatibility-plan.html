@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="zh-Hant"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Fork 相容性與上游變更影響管理計劃</title>
+<style>
+ body{margin:0;background:#0b1220;color:#e5edf7;font-family:-apple-system,"PingFang TC","Noto Sans TC",sans-serif;line-height:1.7}
+ .w{max-width:1000px;margin:0 auto;padding:32px 20px 80px}
+ h1{font-size:28px;margin:0 0 4px} h2{font-size:21px;margin:32px 0 10px;border-left:4px solid #38bdf8;padding-left:10px}
+ h3{font-size:16px;margin:18px 0 6px;color:#cfe3fb} .sub{color:#93a4bd;margin:0 0 20px}
+ table{width:100%;border-collapse:collapse;margin:10px 0;font-size:13.5px}
+ th,td{border:1px solid #22324d;padding:8px 10px;text-align:left;vertical-align:top}
+ th{background:#15233b;color:#cfe3fb} code{background:#0e1a2e;border:1px solid #22324d;border-radius:5px;padding:1px 6px;font-size:12.5px}
+ pre{background:#0e1a2e;border:1px solid #22324d;border-radius:10px;padding:14px;overflow:auto;font-size:12.5px}
+ .box{border-radius:10px;padding:12px 14px;margin:12px 0;border:1px solid}
+ .bad{background:#2a1416;border-color:#7f1d1d} .good{background:#0e2a1f;border-color:#14532d} .warn{background:#2a2210;border-color:#78510f}
+ .badge{display:inline-block;background:#15233b;border:1px solid #22324d;color:#38bdf8;border-radius:999px;padding:2px 12px;font-size:13px;margin:2px 4px 2px 0}
+ .r-high{color:#f87171;font-weight:700} .r-mid{color:#fbbf24;font-weight:700} .r-low{color:#86efac;font-weight:700}
+ ul{margin:6px 0 6px 0;padding-left:20px} li{margin:3px 0}
+ .map{font-family:monospace;background:#0e1a2e;border:1px solid #22324d;border-radius:10px;padding:14px;color:#cfe3fb;font-size:12.5px}
+</style></head><body><div class="w">
+
+<h1>🔀 Fork 相容性與上游變更影響管理</h1>
+<p class="sub">當 itemhsu（上游）改動時，其他 fork 的 repo 如何不被弄壞 — 設計計劃 · 2026-06-03</p>
+<span class="badge">狀態：計劃</span><span class="badge">範圍：schema / workflow / 報告格式 / 桌面 App</span>
+
+<h2>1. 生態系與所有權（誰會 fork、誰只下載）</h2>
+<div class="map">itemhsu/tech-rebalance（引擎範本·private）──fork──▶ {user}/tech-rebalance（使用者的引擎，private）
+itemhsu/tech-rebalance-dashboard（公開 Pages）─fork─▶ {user}/tech-rebalance-dashboard（使用者的儀表板）
+itemhsu/tradingadmin（桌面 App·public）──不 fork──▶ 使用者「下載 DMG」執行（永遠是 itemhsu 的版本）
+                                                      └─ App 透過 GitHub API 讀「使用者的 fork」</div>
+<table>
+ <thead><tr><th>產物</th><th>使用者怎麼取得</th><th>變更傳遞特性</th></tr></thead>
+ <tbody>
+  <tr><td>引擎程式碼 + schema + workflow</td><td><b>fork</b>（複製一份）</td><td class="r-high">不會自動更新 → 容易與上游分歧、拿不到修復</td></tr>
+  <tr><td>桌面 App（GUI）</td><td><b>下載 DMG</b></td><td class="r-mid">永遠用 itemhsu 最新版 → 但會跟「使用者舊 fork」版本錯位</td></tr>
+  <tr><td>儀表板前端 html + data.json</td><td>引擎每日 push 到 dashboard repo</td><td class="r-low">同一 fork 內前端與資料每日自我同步</td></tr>
+ </tbody>
+</table>
+<div class="box bad"><b>核心風險＝「版本錯位」三種：</b>
+ ① fork 的引擎/schema 舊，但下載的 App 新 → App 期待的欄位 fork 沒有。
+ ② fork 的 workflow 舊，拿不到上游修復（如本專案的 SendGrid→SMTP、email-log、孤兒 migrator 移除）。
+ ③ 上游改了 data.json 格式，fork 的舊儀表板前端看不懂。</div>
+
+<h2>2. 變更分類 × 衝擊 × 預防</h2>
+
+<h3>① 策略 JSON / strategy-schema-v3</h3>
+<table><thead><tr><th>變更</th><th>對 fork 衝擊</th><th>嚴重</th><th>預防</th></tr></thead><tbody>
+ <tr><td>新增<b>必填</b>欄位</td><td>fork 既有策略 JSON 驗證失敗 → 當日不執行</td><td class="r-high">高</td>
+     <td>只做<b>加法且選填（帶預設）</b>；新必填欄位走新 schema 版本號，不動舊版</td></tr>
+ <tr><td>新增選填欄位 / 新 selection method</td><td>舊策略仍可跑；用不到新功能</td><td class="r-low">低</td><td>validator 容忍未知欄位；method 用 registry 找不到時明確報錯</td></tr>
+ <tr><td>改欄位語意 / 改預設值</td><td>同樣 JSON 行為悄悄改變</td><td class="r-high">高</td><td><b>禁止</b>就地改語意 → 用新欄位名 + 棄用期</td></tr>
+</tbody></table>
+
+<h3>② 券商 schema（broker-schema-v2）</h3>
+<table><thead><tr><th>變更</th><th>對 fork 衝擊</th><th>嚴重</th><th>預防</th></tr></thead><tbody>
+ <tr><td>schema 加欄位（如本專案的 <code>account_discovery</code>）</td><td>App/引擎讀新欄位；fork 舊 broker JSON 沒有 → 該功能 fallback</td><td class="r-mid">中</td><td>讀取端一律 <code>.get(默認)</code>；<code>$schema</code> 版本號決定 parser</td></tr>
+ <tr><td>App 新版要求新欄位才能下單</td><td>fork 舊 broker JSON 無法用新版 App 操作</td><td class="r-high">高</td><td>App 宣告「支援的 broker-schema 版本範圍」；不相容時顯示「請更新券商 schema」</td></tr>
+</tbody></table>
+
+<h3>③ 帳戶 schema（accounts.json + Account model）</h3>
+<table><thead><tr><th>變更</th><th>對 fork 衝擊</th><th>嚴重</th><th>預防</th></tr></thead><tbody>
+ <tr><td>加欄位（如本專案 <code>strategy_history</code>）</td><td>舊 accounts.json 沒有 → 用預設；新功能不啟用</td><td class="r-low">低</td><td><b>已具備</b>：Account model 忽略未知欄位、新欄位 <code>Optional</code> 帶預設</td></tr>
+ <tr><td>App 寫入新欄位、引擎舊版不讀</td><td>欄位被忽略（無害）</td><td class="r-low">低</td><td>維持「讀取端寬鬆、寫入端加法」契約</td></tr>
+ <tr><td>改 Secret 命名（如 <code>_ALPACA_KEY</code> vs <code>_API_KEY</code>）</td><td>引擎讀不到金鑰 → 交易失敗</td><td class="r-high">高</td><td>命名由 broker schema <code>required_env</code> 驅動；改名走雙寫過渡期 + workflow fallback <code>secrets.A || secrets.B</code></td></tr>
+</tbody></table>
+
+<h3>④ Workflow（.github/workflows）— 最高風險</h3>
+<div class="box bad">fork 把 workflow <b>複製走</b>，之後上游的修復（SendGrid→SMTP、看門狗、孤兒 migrator…）<b>不會自動到 fork</b>。
+ fork 等於凍結在 fork 當下的版本。</div>
+<table><thead><tr><th>策略</th><th>說明</th></tr></thead><tbody>
+ <tr><td><b>瘦 workflow</b></td><td>workflow 只做「checkout → 跑 <code>python run_account.py</code> / <code>migrate_to_mvp.py</code>」，<b>所有邏輯放進版本化的引擎程式碼</b>。如此上游改邏輯時，fork 只要 <code>git pull upstream</code> 一次就拿到，workflow 本身幾乎不用改。</td></tr>
+ <tr><td><b>上游同步機制</b></td><td>提供 <code>scripts/sync_upstream.sh</code>（<code>git fetch upstream && git merge upstream/main</code>，排除 <code>accounts.json</code> / <code>data/</code> 等私有檔），或 App「⚙️ 從上游同步引擎」按鈕一鍵執行。</td></tr>
+ <tr><td><b>workflow 版本標記</b></td><td>workflow 檔頭寫 <code># workflow_version: N</code>；引擎啟動時比對「程式碼期待版本 vs 實際 workflow 版本」，落後就在 email/issue 提醒「請同步上游 workflow」。</td></tr>
+ <tr><td><b>Secrets 別名 fallback</b></td><td>所有 <code>secrets.X || secrets.OLD</code> 寫法保留，降低改名衝擊。</td></tr>
+</tbody></table>
+
+<h3>⑤ Daily report 格式（data.json + email + dashboard）</h3>
+<table><thead><tr><th>變更</th><th>對 fork 衝擊</th><th>嚴重</th><th>預防</th></tr></thead><tbody>
+ <tr><td>data.json 加欄位（本專案 <code>strategy_history</code> / <code>order_alerts</code>）</td><td>引擎與 email 同 repo → 同步；儀表板前端若舊版可能看不懂</td><td class="r-mid">中</td>
+     <td><b>已具備</b>：data-schema 加法 + 儀表板「<code>data.json 版本不相容</code>」橫幅；引擎每日把<b>對應版本的 <code>mvp_dashboard.html</code> 一起 push</b> → 同 fork 內自我同步</td></tr>
+ <tr><td><code>data-schema</code> 改 <b>必填</b>結構</td><td>舊 data.json / 舊前端壞掉</td><td class="r-high">高</td><td><code>data-schema-v1 → v2</code> 版本號；前端依 <code>meta.schema_version</code> 切換渲染、不相容顯示橫幅而非崩潰</td></tr>
+</tbody></table>
+
+<h3>⑥ 桌面 App（tradingadmin GUI）</h3>
+<table><thead><tr><th>變更</th><th>對 fork 衝擊</th><th>嚴重</th><th>預防</th></tr></thead><tbody>
+ <tr><td>App 新版讀新 schema 欄位</td><td>使用者一律拿新 App，但其 fork schema 可能舊 → 讀不到</td><td class="r-mid">中</td><td>App 讀 schema 全程 <code>.get(默認)</code>、防禦式；缺欄位以「—／停用」顯示而非崩潰</td></tr>
+ <tr><td>App 與引擎的契約改變（如 Secret 命名、accounts 欄位）</td><td>App 寫的東西引擎不認</td><td class="r-high">高</td><td>App 顯示「相容性檢查」：讀 fork 的 <code>schema_version</code> / workflow_version，落後就提示「請從上游同步引擎」並附一鍵按鈕</td></tr>
+ <tr><td>App 自身改版</td><td>所有人下載即得；不分歧</td><td class="r-low">低</td><td>CI 自動發 Release；README 指向 <code>releases/latest</code></td></tr>
+</tbody></table>
+
+<h2>3. 共通原則（防錯設計）</h2>
+<div class="box good"><ul>
+ <li><b>萬物版本化</b>：每個 schema/格式都有 <code>$schema</code> 或 <code>version</code>；讀取端依版本切換 parser、不相容時<b>明確降級或告警</b>，絕不靜默崩潰。</li>
+ <li><b>只做加法、欄位選填帶預設</b>；改語意/改必填一律走新版本號 + 棄用期。</li>
+ <li><b>讀取端寬鬆、寫入端保守</b>（Postel 法則）：忽略未知欄位、補齊缺欄位預設。</li>
+ <li><b>瘦 workflow、邏輯進版本化程式碼</b>：把「會變的東西」集中在可一次 pull 的地方。</li>
+ <li><b>可見的相容性告警</b>：版本錯位時，email / 儀表板 / App 都要顯眼提示「請同步上游」，而非默默壞掉。</li>
+ <li><b>Secrets 別名 fallback</b>：改名永遠保留 <code>新 || 舊</code>。</li>
+</ul></div>
+
+<h2>4. 上游同步機制（讓 fork 拿得到修復）</h2>
+<pre># scripts/sync_upstream.sh（提供給 fork 使用者；App 可一鍵呼叫）
+git remote add upstream https://github.com/itemhsu/tech-rebalance 2>/dev/null || true
+git fetch upstream
+# 只合併「程式碼/schema/workflow」，保留私有檔（accounts.json、data/、金鑰無涉）
+git merge upstream/main -m "sync: pull upstream engine fixes" \
+  -X ours -- accounts.json data/ d2p2t6/ weekly_top10/ 2>/dev/null || \
+  git merge upstream/main   # 衝突時人工解，但 90% 情況自動</pre>
+<ul>
+ <li>App「⚙️ 設定精靈」加一步「<b>從上游同步引擎</b>」，觸發 fork repo 的同步（或開 GitHub「Sync fork」）。</li>
+ <li>引擎每日 run 比對 <code>code_version vs schema/workflow_version</code>，落後 → email 加「🔄 有上游更新，建議同步」一行。</li>
+</ul>
+
+<h2>5. 變更流程與 CI 守門</h2>
+<table><thead><tr><th>機制</th><th>內容</th></tr></thead><tbody>
+ <tr><td><b>相容性 CI</b></td><td>上游每次改 schema → 跑「<b>舊樣本資料 × 新程式碼</b>」與「新樣本 × 舊讀取器」雙向測試（向前 / 向後相容）。本專案已有 Parity / schema 測試可擴充。</td></tr>
+ <tr><td><b>棄用政策</b></td><td>改名/移除欄位先標 <code>deprecated</code> 並雙寫一段時間（如 1～2 週），email/log 提醒，再移除。本專案 env 命名「雙寫 1 週」即此模式。</td></tr>
+ <tr><td><b>migration 腳本</b></td><td>需要結構升級時附 <code>scripts/migrate_vN_to_vN1.py</code>，App/同步時自動套用。</td></tr>
+ <tr><td><b>版本相容矩陣</b></td><td>README/文件維護「App 版本 ↔ 引擎 schema 版本」支援表，App 啟動時對照。</td></tr>
+</tbody></table>
+
+<h2>6. 相容性矩陣（範例）</h2>
+<table><thead><tr><th>產物</th><th>目前版本</th><th>相容範圍</th><th>不相容時行為</th></tr></thead><tbody>
+ <tr><td>strategy-schema</td><td>v3</td><td>v3.x（加法）</td><td>缺必填 → 該帳戶當日 skip + log 告警</td></tr>
+ <tr><td>broker-schema</td><td>v2</td><td>v1 ↔ v2</td><td>App 顯示「請更新券商 schema」</td></tr>
+ <tr><td>data-schema</td><td>v1</td><td>v1.x</td><td>儀表板顯示「版本不相容」橫幅</td></tr>
+ <tr><td>desktop App</td><td>v0.1.x</td><td>引擎 schema ≥ 對應下限</td><td>App 顯示相容性警告 + 一鍵同步上游</td></tr>
+ <tr><td>workflow</td><td>v1</td><td>—（fork 各自一份）</td><td>引擎偵測落後 → email 提示同步</td></tr>
+</tbody></table>
+
+<div class="box warn"><b>落地優先序：</b>
+ ① 先把所有 schema/格式補上 <code>version</code> 欄位 + 讀取端版本檢查（最划算）。
+ ② workflow 持續瘦身 + 提供 <code>sync_upstream</code>（解最高風險）。
+ ③ App 加「相容性檢查 + 一鍵同步上游」。
+ ④ 相容性 CI（雙向新舊測試）納入每次 schema 變更。</div>
+
+</div></body></html>
