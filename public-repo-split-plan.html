@@ -1,11 +1,11 @@
 <!doctype html>
 <html lang="zh-Hant"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>公開引擎 Repo 拆分計劃（tech-rebalance-pub）</title>
+<title>引擎住 pub・私有純當 Repo B（拆分計劃 v2）</title>
 <style>
  body{margin:0;background:#0b1220;color:#e5edf7;font-family:-apple-system,"PingFang TC","Noto Sans TC",sans-serif;line-height:1.7}
  .w{max-width:1040px;margin:0 auto;padding:32px 20px 90px}
- h1{font-size:25px;margin:0 0 4px} h2{font-size:20px;margin:30px 0 10px;border-left:4px solid #10b981;padding-left:10px}
+ h1{font-size:24px;margin:0 0 4px} h2{font-size:20px;margin:30px 0 10px;border-left:4px solid #10b981;padding-left:10px}
  h3{font-size:15px;margin:16px 0 6px;color:#cfe3fb} .sub{color:#93a4bd;margin:0 0 18px}
  table{width:100%;border-collapse:collapse;margin:10px 0;font-size:12.5px}
  th,td{border:1px solid #22324d;padding:7px 9px;text-align:left;vertical-align:top}
@@ -16,128 +16,111 @@
  .badge{display:inline-block;background:#15233b;border:1px solid #22324d;color:#38bdf8;border-radius:999px;padding:2px 12px;font-size:13px;margin:2px 4px 2px 0}
  .toc{background:#0e1a2e;border:1px solid #22324d;border-radius:10px;padding:10px 16px;font-size:13.5px}
  .toc a{color:#7dd3fc;text-decoration:none;margin-right:14px;white-space:nowrap}
- .pub{color:#86efac;font-weight:700} .priv{color:#f87171;font-weight:700}
+ .pub{color:#86efac;font-weight:700} .priv{color:#fbbf24;font-weight:700} .rm{color:#f87171;font-weight:700}
  .tid{font-family:monospace;color:#7dd3fc;white-space:nowrap}
+ .diagram{background:#0e1a2e;border:1px solid #22324d;border-radius:12px;padding:16px;margin:12px 0}
+ .repo{border-radius:10px;padding:10px 14px;margin:8px 0;border:1px solid}
+ .ra{background:#0e2a1f;border-color:#14532d} .rb{background:#2a2210;border-color:#78510f} .rd{background:#2a1416;border-color:#7f1d1d}
  ul{margin:6px 0;padding-left:20px} li{margin:3px 0}
 </style></head><body><div class="w">
 
-<h1>🔓 公開引擎 Repo 拆分計劃 — <code>tech-rebalance-pub</code></h1>
-<p class="sub">私有 repo 原樣續跑 live；另開純碼公開 repo，Repo B 免 token 安裝引擎 · 2026-06-04</p>
-<span class="badge">狀態：設計提案</span><span class="badge">私有 repo 不動、live 不停</span><span class="badge">最高原則：零個資外洩</span>
+<h1>🏗️ 引擎住 pub・私有純當 Repo B <span style="font-size:15px;color:#93a4bd">拆分計劃 v2（修正模型）</span></h1>
+<p class="sub">引擎碼移到公開 repo；私有 tech-rebalance 變成純 Repo B；tech-rebalance-data 廢棄 · 2026-06-04</p>
+<span class="badge">狀態：設計提案 v2</span><span class="badge">私有 = Repo B（保留金鑰/資料）</span><span class="badge">引擎住 public</span>
+
+<div class="box bad"><b>v1 → v2 修正（你的更正）：</b>v1 誤把 <code>tech-rebalance</code> 當「引擎來源」、<code>tech-rebalance-data</code> 當「Repo B」。
+ 正確是：<b><code>tech-rebalance</code> 本身就是 Repo B</b>（已含 accounts.json + data + 金鑰 + live workflow）。
+ 引擎碼<b>搬到</b> <code>tech-rebalance-pub</code> 並在那裡開發；私有以後只裝引擎、不含引擎碼。
+ <code>tech-rebalance-data</code> 的角色被私有涵蓋 → <b>多餘，廢棄</b>。鏡像/安全掃描機制 → <b>退役</b>（引擎直接住 pub，不再從私有過濾鏡像）。</div>
 
 <div class="toc">
- <a href="#s1">1 目標</a><a href="#s2">2 兩 repo 職責</a><a href="#s3">3 公開子集 ★</a><a href="#s4">4 同步機制</a>
- <a href="#s5">5 安全防線 ★</a><a href="#s6">6 對 Repo B/GUI 的影響</a><a href="#s7">7 分階段</a><a href="#s8">8 測試矩陣 ★</a>
+ <a href="#s1">1 三 repo 職責</a><a href="#s2">2 現況→目標</a><a href="#s3">3 遷移分階段 ★</a>
+ <a href="#s4">4 廢棄 data repo</a><a href="#s5">5 退役鏡像</a><a href="#s6">6 GUI</a><a href="#s7">7 測試矩陣 ★</a><a href="#s8">8 風險</a>
 </div>
 
-<h2 id="s1">1. 目標與動機</h2>
-<p>現在引擎是 <b>private</b>，Repo B 要 <code>pip install</code> 它得放一個 PAT（<code>ENGINE_INSTALL_TOKEN</code>），或用 vendored wheel（要手動換檔）。兩者都麻煩。</p>
-<div class="box good"><b>新做法：</b>不動現有 private repo（它有金鑰、live 帳戶、資料，繼續跑）。
- <b>另開一個純碼的 <code>itemhsu/tech-rebalance-pub</code>（public）</b>，把「需要公開的引擎碼」鏡像過去。
- Repo B 直接 <code>pip install git+https://github.com/itemhsu/tech-rebalance-pub@v1.0.6</code> ——<b>免 token、免 vendored wheel</b>。</div>
-
-<h2 id="s2">2. 兩 repo 職責</h2>
-<table><thead><tr><th></th><th class="priv">tech-rebalance（private，現狀）</th><th class="pub">tech-rebalance-pub（public，新）</th></tr></thead><tbody>
- <tr><td>內容</td><td>引擎碼 + accounts.json + data/{id} + 金鑰 + live workflow</td><td><b>只有引擎碼 + 資產 + 打包/發版 CI</b></td></tr>
- <tr><td>金鑰/個資</td><td>有（Secrets、帳戶資料）</td><td><b>永遠沒有</b></td></tr>
- <tr><td>角色</td><td>① 你現在的 live 系統（不動）② 引擎碼的<b>來源真身</b></td><td>引擎碼的<b>公開鏡像</b>，給所有 Repo B 安裝</td></tr>
- <tr><td>誰改</td><td>你在這裡開發引擎</td><td>唯讀鏡像，由 private 自動推送</td></tr>
- <tr><td>發版</td><td>打 tag</td><td>收到鏡像 → 建 wheel + manifest + Release</td></tr>
-</tbody></table>
-<div class="box warn">引擎碼的<b>單一事實來源仍是 private repo</b>；pub 只是「過濾掉個資後的公開鏡像」。你照常在 private 開發，發版時自動同步到 pub。</div>
-
-<h2 id="s3">3. 公開子集 vs 絕不公開 ★（檔案級白名單）</h2>
-<div class="box bad"><b>關鍵風險：</b><code>data/</code> 混了「引擎參考資料」（universe.json/shares — 可公開）與「帳戶狀態」（data/1、data/3 — 真實持倉，<b>絕不可公開</b>）。
- 所以必須用<b>白名單（只複製這些），不可用黑名單</b>（漏列就外洩）。</div>
-<table><thead><tr><th class="pub">✅ 公開（白名單）</th><th class="priv">⛔ 絕不公開</th></tr></thead><tbody>
- <tr><td>根層引擎模組：<code>runner.py run_account.py trader.py portfolio.py market_cap.py trade_log.py logger.py dashboard.py email_report.py harvest.py market_state.py universe.py</code></td><td><code>accounts.json</code>（帳戶設定）</td></tr>
- <tr><td><code>engine/ brokers/ strategies/ schemas/</code></td><td><code>data/1/ data/3/ data/99/</code>（帳戶 state/history/events）</td></tr>
- <tr><td><code>data/universe.json</code>、<code>data/shares_outstanding.json</code>、<code>data/__init__.py</code></td><td><code>data/portfolio_state*.json</code>、<code>data/email_send_log.jsonl</code>、<code>data/benchmark_365_cache.json</code></td></tr>
- <tr><td><code>scripts/</code>（gen_manifest / schema_compat / ci_commit_push …）</td><td><code>d2p2t6/data/ weekly_top10/data/ mom_6m_t20/ top9psq/</code></td></tr>
- <tr><td><code>pyproject.toml requirements.txt</code>、<code>tests/</code>、<code>examples/repo-b-template/</code></td><td><code>.env</code></td></tr>
- <tr><td><code>.github/workflows/release.yml</code>、<code>compat_ci.yml</code></td><td><code>.github/workflows/daily_all_accounts.yml harvest.yml email_watchdog.yml test_email.yml tradier_smoke.yml</code>（綁金鑰的 live workflow）</td></tr>
- <tr><td>公開版 <code>README.md</code></td><td><code>backtest_anchor/ design/ docs/ legacy_workflows/ build/ *.egg-info/</code>（研究/草稿，預設不公開）</td></tr>
+<h2 id="s1">1. 三 repo 職責（最終）</h2>
+<div class="diagram">
+ <div class="repo ra"><b class="pub">tech-rebalance-pub（public）= 引擎</b><br>
+   引擎碼 + 資產 + 打包/發版 CI。<b>在這裡開發引擎、打 tag 發版</b>（wheel + manifest Release）。無金鑰、無帳戶資料。</div>
+ <div class="arrow" style="text-align:center;color:#7dd3fc">▲ private 用 pip install git+…pub@vX 安裝（公開、免 token）</div>
+ <div class="repo rb"><b class="priv">tech-rebalance（private）= Repo B（你的 live 系統）</b><br>
+   <code>accounts.json</code> + <code>data/{id}</code> + Secrets（金鑰保留）+ 薄 workflow（裝 pub 引擎 → run-account → commit data）。
+   <b>不再含引擎碼</b>（搬到 pub 後移除）。</div>
+ <div class="repo rd"><b class="rm">tech-rebalance-data = 廢棄</b><br>
+   P3 臨時建的重複 Repo B（vendored wheel）。角色已被 tech-rebalance 涵蓋 → 封存/刪除。</div>
+</div>
+<table><thead><tr><th>Repo</th><th>內容</th><th>金鑰</th><th>誰開發</th></tr></thead><tbody>
+ <tr><td class="pub">tech-rebalance-pub</td><td>引擎碼 + 資產 + release CI</td><td>無</td><td><b>引擎在這裡開發</b></td></tr>
+ <tr><td class="priv">tech-rebalance（private）</td><td>設定 + 資料 + 薄 workflow</td><td>有（保留）</td><td>你改 accounts/排程</td></tr>
+ <tr><td class="rm">tech-rebalance-data</td><td>—</td><td>—</td><td><b>廢棄</b></td></tr>
 </tbody></table>
 
-<h2 id="s4">4. 同步機制（private → pub，單向鏡像）</h2>
-<p>private repo 新增 <code>.github/workflows/publish_pub.yml</code>，在 <code>v*</code> tag 觸發：</p>
-<pre>1. checkout private
-2. 依「白名單」把允許的路徑複製到乾淨的 /pub_tree
-3. ★ 安全掃描：/pub_tree 內不得出現任何禁列檔（accounts.json、data/*/portfolio_state、
-   .env、live workflow…）→ 命中即 fail，絕不推送
-4. 用 PUB_PUSH_TOKEN（fine-grained PAT，只給 tech-rebalance-pub 寫權限）
-   force-push /pub_tree 到 tech-rebalance-pub，並打同名 tag
-5. pub 的 release.yml（被 tag 觸發）建 wheel + manifest + Release</pre>
-<div class="box good">白名單以一份 <code>scripts/pub_allowlist.txt</code> 為單一事實來源；複製與掃描都讀它，避免兩處不一致。</div>
+<h2 id="s2">2. 現況 → 目標</h2>
+<table><thead><tr><th></th><th>現況</th><th>目標</th></tr></thead><tbody>
+ <tr><td>引擎碼住哪</td><td>private tech-rebalance（也跑 live）</td><td class="pub">public tech-rebalance-pub（已推上、已發 v1.0.6）</td></tr>
+ <tr><td>private 角色</td><td>引擎 + Repo B 混在一起</td><td class="priv">純 Repo B：裝 pub 引擎來跑</td></tr>
+ <tr><td>private 的 daily workflow</td><td>跑自己 repo 的 runner.py</td><td>薄殼：<code>pip install …pub@vX</code> → <code>run-account --all</code></td></tr>
+ <tr><td>引擎發版</td><td>private 打 tag</td><td class="pub">pub 打 tag（release CI 已就緒）</td></tr>
+ <tr><td>tech-rebalance-data</td><td>paper 測試中</td><td class="rm">廢棄</td></tr>
+</tbody></table>
 
-<h2 id="s5">5. 安全防線 ★（零個資外洩）</h2>
+<h2 id="s3">3. 遷移分階段 ★（private 是 live，謹慎）</h2>
+<div class="box warn">最大風險：<code>tech-rebalance</code> 是<b>正在跑真錢</b>的系統（#3 LIVE）。把它從「跑自己的引擎碼」改成「裝 pub 引擎來跑」是核心改動，必須<b>平行驗證再切</b>。</div>
+<table><thead><tr><th>階段</th><th>內容</th><th>驗收</th></tr></thead><tbody>
+ <tr><td>T0 ✅已完成</td><td>引擎已推上 pub、發 v1.0.6、免 token 安裝驗證過</td><td>pip install git+…pub@v1.0.6 可裝、CI 綠</td></tr>
+ <tr><td>T1</td><td>引擎開發<b>移到 pub</b>：以後在 pub 改碼、打 tag；private 不再改引擎碼（凍結）</td><td>pub 為唯一引擎來源；新版從 pub 發</td></tr>
+ <tr><td>T2</td><td>private 新增<b>並行薄 workflow</b> <code>daily_pub.yml</code>（裝 pub 引擎跑），與現有 <code>daily_all_accounts.yml</code> <b>並存</b>，先 dry-run</td><td>daily_pub dry-run 選股/NAV 與現有一致數日</td></tr>
+ <tr><td>T3</td><td>對帳通過 → private 切換：停用舊 <code>daily_all_accounts.yml</code>，啟用 <code>daily_pub.yml</code> 真跑</td><td>真錢用薄殼跑穩數日</td></tr>
+ <tr><td>T4</td><td>private 移除引擎碼（runner/engine/brokers/strategies/schemas…），只留 accounts.json + data + 薄 workflow + data/universe·shares（或也靠 pub 套件內附）</td><td>private 變純 Repo B；全綠</td></tr>
+ <tr><td>T5</td><td>廢棄 <code>tech-rebalance-data</code>（§4）；GUI 指向 pub（§6）</td><td>單一 private Repo B + 單一 public 引擎</td></tr>
+</tbody></table>
+<div class="box good"><b>關鍵安全設計：T2 並行</b>——新薄殼 workflow 與舊 workflow 並存、先 dry-run 對帳，<b>確認一致才停舊啟新</b>。任何一步出錯，舊 workflow 還在，立即回退。</div>
+
+<h2 id="s4">4. 廢棄 tech-rebalance-data</h2>
 <ul>
- <li><b>白名單為主</b>：只複製明列路徑；新增檔案預設<b>不</b>進 pub（漏列只會少東西，不會外洩）。</li>
- <li><b>推送前掃描</b>：/pub_tree 比對禁列 glob（<code>accounts.json</code>、<code>**/portfolio_state*.json</code>、<code>**/trade_events.jsonl</code>、<code>.env</code>、<code>**/data/[0-9]*/**</code>、live workflow 名）→ 命中即中止。</li>
- <li><b>內容掃描</b>：再 grep 一次疑似金鑰/email（<code>ALPACA</code>、<code>@gmail</code>、PAT 樣式）→ 命中即中止。</li>
- <li><b>pub 端 CI 守門</b>：pub repo 自己有測試 <span class="tid">CT-PUB-CLEAN</span>，每次 push 掃自己有沒有禁列檔（雙保險，萬一鏡像出錯也擋）。</li>
- <li><b>Token 範圍最小</b>：<code>PUB_PUSH_TOKEN</code> 只給 <code>tech-rebalance-pub</code> 的 Contents:write，不碰 private repo、不碰其他。</li>
- <li><b>pub 設 branch protection</b>：唯讀鏡像，禁止人工直接 push（只接受 publish workflow）。</li>
+ <li><b>為何</b>：它是 P3 用 vendored wheel 臨時建的重複 Repo B；角色已被 <code>tech-rebalance</code>（private）涵蓋。</li>
+ <li><b>做法</b>：① GitHub → Settings → <b>Archive</b>（封存唯讀）或先停用其 Actions；② 確認 private 薄殼跑通後，<b>由你親手刪除</b>（永久刪資料的動作我不代做）。</li>
+ <li>它的 paper 對帳價值已達成（驗證了「裝引擎 → 跑 → 下單」整條鏈路），可功成身退。</li>
 </ul>
 
-<h2 id="s6">6. 對 Repo B / GUI 的影響（變簡單）</h2>
-<table><thead><tr><th>項目</th><th>現在</th><th>改後</th></tr></thead><tbody>
- <tr><td>Repo B 安裝引擎</td><td>vendored wheel（手動換）或 PAT</td><td class="pub"><code>pip install git+…/tech-rebalance-pub@vX</code>（公開、免 token、免 wheel）</td></tr>
- <tr><td><code>ENGINE_INSTALL_TOKEN</code></td><td>需要（私有引擎）</td><td class="pub"><b>完全不需要</b></td></tr>
- <tr><td>更新引擎</td><td>下載新 wheel + 換檔名</td><td>改一行 <code>@vX → @vY</code></td></tr>
- <tr><td>GUI 服務（manifest/engine_release/provisioner）</td><td>指向 private（要 token）</td><td>指向 <code>tech-rebalance-pub</code>（公開）</td></tr>
- <tr><td>vendored wheel 方式</td><td>tech-rebalance-data 在用</td><td>退場（改 git+ 安裝）</td></tr>
+<h2 id="s5">5. 退役鏡像/安全掃描機制</h2>
+<p>v1 的 <code>build_pub_tree.py</code> + <code>pub_allowlist.txt</code> + 安全掃描是「私有→pub 過濾鏡像」用的。
+ 既然<b>引擎直接住 pub、在 pub 開發</b>，就不再需要持續鏡像。</p>
+<ul>
+ <li>它們已完成<b>一次性任務</b>：把乾淨的初始引擎碼種到 pub。</li>
+ <li>保留 <code>build_pub_tree.py</code> 當「一次性遷移工具」歷史紀錄即可；不接自動化、不再跑。</li>
+ <li>（若日後又想私有開發+鏡像，再啟用——但目前模型不需要。）</li>
+</ul>
+
+<h2 id="s6">6. 對 GUI 的影響</h2>
+<table><thead><tr><th>項目</th><th>改成</th></tr></thead><tbody>
+ <tr><td>引擎 repo 常數（engine_release/manifest/provisioner）</td><td class="pub"><code>itemhsu/tech-rebalance-pub</code>（公開、免 token）</td></tr>
+ <tr><td>provisioner 產的薄 workflow</td><td><code>pip install git+…pub@vX</code>（無 vendored wheel、無 token）</td></tr>
+ <tr><td>mode 偵測</td><td>private 切成純 Repo B 後 → GUI 顯示 repo_b 模式（vendor wheel 退場，改偵測薄 workflow 的 git+ 安裝行）</td></tr>
+ <tr><td>管理對象</td><td>GUI 管 <code>tech-rebalance</code>（private Repo B）；不再有 tech-rebalance-data</td></tr>
 </tbody></table>
 
-<h2 id="s7">7. 分階段（private 不動、live 不停）</h2>
-<table><thead><tr><th>階段</th><th>內容</th></tr></thead><tbody>
- <tr><td>S1</td><td>建 <code>scripts/pub_allowlist.txt</code> + <code>scripts/build_pub_tree.py</code>（複製白名單 + 安全掃描），本機驗證產出乾淨</td></tr>
- <tr><td>S2</td><td>手動建空的 public repo <code>tech-rebalance-pub</code> + 設 branch protection</td></tr>
- <tr><td>S3</td><td>設 <code>PUB_PUSH_TOKEN</code>（fine-grained，只給 pub 寫）→ 加 <code>publish_pub.yml</code></td></tr>
- <tr><td>S4</td><td>打一個 tag → 驗證 pub 收到乾淨鏡像 + 自動發 wheel/manifest Release</td></tr>
- <tr><td>S5</td><td>Repo B（tech-rebalance-data）daily.yml 改成 <code>pip install git+…pub@vX</code>，移除 vendored wheel</td></tr>
- <tr><td>S6</td><td>GUI 服務指向 pub（engine_release/manifest/provisioner 的 repo 常數）→ 出 DMG</td></tr>
-</tbody></table>
-<div class="box good">全程 <b>private repo 與你的 3 個 live 帳戶完全不動</b>；pub 是新增物，壞了也不影響 live。</div>
-
-<h2 id="s8">8. 測試矩陣 ★（完整）</h2>
-<p class="sub"><span style="color:#86efac">U</span>單元 <span style="color:#fbbf24">I</span>整合 <span style="color:#7dd3fc">C</span>CI/E2E。安全類為最高優先。</p>
-<h3>A. 白名單 / 建樹（build_pub_tree）</h3>
+<h2 id="s7">7. 測試矩陣 ★</h2>
 <table><tbody>
- <tr><td>U</td><td class="tid">PT-01 copies_allowlisted</td><td>白名單內的檔（runner.py/engine/…）都被複製進 pub_tree</td></tr>
- <tr><td>U</td><td class="tid">PT-02 data_filelevel</td><td>data/ 只複製 universe.json+shares+__init__；data/1、data/3 <b>不</b>複製</td></tr>
- <tr><td>U</td><td class="tid">PT-03 excludes_unlisted</td><td>未列檔（accounts.json、live workflow）不在 pub_tree</td></tr>
- <tr><td>U</td><td class="tid">PT-04 allowlist_single_source</td><td>複製與掃描讀同一份 pub_allowlist.txt</td></tr>
-</tbody></table>
-<h3>B. 安全掃描（★最高優先）</h3>
-<table><tbody>
- <tr><td>U</td><td class="tid">SEC-01 reject_accounts_json</td><td>pub_tree 含 accounts.json → 掃描 fail（中止推送）</td></tr>
- <tr><td>U</td><td class="tid">SEC-02 reject_state_files</td><td>含 <code>**/portfolio_state*.json</code> / <code>trade_events.jsonl</code> → fail</td></tr>
- <tr><td>U</td><td class="tid">SEC-03 reject_account_dirs</td><td>含 <code>data/3/...</code>、<code>d2p2t6/data/...</code> → fail</td></tr>
- <tr><td>U</td><td class="tid">SEC-04 reject_env_and_live_wf</td><td>含 .env 或 daily_all_accounts.yml → fail</td></tr>
- <tr><td>U</td><td class="tid">SEC-05 content_scan_keys</td><td>內容出現 ALPACA 金鑰樣式 / @gmail / PAT 樣式 → fail</td></tr>
- <tr><td>U</td><td class="tid">SEC-06 clean_tree_passes</td><td>正確的白名單樹 → 掃描通過</td></tr>
-</tbody></table>
-<h3>C. 鏡像同步 / 發版（publish_pub）</h3>
-<table><tbody>
- <tr><td>I</td><td class="tid">PUB-01 push_args</td><td>push 目標是 tech-rebalance-pub、用 PUB_PUSH_TOKEN、打對的 tag（mock git/gh）</td></tr>
- <tr><td>I</td><td class="tid">PUB-02 abort_on_scan_fail</td><td>掃描失敗 → 不執行 push（先掃再推）</td></tr>
- <tr><td>C</td><td class="tid">PUB-03 pub_release_assets</td><td>tag 後 pub Release 含 wheel + manifest（沿用 release.yml 驗證）</td></tr>
- <tr><td>C</td><td class="tid">CT-PUB-CLEAN</td><td>pub repo 自身 CI：掃自己無禁列檔（雙保險）</td></tr>
-</tbody></table>
-<h3>D. 安裝 / 端到端</h3>
-<table><tbody>
- <tr><td>C</td><td class="tid">INST-01 pip_from_pub_no_token</td><td>乾淨 venv <code>pip install git+…pub@vX</code>（無 token）→ run-account --help 可跑、資產定位</td></tr>
- <tr><td>C</td><td class="tid">INST-02 repob_dryrun</td><td>tech-rebalance-data 改 git+ 安裝後 dry-run 綠燈、選股與舊一致</td></tr>
-</tbody></table>
-<h3>E. GUI 指向 pub</h3>
-<table><tbody>
- <tr><td>U</td><td class="tid">GUI-01 services_target_pub</td><td>engine_release/manifest/provisioner 的引擎 repo 常數＝tech-rebalance-pub</td></tr>
- <tr><td>U</td><td class="tid">GUI-02 no_token_path</td><td>provisioner 產的 daily.yml 用 git+ 安裝、不含 ENGINE_INSTALL_TOKEN</td></tr>
- <tr><td>G</td><td class="tid">GUI-03 headless</td><td>GUI 全套件 offscreen 無回歸</td></tr>
+ <tr><td class="tid">PUB-ENG-01</td><td>pub 為引擎來源：pub CI（compat + release）綠；pip install git+…pub@vX 免 token 可裝（✅ 已驗）</td></tr>
+ <tr><td class="tid">RB-PARALLEL-02</td><td>private 新薄 workflow dry-run：選股/NAV/計畫下單與現有 daily_all_accounts 逐欄一致（連續 3 交易日）</td></tr>
+ <tr><td class="tid">RB-CUTOVER-03</td><td>切換後真跑：真錢帳戶 NAV/持倉與切換前連續、無重複單、報告日期=今天</td></tr>
+ <tr><td class="tid">RB-PURE-04</td><td>private 移除引擎碼後：薄 workflow 仍跑通（引擎全來自 pub 套件）；private 不含 runner.py/engine/</td></tr>
+ <tr><td class="tid">DATA-RETIRE-05</td><td>tech-rebalance-data 封存後：無排程、無新 commit；GUI 不再參照它</td></tr>
+ <tr><td class="tid">GUI-PUB-06</td><td>GUI 服務指向 pub；provisioner 產的 daily.yml 用 git+ 安裝、不含 token；headless 無回歸</td></tr>
+ <tr><td class="tid">ROLLBACK-07</td><td>切換期間舊 workflow 可一鍵重啟（回退路徑可用）</td></tr>
+ <tr><td class="tid">IDEMPOTENT-08</td><td>新舊 workflow 並存時不會雙重下單（冪等守門 + dry-run 不 commit 已修）</td></tr>
 </tbody></table>
 
-<div class="box good"><b>一句話：</b>不動 private（live 不停），另開純碼 public 鏡像，用<b>白名單複製 + 雙重安全掃描 + pub 端 CI 守門</b>確保零個資外洩；
- Repo B 與 GUI 從此免 token、免 vendored wheel。最關鍵防線是 §5 與測試 B 類（安全掃描）——寧可少推檔，不可外洩一個位元組。</div>
+<h2 id="s8">8. 風險與原則</h2>
+<div class="box bad"><ul>
+ <li><b>private 是真錢系統</b>：T2 並行 dry-run 對帳通過才切（T3）；舊 workflow 切換期間保留可回退。</li>
+ <li><b>引擎來源移轉</b>：T1 起只在 pub 改引擎；private 引擎碼凍結，避免雙頭開發分歧。</li>
+ <li><b>廢棄 = 先封存後刪</b>：tech-rebalance-data 先 Archive，確認新薄殼跑穩，硬刪由你親手。</li>
+ <li><b>金鑰全程你親手</b>：private 的 Secrets 保留不動；切換不碰金鑰值。</li>
+</ul></div>
+
+<div class="box good"><b>一句話：</b><code>tech-rebalance</code>（private）本來就是 Repo B；把引擎搬到公開的 <code>tech-rebalance-pub</code>、私有改成「裝 pub 引擎來跑」，
+ <code>tech-rebalance-data</code> 因角色重複而廢棄，鏡像機制退役。核心是 T2 並行對帳——真錢系統<b>先並存、對帳一致、再切換</b>。</div>
 
 </div></body></html>
