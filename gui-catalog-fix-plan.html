@@ -2,360 +2,263 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="utf-8">
-<title>GUI 資料來源修正計劃</title>
+<title>GUI 架構修正計劃（定稿）</title>
 <style>
-  body{font-family:-apple-system,sans-serif;max-width:1000px;margin:0 auto;padding:24px;background:#0f172a;color:#e2e8f0;line-height:1.7}
-  h1{font-size:1.8rem;color:#f8fafc;border-bottom:2px solid #334155;padding-bottom:12px}
-  h2{font-size:1.3rem;color:#7dd3fc;margin-top:2rem}
-  h3{font-size:1.05rem;color:#86efac;margin-top:1.5rem}
+  body{font-family:-apple-system,sans-serif;max-width:1040px;margin:0 auto;padding:24px;background:#0f172a;color:#e2e8f0;line-height:1.7}
+  h1{font-size:1.9rem;color:#f8fafc;border-bottom:2px solid #334155;padding-bottom:12px}
+  h2{font-size:1.35rem;color:#7dd3fc;margin-top:2.2rem}
+  h3{font-size:1.08rem;color:#86efac;margin-top:1.6rem}
+  h4{color:#fbbf24;margin:1rem 0 .3rem}
   .box{background:#1e293b;border-radius:8px;padding:16px 20px;margin:12px 0}
   .bad{border-left:4px solid #f87171}
   .good{border-left:4px solid #34d399}
   .warn{border-left:4px solid #fbbf24}
   .info{border-left:4px solid #60a5fa}
   code{background:#0f172a;color:#7dd3fc;padding:2px 6px;border-radius:4px;font-size:.9em}
-  pre{background:#0f172a;padding:16px;border-radius:6px;overflow-x:auto;font-size:.85em;line-height:1.5;color:#cbd5e1}
+  pre{background:#0f172a;padding:16px;border-radius:6px;overflow-x:auto;font-size:.84em;line-height:1.5;color:#cbd5e1}
   table{width:100%;border-collapse:collapse;margin:12px 0}
   th{background:#334155;padding:8px 12px;text-align:left;font-size:.85rem}
   td{border-bottom:1px solid #1e293b;padding:8px 12px;font-size:.85rem;vertical-align:top}
   tr:hover td{background:#1e293b}
-  .tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:.75rem;font-weight:600;margin:1px}
+  .tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:.74rem;font-weight:600;margin:1px}
   .t-bug{background:#7f1d1d;color:#fca5a5}
   .t-arch{background:#1e3a5f;color:#93c5fd}
   .t-test{background:#3b0764;color:#d8b4fe}
-  .t-feat{background:#14532d;color:#86efac}
   .ok{color:#34d399;font-weight:700}
   .ng{color:#f87171;font-weight:700}
-  .arrow{color:#fbbf24}
-  h4{color:#fbbf24;margin-top:1rem;margin-bottom:.3rem}
+  .toc{background:#1e293b;border-radius:8px;padding:14px 22px;margin:14px 0}
+  .toc a{color:#7dd3fc;text-decoration:none}
+  .pill{display:inline-block;background:#334155;border-radius:12px;padding:1px 10px;font-size:.72rem;color:#cbd5e1;margin-left:6px}
 </style>
 </head>
 <body>
 
-<h1>🔧 GUI 資料來源修正計劃</h1>
-<p style="color:#94a3b8">版本 1.0 · 2026-06-05 · 根因：GUI 從錯誤來源讀取公開資源</p>
+<h1>🏛️ GUI 架構修正計劃（定稿 v2.0）</h1>
+<p style="color:#94a3b8">2026-06-05 · manifest 驅動的單一事實來源架構 · 取代逐檔 ad-hoc 修復</p>
 
-<!-- ═══════════════════════ 架構確認 ═══════════════════════ -->
-<h2>一、架構確認（Repo B 的邊界）</h2>
+<div class="toc">
+<b>目錄</b>
+<a href="#a">一、架構原則</a>　·
+<a href="#b">二、現有錯誤</a>　·
+<a href="#c">三、三種 policy</a>　·
+<a href="#d">四、viewer 全共用</a>　·
+<a href="#e">五、manifest + templates</a>　·
+<a href="#f">六、三層驗證</a>　·
+<a href="#g">七、綠燈卡死解法</a>　·
+<a href="#h">八、修改清單</a>　·
+<a href="#i">九、測試計劃</a>
+</div>
+
+<!-- ════════════════ 一、架構原則 ════════════════ -->
+<h2 id="a">一、架構原則：資料歸屬</h2>
 
 <div class="box info">
-<b>Repo B（{user}/tech-rebalance，private）只包含用戶私有資料：</b>
-<pre>
-{user}/tech-rebalance/
-├── accounts.json          ← 用戶帳戶設定（唯一真正私有）
-├── data/{account_id}/     ← 每日交易狀態（自動產生）
-└── .github/workflows/daily.yml  ← 技術必要物，內容由引擎標準化
-</pre>
-<b>pub engine（tech-rebalance-pub，public）擁有所有公開定義：</b>
+<b>唯一規則：每個檔案放在「誰會讀它」決定的位置；公開資源永遠住 pub engine。</b>
+<table>
+  <tr><th>歸屬</th><th>內容</th><th>誰擁有</th></tr>
+  <tr><td><b>Repo B</b><br><span class="pill">private</span></td>
+      <td>accounts.json（用戶帳戶）· data/{id}/（每日狀態）· workflow stub</td>
+      <td>各用戶 {user}/tech-rebalance</td></tr>
+  <tr><td><b>Dashboard</b><br><span class="pill">public</span></td>
+      <td><b>只有</b>個人資料 JSON（NAV/持倉，daily workflow 產生）</td>
+      <td>各用戶 {user}/tech-rebalance-dashboard</td></tr>
+  <tr><td><b>pub engine</b><br><span class="pill">public</span></td>
+      <td>brokers/ · strategies/ · schemas/ · manifest.json · <b>HTML viewer</b> · repo_template.json · templates/</td>
+      <td>itemhsu/tech-rebalance-pub（單一事實來源）</td></tr>
+</table>
+</div>
+
+<!-- ════════════════ 二、現有錯誤 ════════════════ -->
+<h2 id="b">二、現有錯誤（GUI 從錯誤來源讀公開資源）</h2>
+<table>
+  <tr><th>#</th><th>位置</th><th>錯誤</th><th>後果</th></tr>
+  <tr><td>E-01</td><td><code>catalog.list_brokers()</code></td><td>讀 Repo B <code>brokers/</code></td><td>薄殼用戶券商下拉空白</td></tr>
+  <tr><td>E-02</td><td><code>catalog.list_strategies()</code></td><td>讀 Repo B <code>strategies/</code></td><td>策略下拉空白</td></tr>
+  <tr><td>E-03</td><td><code>catalog.broker_spec()</code></td><td>讀 Repo B <code>brokers/alpaca.json</code></td><td>Alpaca 金鑰只剩 1 格</td></tr>
+  <tr><td>E-04</td><td><code>overview._refresh_drift_banner()</code></td><td>讀 Repo B <code>schemas/</code></td><td>漂移偵測失效</td></tr>
+  <tr><td>E-05</td><td><code>schedule_view</code></td><td>硬寫 workflow 名</td><td>排程分頁空白</td></tr>
+  <tr><td>E-06</td><td>provisioner</td><td>沒推 test_email.yml</td><td>測試發信 404</td></tr>
+  <tr><td>E-07</td><td><code>AccountDialog._save()</code></td><td>連線失敗仍儲存</td><td>存進壞帳戶</td></tr>
+  <tr><td>E-08</td><td>dashboard repo</td><td>缺 accounts.json / mvp_dashboard.html</td><td>Dashboard 404</td></tr>
+</table>
+
+<!-- ════════════════ 三、policy ════════════════ -->
+<h2 id="c">三、三種 policy（檔案處理規則）</h2>
+<div class="box">
+<table>
+  <tr><th>policy</th><th>缺檔時</th><th>已存在時</th><th>用途</th></tr>
+  <tr><td><code>render</code></td><td>從 templates/ 產生（代入版本）</td><td><b>覆蓋</b>（版本要更新）</td><td>daily.yml · test_email.yml</td></tr>
+  <tr><td><code>placeholder</code></td><td>建空檔/佔位</td><td>不動</td><td>data/.gitkeep · dashboard 首檔</td></tr>
+  <tr><td><code>protected</code></td><td><b class="ng">不建</b></td><td><b class="ng">不碰</b></td><td>accounts.json · data/{id}/</td></tr>
+</table>
+<b>policy 是 manifest 的欄位（metadata），不是實體目錄。</b>
+檔案實體位置由功能決定（workflow 在 .github/workflows/、accounts.json 在根）。
+</div>
+
+<!-- ════════════════ 四、viewer 共用 ════════════════ -->
+<h2 id="d">四、HTML viewer 全共用（消滅複製）</h2>
+<div class="box good">
+<b>viewer 放 itemhsu 一份，改一次全體生效；用戶 repo 只放資料。</b>
+<table>
+  <tr><th>viewer</th><th>放哪</th><th>怎麼讀用戶資料</th></tr>
+  <tr><td>momentum/（回測）</td><td>itemhsu（共用 viewer + 共用資料）</td><td>讀 pub engine results/（資料也共用）</td></tr>
+  <tr><td>mvp_dashboard.html（持倉）</td><td>itemhsu（共用 viewer）</td><td><code>?user=lyf1228</code> → 抓該用戶 dashboard repo 的 raw JSON（CORS OK）</td></tr>
+</table>
+用戶 dashboard repo <b>不放任何 HTML</b>，只放每日產生的個人資料 JSON。
+GUI 連結：持倉 = <code>itemhsu.github.io/…/mvp_dashboard.html?user={owner}&a=1</code>；回測 = <code>itemhsu.github.io/…/momentum/</code>。
+</div>
+
+<!-- ════════════════ 五、manifest ════════════════ -->
+<h2 id="e">五、單一事實來源：repo_template.json + templates/</h2>
+<div class="box">
 <pre>
 tech-rebalance-pub/
-├── brokers/alpaca.json     ← 券商規格
-├── brokers/tradier.json
-├── strategies/*.json       ← 策略定義
-├── schemas/*.json          ← 資料 schema
-└── manifest.json           ← 版本索引（含 brokers/strategies 清單）
+├── repo_template.json                  ← path → policy 對照（唯一）
+├── templates/
+│   ├── daily.yml                       ← render 來源（含 {version}）
+│   └── test_email.yml                  ← render 來源（reusable workflow stub）
+└── schemas/repo-template-schema-v1.json
 </pre>
+
+<h4>repo_template.json</h4>
+<pre>
+{
+  "version": "1",
+  "repo_b": [
+    {"path": ".github/workflows/daily.yml",      "policy": "render", "src": "templates/daily.yml"},
+    {"path": ".github/workflows/test_email.yml", "policy": "render", "src": "templates/test_email.yml"},
+    {"path": "accounts.json",                    "policy": "protected"},
+    {"path": "data/.gitkeep",                    "policy": "placeholder"}
+  ],
+  "dashboard": [
+    {"path": ".nojekyll",     "policy": "placeholder"},
+    {"path": "index.html",    "policy": "placeholder"},
+    {"path": "accounts.json", "policy": "placeholder"}
+  ]
+}
+</pre>
+
+<h4>GUI 修復 = 讀 manifest，套 policy（一個通用迴圈，邏輯固定）</h4>
+<pre>
+def sync(repo, section, manifest, version):
+    for e in manifest[section]:
+        p = e["policy"]
+        if p == "render":
+            body = fetch_pub(e["src"]).replace("{version}", version)
+            put(repo, e["path"], body)              # 覆蓋
+        elif p == "placeholder":
+            if not exists(repo, e["path"]):
+                put(repo, e["path"], _seed(e["path"]))   # 缺才建
+        elif p == "protected":
+            pass                                    # 永不碰
+        # 未知 policy → 跳過（安全預設，不當機）
+</pre>
+<b>新增檔案 = 在 repo_template.json 加一行（+ render 的話在 templates/ 放來源）。GUI 程式碼一行不改。</b>
+建立（build）與修復（repair）共用這個 sync —— 建立=全套、修復=補缺。
 </div>
 
-<!-- ═══════════════════════ 現有錯誤 ═══════════════════════ -->
-<h2>二、現有錯誤（GUI 從 Repo B 讀公開資源）</h2>
+<!-- ════════════════ 六、驗證 ════════════════ -->
+<h2 id="f">六、三層驗證（守門，防止填錯/漏填）</h2>
 
-<table>
-  <tr><th>#</th><th>位置</th><th>錯誤呼叫</th><th>後果</th><th>根因</th></tr>
-  <tr>
-    <td>E-01</td>
-    <td><code>catalog.list_brokers()</code></td>
-    <td><code>store.list_dir("brokers")</code><br>→ GET Repo B <code>/brokers/</code></td>
-    <td>薄殼用戶 Repo B 沒有 <code>brokers/</code> → 回空 → 券商下拉空白</td>
-    <td><span class="tag t-arch">架構錯誤</span></td>
-  </tr>
-  <tr>
-    <td>E-02</td>
-    <td><code>catalog.list_strategies()</code></td>
-    <td><code>store.list_dir("strategies")</code><br>→ GET Repo B <code>/strategies/</code></td>
-    <td>薄殼用戶 → 策略下拉空白</td>
-    <td><span class="tag t-arch">架構錯誤</span></td>
-  </tr>
-  <tr>
-    <td>E-03</td>
-    <td><code>catalog.broker_spec()</code></td>
-    <td><code>store.read_json("brokers/alpaca.json")</code><br>→ GET Repo B <code>/brokers/alpaca.json</code></td>
-    <td>薄殼用戶 → spec={} → Alpaca 只有 1 個金鑰格（或 0 個）</td>
-    <td><span class="tag t-arch">架構錯誤</span></td>
-  </tr>
-  <tr>
-    <td>E-04</td>
-    <td><code>overview._refresh_drift_banner()</code></td>
-    <td><code>make_store(repo_slug).list_dir("schemas")</code><br>→ GET Repo B <code>/schemas/</code></td>
-    <td>薄殼用戶 → 版本漂移偵測永遠回 None（讀不到）</td>
-    <td><span class="tag t-arch">架構錯誤</span></td>
-  </tr>
-</table>
-
-<!-- ═══════════════════════ 其他 Bug ═══════════════════════ -->
-<h2>三、其他同批修正</h2>
-
-<table>
-  <tr><th>#</th><th>Bug</th><th>根因</th><th>修法</th></tr>
-  <tr>
-    <td>E-05</td>
-    <td>排程分頁空白</td>
-    <td><code>_WORKFLOWS</code> 硬寫 <code>daily_all_accounts.yml</code> 和 <code>momentum_tool_v2.yml</code>；薄殼 Repo B 只有 <code>daily.yml</code></td>
-    <td>改成動態掃 <code>.github/workflows/*.yml</code></td>
-  </tr>
-  <tr>
-    <td>E-06</td>
-    <td>測試發信「test_email.yml not found」</td>
-    <td>精靈建立時沒有推 <code>test_email.yml</code> 到 Repo B</td>
-    <td>provisioner 加入 <code>test_email.yml</code>；「修復並更新」補推給現有用戶</td>
-  </tr>
-  <tr>
-    <td>E-07</td>
-    <td>連線測試失敗仍儲存帳戶</td>
-    <td><code>AccountDialog._save()</code> 測試失敗後繼續執行儲存</td>
-    <td>測試失敗 → return，不儲存，彈出明確錯誤</td>
-  </tr>
-  <tr>
-    <td>E-08</td>
-    <td>Dashboard <code>accounts.json</code> 404</td>
-    <td>舊版精靈建的 dashboard repo 沒有 <code>accounts.json</code></td>
-    <td>provisioner seed 補上；「修復並更新」補推給現有用戶</td>
-  </tr>
-</table>
-
-<!-- ═══════════════════════ 修改計劃 ═══════════════════════ -->
-<h2>四、修改計劃</h2>
-
-<h3>M-01：重寫 catalog.py — 公開資源全改讀 pub engine</h3>
+<h3>第一層：Schema（結構正確）</h3>
 <div class="box">
-<h4>修改前（錯誤）</h4>
-<pre>
-def list_brokers(self):
-    result = _stems(self.store.list_dir("brokers"), "broker-schema")  # ← 讀 Repo B
-    if result: return result
-    ...fallback...
-
-def list_strategies(self):
-    result = _stems(self.store.list_dir("strategies"), "schema")      # ← 讀 Repo B
-    if result: return result
-    ...fallback...
-
-def broker_spec(self, broker_id):
-    return self.store.read_json(f"brokers/{broker_id}.json")          # ← 讀 Repo B
-</pre>
-<h4>修改後（正確）</h4>
-<pre>
-def list_brokers(self):
-    m = self._effective_manifest()                   # pub engine manifest
-    return mf.brokers(m) if m else _FALLBACK_BROKERS
-
-def list_strategies(self):
-    m = self._effective_manifest()                   # pub engine manifest
-    return mf.strategies(m) if m else _FALLBACK_STRATEGIES
-
-def broker_spec(self, broker_id):
-    m = self._effective_manifest()                   # pub engine manifest
-    return (m.get("brokers") or {}).get(broker_id, {})
-
-def broker_environments(self, broker_id):
-    m = self._effective_manifest()
-    if m: return mf.broker_environments(m, broker_id)
-    return _FALLBACK_ENVS.get(broker_id, ["paper", "live"])
-</pre>
-<b>去掉所有 store.list_dir("brokers") / store.list_dir("strategies") / store.read_json("brokers/*.json")</b>
-</div>
-
-<h3>M-02：overview._refresh_drift_banner() — 改讀 pub engine 版本</h3>
-<div class="box">
-<h4>修改前</h4>
-<pre>files = make_store(self.repo_slug).list_dir("schemas")   # ← 讀 Repo B
-warning = compat.schema_drift_warning(files)</pre>
-<h4>修改後</h4>
-<pre>
-# schemas/ 在 pub engine，從 manifest 取引擎版本比對
-from admin_gui.services.catalog import Catalog
-cat = Catalog()   # 無 store，自動讀 pub manifest
-m = cat._effective_manifest()
-engine_version = (m or {}).get("data_schema") or (m or {}).get("engine_version")
-warning = compat.schema_drift_warning_from_version(engine_version)
-</pre>
-</div>
-
-<h3>M-03：schedule_view.py — 動態掃 workflow</h3>
-<div class="box">
-<pre>
-# 修改前（硬寫）
-_WORKFLOWS = [".github/workflows/daily_all_accounts.yml",
-              ".github/workflows/momentum_tool_v2.yml"]
-
-# 修改後（動態）
-def _list_workflows(self):
-    try:
-        names = self.store.list_dir(".github/workflows")
-        return [f".github/workflows/{n}" for n in names if n.endswith(".yml")]
-    except Exception:
-        return []
-</pre>
-</div>
-
-<h3>M-04：provisioner — 加入 test_email.yml 範本</h3>
-<div class="box">
-<pre>
-# build_template_files() 加入
-".github/workflows/test_email.yml": _TEST_EMAIL_YML.encode(),
-
-_TEST_EMAIL_YML = """name: Test Email
-on:
-  workflow_dispatch:
-jobs:
-  test-email:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with: {python-version: "3.11"}
-      - name: Install engine
-        run: pip install "tech-rebalance @ git+https://github.com/itemhsu/tech-rebalance-pub@{version}"
-      - name: Send test email
-        env:
-          EMAIL_SENDER:   ${{{{ secrets.EMAIL_SENDER }}}}
-          EMAIL_PASSWORD: ${{{{ secrets.EMAIL_PASSWORD }}}}
-        run: python -c "from email_report import send_test; send_test()"
-"""
-</pre>
-</div>
-
-<h3>M-05：AccountDialog — 連線失敗拒絕儲存</h3>
-<div class="box">
-<pre>
-def _save(self):
-    ...
-    ok, msg = probes.probe_broker(broker, env, values)
-    if not ok:
-        QMessageBox.warning(self, "連線測試失敗",
-            f"無法連上 {broker}（{env}）：{msg}\n請確認金鑰正確後再儲存。")
-        return   # ← 加這行，失敗就不繼續
-    # 以下才寫 accounts.json + secrets
-    ...
-</pre>
-</div>
-
-<h3>M-06：「修復並更新」— 補推現有用戶缺少的檔案</h3>
-<div class="box">
-按「更新引擎版本」時除了 bump engine pin，還自動補推：
+<code>schemas/repo-template-schema-v1.json</code>（draft-07）擋掉：
 <ul>
-  <li><b>test_email.yml</b> — 如果 Repo B 缺少</li>
-  <li><b>accounts.json</b> → dashboard repo — 如果 dashboard repo 缺少</li>
+  <li>未知 policy（typo）— policy 限 enum [render, placeholder, protected]</li>
+  <li>render 沒填 src — <code>if policy==render then required:[src]</code></li>
+  <li>placeholder/protected 卻填 src — <code>then: not required:[src]</code></li>
+  <li>多餘欄位 — <code>additionalProperties:false</code></li>
 </ul>
-（已存在的不覆蓋，冪等）
 </div>
 
-<!-- ═══════════════════════ 測試計劃 ═══════════════════════ -->
-<h2>五、測試計劃</h2>
-
+<h3>第二層：一致性檢查（schema 擋不到的）</h3>
+<div class="box">
+<code>scripts/validate_repo_template.py</code>：
 <table>
-  <tr><th>ID</th><th>測試項目</th><th>輸入</th><th>預期</th><th>分類</th></tr>
+  <tr><th>檢查</th><th>防止</th></tr>
+  <tr><td>V4 同 section path 不重複</td><td>同檔填兩次</td></tr>
+  <tr><td>V5 每個 render 的 src 在 templates/ 真存在</td><td>指向不存在的範本</td></tr>
+  <tr><td><b>V6 templates/ 每個檔都被引用（無孤兒）</b></td><td><b>加範本卻忘了登記</b>（核心防護）</td></tr>
+  <tr><td>V7 path 無 <code>../</code>、不以 <code>/</code> 開頭</td><td>路徑逃逸</td></tr>
+</table>
+</div>
 
-  <tr>
-    <td>C-01</td>
-    <td>list_brokers() 薄殼用戶</td>
-    <td>store 無 brokers/ 目錄；manifest 有 alpaca, tradier</td>
-    <td>回 ["alpaca", "tradier"]（來自 manifest）</td>
-    <td><span class="tag t-test">單元</span></td>
-  </tr>
-  <tr>
-    <td>C-02</td>
-    <td>list_strategies() 薄殼用戶</td>
-    <td>store 無 strategies/ 目錄；manifest 有策略清單</td>
-    <td>回 manifest 策略清單</td>
-    <td><span class="tag t-test">單元</span></td>
-  </tr>
-  <tr>
-    <td>C-03</td>
-    <td>broker_spec("alpaca") 薄殼用戶</td>
-    <td>store 無 brokers/alpaca.json；manifest 有</td>
-    <td>回 {"required_env": [...], "environments": [...]}（非空）</td>
-    <td><span class="tag t-test">單元</span></td>
-  </tr>
-  <tr>
-    <td>C-04</td>
-    <td>broker_spec + credential_inputs → 2 個欄位</td>
-    <td>C-03 的 spec 傳入 credential_inputs()</td>
-    <td>回 [("ALPACA_KEY",...), ("ALPACA_SECRET",...)]，len==2</td>
-    <td><span class="tag t-test">單元</span></td>
-  </tr>
-  <tr>
-    <td>C-05</td>
-    <td>list_brokers/strategies 網路失敗時 fallback</td>
-    <td>manifest fetch 拋出例外</td>
-    <td>回靜態 _FALLBACK_BROKERS / _FALLBACK_STRATEGIES，不炸</td>
-    <td><span class="tag t-test">單元</span></td>
-  </tr>
-  <tr>
-    <td>C-06</td>
-    <td>schedule_view 薄殼用戶（只有 daily.yml）</td>
-    <td>store 的 .github/workflows/ 只有 daily.yml</td>
-    <td>排程表顯示 daily.yml 的 cron（如有）；不顯示空表</td>
-    <td><span class="tag t-test">整合</span></td>
-  </tr>
-  <tr>
-    <td>C-07</td>
-    <td>test_email.yml 在新建 Repo B 中存在</td>
-    <td>provisioner.build_template_files() 回傳的 files dict</td>
-    <td>".github/workflows/test_email.yml" in files</td>
-    <td><span class="tag t-test">單元</span></td>
-  </tr>
-  <tr>
-    <td>C-08</td>
-    <td>連線測試失敗不儲存</td>
-    <td>probe_broker() 回 (False, "...") </td>
-    <td>彈出警告，accounts.json 未修改，secrets 未寫入</td>
-    <td><span class="tag t-test">單元</span></td>
-  </tr>
-  <tr>
-    <td>C-09</td>
-    <td>連線測試成功才儲存</td>
-    <td>probe_broker() 回 (True, "ok")</td>
-    <td>accounts.json 更新，secrets 寫入</td>
-    <td><span class="tag t-test">單元</span></td>
-  </tr>
-  <tr>
-    <td>C-10</td>
-    <td>「修復並更新」補推 test_email.yml</td>
-    <td>Repo B 沒有 test_email.yml</td>
-    <td>按更新後 Repo B 出現 test_email.yml</td>
-    <td><span class="tag t-test">整合</span></td>
-  </tr>
-  <tr>
-    <td>C-11</td>
-    <td>「修復並更新」已有 test_email.yml 不覆蓋</td>
-    <td>Repo B 已有 test_email.yml（自訂版）</td>
-    <td>不覆蓋，保留原內容（冪等）</td>
-    <td><span class="tag t-test">單元</span></td>
-  </tr>
-  <tr>
-    <td>C-12</td>
-    <td>catalog 不再呼叫 store 讀公開資源</td>
-    <td>Mock store 追蹤所有 read_json / list_dir 呼叫</td>
-    <td>list_brokers/list_strategies/broker_spec 不觸發 store.read_json("brokers/...") 或 list_dir("brokers"/"strategies")</td>
-    <td><span class="tag t-test">單元</span></td>
-  </tr>
+<h3>第三層：CI 自動跑 + GUI 防禦</h3>
+<div class="box">
+<ul>
+  <li><b>pub engine CI</b>：<code>validate_template.yml</code>，push 動到 repo_template.json / templates/ / schema 就跑 validator，紅燈不能 merge</li>
+  <li><b>GUI 防禦</b>：抓 manifest 後先用 schema 驗；缺檔或不合 schema → 退回 GUI 內建 fallback（硬編 4 必要檔）+ 警告，<b>App 不當機</b></li>
+</ul>
+</div>
+
+<!-- ════════════════ 七、綠燈卡死 ════════════════ -->
+<h2 id="g">七、綠燈卡死的解法</h2>
+<div class="box bad">
+<b>根因</b>：<code>_set_done(done=True)</code> 會 disable 按鈕。舊版用戶 repo「存在但破損」→ 綠燈 ✅ → 按鈕變灰 → 無法修 → 卡死。
+</div>
+<div class="box good">
+<b>解法</b>：repo 存在時「建立」按鈕變「<b>🔧 修復</b>」（仍可按，不變灰），點擊跑同一個 <code>sync()</code>（冪等）。
+render 覆蓋（更新版本+修 owner）、placeholder 補缺、protected 永不碰用戶資料。可安全重複按。
+</div>
+
+<!-- ════════════════ 八、修改清單 ════════════════ -->
+<h2 id="h">八、修改清單</h2>
+<table>
+  <tr><th>檔案 / repo</th><th>改動</th><th>對應</th></tr>
+  <tr><td><code>catalog.py</code></td><td>list_brokers/list_strategies/broker_spec/broker_environments 全改讀 pub manifest；移除 store.list_dir("brokers"/"strategies")</td><td>E-01~03</td></tr>
+  <tr><td><code>overview_view.py</code></td><td>_refresh_drift_banner 改讀 pub 引擎版本；持倉連結加 <code>?user=</code></td><td>E-04</td></tr>
+  <tr><td><code>schedule_view.py</code></td><td>動態掃 .github/workflows/*.yml</td><td>E-05</td></tr>
+  <tr><td><code>accounts_view.py</code></td><td>_save() 連線失敗 return</td><td>E-07</td></tr>
+  <tr><td><code>wizard.py / provisioner</code></td><td>build + repair 共用 sync(manifest)；「建立」按鈕永不變灰</td><td>E-06,08 + 綠燈</td></tr>
+  <tr><td><b>pub engine（新增）</b></td><td>repo_template.json · templates/{daily,test_email}.yml · schemas/repo-template-schema-v1.json · scripts/validate_repo_template.py · .github/workflows/validate_template.yml</td><td>單一事實來源 + 驗證</td></tr>
+  <tr><td><b>pub engine（mvp viewer）</b></td><td>mvp_dashboard.html 支援 <code>?user=</code> 跨 repo 讀 raw JSON</td><td>viewer 共用</td></tr>
 </table>
 
-<!-- ═══════════════════════ 影響摘要 ═══════════════════════ -->
-<h2>六、修改影響摘要</h2>
+<!-- ════════════════ 九、測試 ════════════════ -->
+<h2 id="i">九、測試計劃</h2>
 
+<h3>A. catalog 讀對來源</h3>
 <table>
-  <tr><th>檔案</th><th>改動</th><th>對應修正</th></tr>
-  <tr><td><code>admin_gui/services/catalog.py</code></td><td>list_brokers/list_strategies/broker_spec/broker_environments 全改讀 pub manifest；移除 store.list_dir("brokers/strategies")</td><td>E-01,E-02,E-03</td></tr>
-  <tr><td><code>admin_gui/views/overview_view.py</code></td><td>_refresh_drift_banner 改讀 pub engine 版本</td><td>E-04</td></tr>
-  <tr><td><code>admin_gui/views/schedule_view.py</code></td><td>移除 _WORKFLOWS 硬寫；改動態掃 workflows</td><td>E-05</td></tr>
-  <tr><td><code>admin_gui/services/repo_b_provisioner.py</code></td><td>build_template_files 加 test_email.yml</td><td>E-06</td></tr>
-  <tr><td><code>admin_gui/views/accounts_view.py</code></td><td>_save() 連線失敗 return</td><td>E-07</td></tr>
-  <tr><td><code>admin_gui/views/wizard.py::_do_update_engine</code></td><td>補推 test_email.yml + dashboard accounts.json</td><td>E-06,E-08</td></tr>
+  <tr><th>ID</th><th>測試</th><th>預期</th></tr>
+  <tr><td>C-01</td><td>list_brokers() 薄殼用戶</td><td>回 manifest 的 [alpaca, tradier]</td></tr>
+  <tr><td>C-02</td><td>list_strategies() 薄殼用戶</td><td>回 manifest 策略清單</td></tr>
+  <tr><td>C-03</td><td>broker_spec("alpaca")</td><td>非空，含 required_env</td></tr>
+  <tr><td>C-04</td><td>broker_spec+credential_inputs</td><td>2 個欄位（Key+Secret）</td></tr>
+  <tr><td>C-05</td><td>網路失敗 fallback</td><td>回靜態預設，不炸</td></tr>
+  <tr><td>C-12</td><td>catalog 不呼叫 store 讀 brokers/strategies</td><td>mock store 零觸發</td></tr>
+</table>
+
+<h3>B. 其他 bug</h3>
+<table>
+  <tr><th>ID</th><th>測試</th><th>預期</th></tr>
+  <tr><td>C-06</td><td>schedule 薄殼（只有 daily.yml）</td><td>顯示 daily.yml 排程，非空表</td></tr>
+  <tr><td>C-08</td><td>連線失敗不儲存</td><td>accounts.json/secrets 未變</td></tr>
+  <tr><td>C-09</td><td>連線成功才儲存</td><td>正常寫入</td></tr>
+</table>
+
+<h3>C. manifest 驅動 sync + 綠燈</h3>
+<table>
+  <tr><th>ID</th><th>測試</th><th>預期</th></tr>
+  <tr><td>C-13</td><td>repo 存在時建立按鈕不變灰</td><td>btn enabled，文字「🔧 修復」</td></tr>
+  <tr><td>C-14</td><td>render 覆蓋、protected 不碰</td><td>daily.yml 更新；accounts.json/data 不變</td></tr>
+  <tr><td>C-15</td><td>placeholder 缺才建</td><td>缺則建空；既有不覆蓋</td></tr>
+  <tr><td>C-23</td><td>新增 manifest 一行→sync 自動納管</td><td>不改 GUI 程式碼即生效</td></tr>
+</table>
+
+<h3>D. 三層驗證</h3>
+<table>
+  <tr><th>ID</th><th>測試</th><th>預期</th></tr>
+  <tr><td>C-16</td><td>schema 拒絕未知 policy</td><td>validate 失敗</td></tr>
+  <tr><td>C-17</td><td>schema 拒絕 render 無 src</td><td>失敗</td></tr>
+  <tr><td>C-18</td><td>schema 拒絕 placeholder 有 src</td><td>失敗</td></tr>
+  <tr><td>C-19</td><td>validator 抓重複 path</td><td>失敗</td></tr>
+  <tr><td>C-20</td><td>validator 抓 src 不存在</td><td>失敗</td></tr>
+  <tr><td>C-21</td><td>validator 抓孤兒 template</td><td>失敗</td></tr>
+  <tr><td>C-22</td><td>GUI manifest 缺失→fallback</td><td>App 正常，不當機</td></tr>
+  <tr><td>C-24</td><td>真實 repo_template.json 通過 schema+validator</td><td>綠燈（守住自己）</td></tr>
 </table>
 
 <hr style="border-color:#334155;margin-top:3rem">
-<p style="color:#64748b;font-size:.8rem">gui-catalog-fix-plan.html · 2026-06-05</p>
+<p style="color:#64748b;font-size:.8rem">gui-catalog-fix-plan.html（定稿 v2.0）· 2026-06-05</p>
 </body>
 </html>
