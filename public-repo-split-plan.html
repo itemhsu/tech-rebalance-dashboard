@@ -26,7 +26,7 @@
 
 <h1>🏗️ 引擎住 pub・私有純當 Repo B <span style="font-size:15px;color:#93a4bd">拆分計劃 v2（修正模型）</span></h1>
 <p class="sub">引擎碼移到公開 repo；私有 tech-rebalance 變成純 Repo B；tech-rebalance-data 廢棄 · 2026-06-04</p>
-<span class="badge">狀態：設計提案 v2</span><span class="badge">私有 = Repo B（保留金鑰/資料）</span><span class="badge">引擎住 public</span>
+<span class="badge">狀態：設計提案 v2</span><span class="badge">私有 = Repo B（保留金鑰/資料）</span><span class="badge">引擎住 public</span><span class="badge">測試矩陣 v2（完整 9 類）</span>
 
 <div class="box bad"><b>v1 → v2 修正（你的更正）：</b>v1 誤把 <code>tech-rebalance</code> 當「引擎來源」、<code>tech-rebalance-data</code> 當「Repo B」。
  正確是：<b><code>tech-rebalance</code> 本身就是 Repo B</b>（已含 accounts.json + data + 金鑰 + live workflow）。
@@ -100,17 +100,84 @@
  <tr><td>管理對象</td><td>GUI 管 <code>tech-rebalance</code>（private Repo B）；不再有 tech-rebalance-data</td></tr>
 </tbody></table>
 
-<h2 id="s7">7. 測試矩陣 ★</h2>
+<h2 id="s7">7. 測試矩陣 ★（完整）</h2>
+<p class="sub">真錢系統改造，測試從 8 項擴為 9 類。最高優先：T2 並行對帳（B）與安全/不漏單（F/G）。</p>
+
+<h3>A. pub 引擎來源（source of truth）</h3>
 <table><tbody>
- <tr><td class="tid">PUB-ENG-01</td><td>pub 為引擎來源：pub CI（compat + release）綠；pip install git+…pub@vX 免 token 可裝（✅ 已驗）</td></tr>
- <tr><td class="tid">RB-PARALLEL-02</td><td>private 新薄 workflow dry-run：選股/NAV/計畫下單與現有 daily_all_accounts 逐欄一致（連續 3 交易日）</td></tr>
- <tr><td class="tid">RB-CUTOVER-03</td><td>切換後真跑：真錢帳戶 NAV/持倉與切換前連續、無重複單、報告日期=今天</td></tr>
- <tr><td class="tid">RB-PURE-04</td><td>private 移除引擎碼後：薄 workflow 仍跑通（引擎全來自 pub 套件）；private 不含 runner.py/engine/</td></tr>
- <tr><td class="tid">DATA-RETIRE-05</td><td>tech-rebalance-data 封存後：無排程、無新 commit；GUI 不再參照它</td></tr>
- <tr><td class="tid">GUI-PUB-06</td><td>GUI 服務指向 pub；provisioner 產的 daily.yml 用 git+ 安裝、不含 token；headless 無回歸</td></tr>
- <tr><td class="tid">ROLLBACK-07</td><td>切換期間舊 workflow 可一鍵重啟（回退路徑可用）</td></tr>
- <tr><td class="tid">IDEMPOTENT-08</td><td>新舊 workflow 並存時不會雙重下單（冪等守門 + dry-run 不 commit 已修）</td></tr>
+ <tr><td class="tid">A-01 pip_no_token</td><td>乾淨 venv <code>pip install git+…pub@vX</code> 免 token 可裝、run-account 可跑、資產定位（✅ 已驗）</td></tr>
+ <tr><td class="tid">A-02 pub_ci_green</td><td>pub 的 compat_ci + release CI 綠（無帳戶資料時相關測試 skip）（✅ 已驗）</td></tr>
+ <tr><td class="tid">A-03 wheel_assets</td><td>wheel 含 strategies/schemas/brokers/universe/shares；manifest 附到 Release</td></tr>
+ <tr><td class="tid">A-04 tag_release_from_pub</td><td>在 pub 打 tag → release CI 產 wheel+manifest（引擎發版改在 pub）</td></tr>
+ <tr><td class="tid">A-05 break_detect_in_pub</td><td>CT-BREAK-DETECT 在 pub 對基線運作（schema 破壞性變更擋下）</td></tr>
 </tbody></table>
+
+<h3>B. private 並行對帳 ★（T2，最關鍵）</h3>
+<table><tbody>
+ <tr><td class="tid">B-01 selection_match</td><td>新薄 workflow dry-run 各帳戶<b>選股清單</b>與舊 daily_all_accounts <b>完全一致</b></td></tr>
+ <tr><td class="tid">B-02 ranking_match</td><td>市值排名（ranked_stocks 順序）一致</td></tr>
+ <tr><td class="tid">B-03 nav_match</td><td>同帳戶 NAV / cash 一致</td></tr>
+ <tr><td class="tid">B-04 orders_match</td><td>計畫下單（方向/股數）逐筆一致</td></tr>
+ <tr><td class="tid">B-05 data_json_valid</td><td>新流程產出的 data.json 通過 data-schema、儀表板能讀</td></tr>
+ <tr><td class="tid">B-06 three_days</td><td>連續 3 個交易日（含換股日更佳）逐欄一致</td></tr>
+ <tr><td class="tid">B-07 monthly_skip_snapshot</td><td>月度帳戶非換股日：NAV 仍刷新（v1.0.5）、報告日期=今天</td></tr>
+</tbody></table>
+
+<h3>C. 安裝後資料定位（TR_WORKDIR seam）</h3>
+<table><tbody>
+ <tr><td class="tid">C-01 workdir_reads_private</td><td>裝好的 pub 引擎 + <code>TR_WORKDIR=私有checkout</code> → 讀私有 accounts.json + data/{id}、寫回</td></tr>
+ <tr><td class="tid">C-02 assets_from_package</td><td>strategies/schemas/universe 來自 site-packages（pub 套件），非私有 repo</td></tr>
+ <tr><td class="tid">C-03 private_no_engine_assets</td><td>T4 後私有不含 runner.py/engine/strategies/schemas，仍跑通（全靠 pub 套件）</td></tr>
+</tbody></table>
+
+<h3>D. 薄 workflow 正確性</h3>
+<table><tbody>
+ <tr><td class="tid">D-01 pin_version</td><td>daily_pub.yml 釘 <code>@vX</code>；改 <code>@vX→@vY</code> 一行升版</td></tr>
+ <tr><td class="tid">D-02 secrets_injected</td><td>薄 workflow 注入 <code>ACC{id}_ALPACA_KEY/SECRET</code> 等（CT-ALIGN-SEC 等價檢查）</td></tr>
+ <tr><td class="tid">D-03 commit_data</td><td>真跑 commit data/ 回私有；dry-run <b>不</b> commit（已修）</td></tr>
+ <tr><td class="tid">D-04 email_reports</td><td>報告仍寄出、收件人正確、失敗/過時紅字標示生效（v1.0.6）</td></tr>
+</tbody></table>
+
+<h3>E. 切換 / 連續性 / 回退（T3）★</h3>
+<table><tbody>
+ <tr><td class="tid">E-01 cutover_continuity</td><td>切換後真錢 NAV/持倉與切換前連續、無斷層</td></tr>
+ <tr><td class="tid">E-02 no_double_order</td><td>新舊並存期間<b>不雙重下單</b>（冪等守門 + dry-run 不 commit）</td></tr>
+ <tr><td class="tid">E-03 no_missed_rebal</td><td>切換橫跨月初換股日也不漏換股</td></tr>
+ <tr><td class="tid">E-04 rollback</td><td>停用新、重啟舊 daily_all_accounts → 立即恢復（回退路徑可用）</td></tr>
+</tbody></table>
+
+<h3>F. 安全 / 零外洩（持續）★</h3>
+<table><tbody>
+ <tr><td class="tid">F-01 pub_no_account_data</td><td>pub repo 永遠無 accounts.json/帳戶 state/.env/live workflow（持續守門）</td></tr>
+ <tr><td class="tid">F-02 pub_no_personal_email</td><td>pub 碼不含 itemhsu@gmail.com（已改 env 驅動）</td></tr>
+ <tr><td class="tid">F-03 private_secrets_intact</td><td>private 的 Secrets 切換全程不動、不外洩</td></tr>
+ <tr><td class="tid">F-04 datarepo_secrets_revoked</td><td>★ 廢棄 data repo 前：<b>刪除其 ACC1 paper 金鑰 secret</b>（或在 Alpaca 撤銷該 paper key）</td></tr>
+</tbody></table>
+
+<h3>G. GUI 指向 pub</h3>
+<table><tbody>
+ <tr><td class="tid">G-01 services_target_pub</td><td>engine_release/manifest/provisioner 引擎常數＝tech-rebalance-pub</td></tr>
+ <tr><td class="tid">G-02 daily_git_install</td><td>provisioner 產的 daily.yml 用 git+ 安裝、不含 ENGINE_INSTALL_TOKEN</td></tr>
+ <tr><td class="tid">G-03 mode_repob</td><td>private（薄 workflow、無引擎碼）被偵測為 repo_b 模式（偵測 git+ 安裝行，非 vendor wheel）</td></tr>
+ <tr><td class="tid">G-04 headless</td><td>GUI 全套件 offscreen 無回歸；出 DMG</td></tr>
+</tbody></table>
+
+<h3>H. 廢棄 tech-rebalance-data</h3>
+<table><tbody>
+ <tr><td class="tid">H-01 archived</td><td>封存後無排程、無新 commit、Actions 停用</td></tr>
+ <tr><td class="tid">H-02 gui_no_ref</td><td>GUI/config 不再參照 tech-rebalance-data</td></tr>
+ <tr><td class="tid">H-03 secrets_cleared</td><td>刪除/撤銷其 secrets 後再封存（見 F-04）</td></tr>
+</tbody></table>
+
+<h3>I. 引擎開發移轉（T1）</h3>
+<table><tbody>
+ <tr><td class="tid">I-01 pub_is_source</td><td>引擎改碼/發版只在 pub；private 引擎碼凍結，不再雙頭開發</td></tr>
+ <tr><td class="tid">I-02 version_consistency</td><td>pub manifest engine_version＝tag＝wheel 版本一致</td></tr>
+</tbody></table>
+
+<div class="box good"><b>現有可沿用：</b>engine 既有 ~60 個 compat/契約測試（pip-from-pub 已驗 A-01/A-02）；
+ GUI ~46 個（G 類擴充）。<b>新增重點在 B（並行對帳，逐欄）與 E/F（切換安全、零外洩、撤銷 data repo 金鑰）。</b>
+ 最高優先 <span class="tid">B-06</span>（3 天對帳一致）、<span class="tid">E-02</span>（不雙重下單）、<span class="tid">F-04</span>（廢棄前撤金鑰）。</div>
 
 <h2 id="s8">8. 風險與原則</h2>
 <div class="box bad"><ul>
