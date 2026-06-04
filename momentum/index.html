@@ -225,9 +225,9 @@ let CURRENT_X0 = null, CURRENT_X1 = null;
 // 載入 manifest + 所有策略 JSON
 // 自動偵測路徑（本機 tool_v2/tool/ → ../results/；GitHub Pages → ./results/）
 // ────────────────────────────────────────────────
-let RESULTS_BASE = './results/';
+let RESULTS_BASE = 'https://raw.githubusercontent.com/itemhsu/tech-rebalance-pub/main/results/';  // pub engine (shared, all users)
 async function _detectBase() {
-  for (const base of ['./results/', '../results/']) {
+  for (const base of ['https://raw.githubusercontent.com/itemhsu/tech-rebalance-pub/main/results/']) {
     try {
       const r = await fetch(base + 'manifest.json?_=' + Date.now(), {cache:'no-store'});
       if (r.ok) { RESULTS_BASE = base; return await r.json(); }
