@@ -182,6 +182,112 @@ probe_broker 對 list 呼叫 <code>.get</code> → 例外 → 被上層 <code>ex
 所有 gh 流量的瓶頸——在這幾個函式內建 log，就涵蓋 ~50/60 呼叫點，不必逐行加。
 </div>
 
+<!-- ════════════════ 二之四、前置資源檢查 ════════════════ -->
+<h2 id="preflight">二之四、呼叫外部前，先記「資源就緒狀態」（preflight）</h2>
+
+<div class="box bad">
+<b>血案：</b>「測試發信」直接觸發 GitHub workflow，<b>呼叫前從沒檢查它依賴的資源</b>。
+workflow 跑 9 秒後才回 <code>missing EMAIL_SENDER</code>。
+GUI log 只有 <code>test_email: fail</code>。於是猜了四輪（編碼/空格/IP/auth）全錯——
+<b>因為根因（EMAIL_SENDER secret 不存在）在「呼叫之前」就已注定，卻從沒被記下。</b>
+</div>
+
+<div class="box good">
+<b>原則：任何外部呼叫前，先 log 它依賴的「每一個資源」的就緒狀態。</b>
+缺資源 → 直接記成失敗原因，<b>並在呼叫前就擋下</b>（不盲目觸發、不等遠端回一個模糊錯誤）。
+<pre>
+def _test_email(self):
+    with LOG.action("測試發信", ctx=self.repo_slug) as a:
+        ready = preflight(a, self.repo_slug, requires=[
+            Secret("EMAIL_SENDER"),            # ← 這次缺的，preflight 立刻抓到
+            Secret("EMAIL_PASSWORD"),
+            WorkflowFile("test_email.yml"),
+            GhAuth(),
+        ])
+        if not ready:
+            return    # 缺資源 → 不觸發；log 已寫明缺什麼
+        ...觸發 workflow...
+</pre>
+preflight 產生的 log（就緒一目了然）：
+<pre>
+▶ 測試發信  ctx=item3hsu/tech-rebalance
+   · preflight secret EMAIL_SENDER: <span class="ng">MISSING</span>   ← 根因，呼叫前就現形
+   · preflight secret EMAIL_PASSWORD: present
+   · preflight workflow test_email.yml: present
+   · preflight gh auth: ok (item3hsu)
+   ⚠ 前置檢查未過：缺 secret EMAIL_SENDER → 未觸發
+</pre>
+</div>
+
+<h3>資源類型（每種都有 readiness 檢查）</h3>
+<table>
+  <tr><th>資源</th><th>檢查方式</th><th>記什麼</th></tr>
+  <tr><td>Secret</td><td><code>gh secret list</code> 是否含此名</td><td>present / <b>MISSING</b>（值不取，不外洩）</td></tr>
+  <tr><td>WorkflowFile</td><td>repo 的 <code>.github/workflows/</code> 是否含此檔</td><td>present / missing（含查的是哪個分支）</td></tr>
+  <tr><td>RepoExists</td><td><code>gh api repos/{slug}</code></td><td>存在 / 404 / 無權限</td></tr>
+  <tr><td>GhAuth</td><td><code>gh auth status</code> / login 名</td><td>登入名 / 未登入</td></tr>
+  <tr><td>Config 值</td><td>本機 config 該鍵是否有值</td><td>有值 / 空</td></tr>
+  <tr><td>EngineVersion</td><td>pub release 列得到嗎</td><td>最新版 / 列不到</td></tr>
+  <tr><td>Network / 抓檔</td><td>對端是否可達</td><td>ok / SSL / 404 / timeout</td></tr>
+</table>
+
+<div class="box info">
+<b>兩條硬規則：</b>
+<ol>
+  <li><b>每個外部呼叫前必有一段 preflight</b>，列出它依賴的所有資源就緒狀態（即使全 ok 也要記，證明檢查過）。</li>
+  <li><b>preflight 任一資源 MISSING → 記成失敗原因並中止</b>，不把問題丟給遠端用模糊錯誤回報。</li>
+</ol>
+本案若有 preflight：第一次按「測試發信」就會顯示「缺 EMAIL_SENDER secret」，0 秒定案。
+</div>
+
+<!-- ════════════════ 二之五、跨系統邊界 ════════════════ -->
+<h2 id="boundary">二之五、跨系統邊界：抓回「對方的原始回應」</h2>
+<div class="box bad">
+GUI → GitHub Actions → Gmail SMTP，每跨一層就丟失下一層的回應。
+GitHub workflow 印的 <code>FAIL: missing EMAIL_SENDER</code>、Gmail 回的 <code>535-5.7.8 ...</code>
+都<b>從沒進 GUI log</b>，只剩一句 <code>fail</code>。
+</div>
+<div class="box good">
+<b>原則：凡跨系統邊界的呼叫，失敗時把對方的原始回應抓回來記。</b>
+<table>
+  <tr><th>邊界</th><th>抓回什麼</th><th>機制</th></tr>
+  <tr><td>觸發 GitHub workflow</td><td>該 run 的 stdout / 失敗步驟全文</td><td>失敗時自動 <code>gh run view {id} --log</code> 撈進 GUI log</td></tr>
+  <tr><td>workflow → Gmail SMTP</td><td><code>SMTPException</code> 完整訊息（含 5xx 碼）</td><td>workflow 內 <code>print(repr(e))</code>，不吞成「寄信失敗」</td></tr>
+  <tr><td>gh api</td><td>rc + stderr 全文</td><td>_gh 內建（已做）</td></tr>
+  <tr><td>broker REST</td><td>HTTP status + body 前段</td><td>probe_broker 記回應，不只「連線失敗」</td></tr>
+</table>
+</div>
+
+<h3>二之六、全代碼盤點：每個 handler 的 preflight / 跨邊界缺口（掃過代碼）</h3>
+<p style="color:#94a3b8">不是只修 email。grep 每個 handler 呼叫的外部資源後，逐一標出缺口。</p>
+<table>
+  <tr><th>handler</th><th>依賴的外部資源</th><th>preflight 現況</th><th>跨邊界抓回應現況</th></tr>
+  <tr><td><code>_test_email</code></td><td>EMAIL_SENDER✱ + EMAIL_PASSWORD secret、test_email.yml、gh auth</td><td class="ng">❌ 零檢查（本案）</td><td class="ng">❌ 不抓 workflow stdout，猜原因</td></tr>
+  <tr><td><code>_do_dryrun</code></td><td>repob_slug、daily workflow、ACC*_ALPACA_KEY/SECRET</td><td class="ng">❌ 盲目觸發</td><td class="ng">❌ 不抓 run log</td></tr>
+  <tr><td><code>_do_update_engine</code></td><td>repo B 存在、workflow 檔、引擎版本</td><td class="ng">❌ 沒先驗 repo/workflow</td><td>⚠ 有記 rc</td></tr>
+  <tr><td><code>_do_build_repob</code></td><td>gh auth、引擎版本、pub templates 可達</td><td>⚠ 部分（v0.4.3 記步驟）</td><td>⚠ repo_sync 記抓檔失敗</td></tr>
+  <tr><td><code>_save_sender</code></td><td>gh auth、寫權限、<b>須設 EMAIL_SENDER secret</b></td><td class="ng">❌ 沒驗 auth；<b>過去根本沒設 secret</b></td><td>⚠ GhError</td></tr>
+  <tr><td><code>_test_and_save</code></td><td>broker REST、金鑰</td><td class="ok">✅ 有測連線</td><td>⚠ 只回短訊息，無 HTTP body</td></tr>
+  <tr><td><code>_set</code> / <code>_send_log</code> / <code>_clear_log</code></td><td>gh 寫 / 本機 SMTP / 本機檔</td><td>⚠ 部分</td><td>⚠ 部分</td></tr>
+</table>
+<div class="box info">
+<b>引擎端（workflow）盤點：</b>
+<ul>
+  <li><code>daily.yml</code> 依賴 10 個 secret（ACC1–3 金鑰、EMAIL_*、PAGES_TOKEN）——
+      <b class="ok">run_account._resolve_credentials 已做對</b>：缺哪個就 <code>log.error 列出</code>。可當範本。</li>
+  <li><b><code>workflow_runner.view_log()</code> 已存在但沒人呼叫</b> —— 觸發 workflow 後從不抓 log 回 GUI。接上即補 R9。</li>
+</ul>
+</div>
+
+<h3>二之七、統一解法（一套，套用全部）</h3>
+<table>
+  <tr><th>元件</th><th>內容</th><th>補哪條規則</th></tr>
+  <tr><td><code>services/preflight.py</code>（新）</td><td>Secret / WorkflowFile / RepoExists / GhAuth / Config 檢查器；每個外部呼叫前跑、記每項就緒、缺則中止</td><td>R8</td></tr>
+  <tr><td>接上 <code>workflow_runner.view_log()</code></td><td>觸發 workflow 的 handler 失敗時自動抓 run log 回 GUI</td><td>R9</td></tr>
+  <tr><td>套到 6 個 GUI handler</td><td>_test_email / _do_dryrun / _do_update_engine / _do_build_repob / _save_sender / _set 各加對應 preflight</td><td>R8/R9</td></tr>
+  <tr><td>引擎一致化</td><td>沿用 run_account 的「缺金鑰明確列出」模式到所有寄信/推送步驟</td><td>—</td></tr>
+</table>
+
 <!-- ════════════════ 三、架構 ════════════════ -->
 <h2 id="c">三、ActionLog 架構</h2>
 
@@ -347,6 +453,8 @@ test_email.yml 抓不到範本 → 對話框直接列「- repo_b/test_email.yml:
   <tr><td><span class="tag t-rule">R5</span> 每個 clicked.connect 的 handler 都包 action()</td><td>introspection 測試掃描所有按鈕</td><td>純導覽（切分頁）可豁免</td></tr>
   <tr><td><span class="tag t-rule">R6</span> 非 ok step 的 detail 不得為空</td><td>fail/skip/warn 必含「是什麼+為什麼+值」</td><td>—</td></tr>
   <tr><td><span class="tag t-rule">R7</span> 每個 action 自帶 env 快照</td><td>第一筆 step 為 app/os/gh/repo/pin</td><td>—</td></tr>
+  <tr><td><span class="tag t-rule">R8</span> 外部呼叫前必有 preflight</td><td>列出所依賴資源就緒狀態；缺則中止</td><td>純本機計算可免</td></tr>
+  <tr><td><span class="tag t-rule">R9</span> 跨邊界失敗抓回對方原始回應</td><td>workflow stdout / SMTP 5xx / HTTP body</td><td>—</td></tr>
 </table>
 
 <div class="box">
@@ -394,6 +502,10 @@ AST 掃 <code>except</code> 子句，若 body 只有 <code>pass</code> 或只有
   <tr><td>L-18</td><td>清除動作本身有 log（不靜默）</td><td>清除後第一筆即「清除 log」action + 清掉行數</td><td><span class="tag t-test">單元</span></td></tr>
   <tr><td>L-19</td><td>清除只動本機 jsonl</td><td>不影響 GitHub 排程歷史 / 不誤刪其他檔</td><td><span class="tag t-test">單元</span></td></tr>
   <tr><td>L-20</td><td>超限自動 rotate</td><td>>上限時保留尾段，不無限長</td><td><span class="tag t-test">單元</span></td></tr>
+  <tr><td>L-21</td><td><b>preflight 抓到缺 secret</b></td><td>EMAIL_SENDER 缺 → 記 MISSING 並中止，不觸發 workflow</td><td><span class="tag t-test">整合</span></td></tr>
+  <tr><td>L-22</td><td>preflight 全 ok 也記</td><td>資源齊全時每項記 present（證明檢查過）</td><td><span class="tag t-test">單元</span></td></tr>
+  <tr><td>L-23</td><td>跨邊界：workflow 失敗撈回 stdout</td><td>GUI log 含 workflow 印的 FAIL 行（去 ANSI/去原始碼回顯）</td><td><span class="tag t-test">整合</span></td></tr>
+  <tr><td>L-24</td><td>儲存寄件人會設 EMAIL_SENDER secret</td><td>set_secret("EMAIL_SENDER") 被呼叫（修本案）</td><td><span class="tag t-test">單元</span></td></tr>
 </table>
 
 <hr style="border-color:#334155;margin-top:3rem">
