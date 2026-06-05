@@ -132,6 +132,56 @@ probe_broker 對 list 呼叫 <code>.get</code> → 例外 → 被上層 <code>ex
 </ol>
 </div>
 
+<!-- ════════════════ 二之三、逐點稽核 ════════════════ -->
+<h2 id="audit">二之三、逐行稽核：每個需要 log 的點（掃過代碼）</h2>
+<p style="color:#94a3b8">非口號。以下是實際 grep 全 codebase 後，每個 handler、每個會靜默失敗的 except、每個 gh/網路呼叫點的清單與所需 log。</p>
+
+<h3>A. 按鈕 handler（16 個 connect，須包 action()）</h3>
+<table>
+  <tr><th>handler</th><th>檔案</th><th>action 名稱 / 需記步驟</th></tr>
+  <tr><td><code>_do_build_repob</code></td><td>wizard</td><td>建立/修復：repo create×2、accounts seed、sync repo_b（逐 path）、sync dashboard、Pages 啟用、legacy 偵測</td></tr>
+  <tr><td><code>_do_update_engine</code></td><td>wizard</td><td>更新引擎：列 workflows、選檔、讀 sha、migrate、PUT（含 rc）</td></tr>
+  <tr><td><code>_gh_login</code></td><td>wizard</td><td>gh 登入：Popen 結果、probe_gh</td></tr>
+  <tr><td><code>_refresh_status</code></td><td>wizard</td><td>偵測：repo 存在×2、列 workflow、解析 pin（rc 全記）</td></tr>
+  <tr><td><code>_finish</code></td><td>wizard</td><td>完成：寫 config</td></tr>
+  <tr><td><code>_test_email</code></td><td>overview</td><td>測試發信：trigger workflow rc、輪詢 conclusion</td></tr>
+  <tr><td><code>_do_dryrun</code></td><td>overview</td><td>dry-run：run_workflow rc + 例外</td></tr>
+  <tr><td><code>_save_sender</code></td><td>overview</td><td>儲存寄件人：寫 config</td></tr>
+  <tr><td><code>_set</code>(secret)</td><td>overview</td><td>設 secret：gh.set_secret rc（值遮罩）</td></tr>
+  <tr><td><code>_send_log</code></td><td>log</td><td>發送 log：組裝 bytes、SMTP 結果 / 後援</td></tr>
+  <tr><td><code>_test_and_save</code></td><td>accounts</td><td>測試連線並儲存：fetch_account_id、probe_broker、repo.add/update、secret_writes 逐筆 rc</td></tr>
+  <tr><td><code>_download_log</code></td><td>log</td><td>下載 log：gh run download rc</td></tr>
+  <tr><td><code>_apply</code>(cron)</td><td>schedule</td><td>改排程：寫回 rc</td></tr>
+  <tr><td><code>_open_wizard</code></td><td>overview</td><td>導覽（豁免，但開關仍記一筆）</td></tr>
+  <tr><td><code>refresh / _show_log / _on_broker_changed / _env_changed / _poll_tick</code></td><td>多處</td><td>讀取型：失敗記 warn，不需 action 包但 gh/讀檔仍記</td></tr>
+</table>
+
+<h3>B. 靜默失敗點（grep except → 需補 log 的回傳）</h3>
+<table>
+  <tr><th>位置</th><th>函式</th><th>失敗時（現況靜默）</th><th>須補 log</th></tr>
+  <tr><td>catalog.py:45</td><td><code>_fetch_pub_manifest</code></td><td><code>except: return None</code></td><td>記 fail：list_versions/fetch rc + 原因（→ 才知為何下拉用 fallback）</td></tr>
+  <tr><td>repo_sync.py:48</td><td><code>_gh_get_content</code></td><td><code>return None</code>（解碼/rc 失敗）</td><td>記 fail：path、rc、err（→ 才知 template 為何抓不到，正是 test_email 案）</td></tr>
+  <tr><td>probes.py:50/109/130/157</td><td>probe_broker / fetch_account_id / probe_email</td><td>回 (False, 短訊息)</td><td>detail 補：URL、status、例外型別、關鍵值（非只一行字）</td></tr>
+  <tr><td>log_reader.py:46/76/89</td><td>cron_runs / jsonl 讀取</td><td><code>return []</code></td><td>記 warn：gh rc 或解析錯（→ 排程空白才有解釋）</td></tr>
+  <tr><td>state_reader.py:39</td><td><code>read</code></td><td>回 exists=False</td><td>記 warn：哪個帳戶、哪個檔讀不到</td></tr>
+  <tr><td>accounts_repo.py:56</td><td><code>load</code></td><td><code>return []</code></td><td>記 warn：accounts.json 讀取失敗原因</td></tr>
+  <tr><td>wizard.py:42</td><td><code>_gh</code></td><td>例外 → (1,"",str(e))</td><td>改 logged 版：每次呼叫記 args+rc，非零記 err</td></tr>
+  <tr><td>wizard.py:199/277/334</td><td>refresh / build / update 內 json 解析</td><td><code>except: names=[]/pass</code></td><td>記 warn：解析失敗的原文前 120 字</td></tr>
+  <tr><td>env_fix.py:37</td><td>ensure_path</td><td>靜默</td><td>記 step：PATH 補了什麼 / 失敗</td></tr>
+</table>
+
+<h3>C. gh / 網路呼叫密度（共 ~60 處，全改 logged）</h3>
+<table>
+  <tr><th>檔案</th><th>呼叫數</th><th>處理</th></tr>
+  <tr><td>wizard.py</td><td>19× <code>_gh</code></td><td><code>_gh</code> 內建記錄 args+rc+err（一處改、全部受惠）</td></tr>
+  <tr><td>probes.py</td><td>7×（SMTP/HTTP/gh）</td><td>每個 except 補 URL/host/型別</td></tr>
+  <tr><td>overview / workflow_runner / engine_release / manifest / repo_sync</td><td>5/4/2/2/2</td><td>回傳即記 rc；非零 warn</td></tr>
+</table>
+<div class="box info">
+<b>關鍵槓桿：</b><code>wizard._gh</code> 與 <code>repo_sync._gh_get_content</code> 與 <code>workflow_runner</code> 是
+所有 gh 流量的瓶頸——在這幾個函式內建 log，就涵蓋 ~50/60 呼叫點，不必逐行加。
+</div>
+
 <!-- ════════════════ 三、架構 ════════════════ -->
 <h2 id="c">三、ActionLog 架構</h2>
 
