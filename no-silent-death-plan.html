@@ -157,13 +157,46 @@ def gh_logged(args, a, inp=None):
 </div>
 
 <!-- ════════════════ 四、曝光 ════════════════ -->
-<h2 id="d">四、三層曝光（看得到 + 存得住）</h2>
+<h2 id="d">四、四層曝光（看得到 + 存得住 + 寄得出）</h2>
 <table>
   <tr><th>層</th><th>機制</th><th>用途</th></tr>
   <tr><td>① 即時對話框 / 狀態列</td><td>action 結束依 <code>problems()</code> 顯示 ✅ 或 ⚠＋清單</td><td>當下不被謊報成功</td></tr>
   <tr><td>② 日誌分頁</td><td>ActionLog signal → 表格即時 append（依 aid 分群、可展開步驟）</td><td>追蹤一次操作的每一步</td></tr>
-  <tr><td>③ 持久 JSONL</td><td><code>~/.tradingadmin/action_log.jsonl</code></td><td>事後除錯、回報問題附上</td></tr>
+  <tr><td>③ 持久 JSONL</td><td><code>~/.tradingadmin/action_log.jsonl</code></td><td>事後除錯</td></tr>
+  <tr><td>④ <b>📧 發送 log</b> 按鈕</td><td>日誌分頁一鍵把 log 寄給 itemhsu</td><td>使用者回報問題、開發者遠端診斷</td></tr>
 </table>
+
+<h3>4.1 日誌分頁的「📧 發送 log」按鈕</h3>
+<div class="box good">
+<b>用途：</b>使用者遇到問題，按一下就把完整動作日誌寄給 <code>itemhsu@gmail.com</code>，
+開發者不必猜、不必要求使用者複製貼上。
+<h4>寄送內容</h4>
+<ul>
+  <li>最近 N 筆（預設 500）action_log.jsonl，已遮罩任何疑似金鑰/token（<code>***</code>）</li>
+  <li>環境摘要：App 版本、OS、gh 登入名、repo slug、引擎 pin 版本</li>
+  <li>主旨：<code>[TradingAdmin log] {gh_login} {本地時間} {問題摘要可選}</code></li>
+</ul>
+<h4>寄送機制（與「測試發信」一致，零新依賴）</h4>
+<pre>
+def _send_log_email(self):
+    with LOG.action("發送 log email") as a:
+        body = mask_secrets(read_log_tail(500)) + "\n\n" + env_summary()
+        a.step("組裝 log", "ok", f"{len(body)} bytes")
+        # 用使用者自己的 EMAIL_SENDER / EMAIL_PASSWORD（SMTP），收件人固定 itemhsu
+        ok, msg = probes.send_log_to_dev(sender=EMAIL_SENDER, pw=EMAIL_PASSWORD,
+                                         to="itemhsu@gmail.com", body=body)
+        a.step("SMTP 寄送", "ok" if ok else "fail", msg)
+    self._result_dialog(a)        # 成功/失敗都依實際結果，不假成功
+</pre>
+<h4>沒有 EMAIL_PASSWORD 時的後援</h4>
+若使用者尚未設 <code>EMAIL_PASSWORD</code>（無法 SMTP），按鈕改為：
+<ul>
+  <li>把 log 存成桌面檔 <code>tradingadmin-log-YYYYMMDD.txt</code>，並開啟 Finder 標示，請使用者手動寄給 itemhsu；或</li>
+  <li>開 <code>mailto:itemhsu@gmail.com?subject=...&body=...</code>（短 log）由系統郵件 App 帶出。</li>
+</ul>
+<b>安全：</b>寄送前一律 <code>mask_secrets()</code>（比對 GitHub PAT / 長度≥20 的疑似金鑰 / <code>*_SECRET=</code> 樣式 → <code>***</code>）；
+收件人<b>寫死</b> itemhsu，不接受 UI 輸入（避免被導向他處）。
+</div>
 
 <div class="box warn">
 <b>結果對話框新規則（取代「✅ 建立完成」）：</b>
@@ -199,7 +232,8 @@ AST 掃 <code>except</code> 子句，若 body 只有 <code>pass</code> 或只有
 <table>
   <tr><th>檔案</th><th>改動</th></tr>
   <tr><td><code>services/action_log.py</code>（新）</td><td>ActionLog 單例 + _ActionScope + JSONL + Qt signal</td></tr>
-  <tr><td><code>views/log_view.py</code></td><td>訂閱 ActionLog signal，依 aid 分群即時顯示步驟（取代/補強現有 audit）</td></tr>
+  <tr><td><code>views/log_view.py</code></td><td>訂閱 ActionLog signal，依 aid 分群即時顯示步驟；<b>加「📧 發送 log」按鈕</b></td></tr>
+  <tr><td><code>services/probes.py</code>（log mail）</td><td><code>send_log_to_dev()</code> SMTP 寄 log 給 itemhsu（收件人寫死）；<code>mask_secrets()</code></td></tr>
   <tr><td><code>views/wizard.py</code></td><td>_do_build_repob / _do_update_engine / gh 登入 等 handler 全包 action()</td></tr>
   <tr><td><code>views/overview_view.py</code></td><td>測試發信 / 設定 secret / dry-run / 儲存寄件人 全包</td></tr>
   <tr><td><code>views/accounts_view.py</code></td><td>新增/編輯/刪除/測試連線 全包；連線失敗已 return，再加 step 記原因</td></tr>
@@ -222,6 +256,9 @@ AST 掃 <code>except</code> 子句，若 body 只有 <code>pass</code> 或只有
   <tr><td>L-08</td><td>R5：所有按鈕都包 action</td><td>introspection 掃描無漏網 handler</td><td><span class="tag t-test">整合</span></td></tr>
   <tr><td>L-09</td><td>結果對話框不假成功</td><td>有 problem 時必為 warn 對話框</td><td><span class="tag t-test">單元</span></td></tr>
   <tr><td>L-10</td><td>同 aid 分群</td><td>一次按鈕的所有 step 共用同一 aid</td><td><span class="tag t-test">單元</span></td></tr>
+  <tr><td>L-11</td><td>📧 發送 log 寄給 itemhsu</td><td>SMTP 收件人寫死 itemhsu@gmail.com，不可被覆寫</td><td><span class="tag t-test">單元</span></td></tr>
+  <tr><td>L-12</td><td>log 寄送前遮罩金鑰</td><td>含 PAT/secret 的 log → 輸出為 <code>***</code></td><td><span class="tag t-test">單元</span></td></tr>
+  <tr><td>L-13</td><td>無 EMAIL_PASSWORD 後援</td><td>改存桌面檔/mailto，且該動作本身有 log（不靜默）</td><td><span class="tag t-test">整合</span></td></tr>
 </table>
 
 <hr style="border-color:#334155;margin-top:3rem">
