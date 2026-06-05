@@ -295,6 +295,34 @@ def _send_log_email(self):
 收件人<b>寫死</b> itemhsu，不接受 UI 輸入（避免被導向他處）。
 </div>
 
+<h3>4.2 日誌分頁的「🗑 清除 log」按鈕</h3>
+<div class="box good">
+<b>用途：</b>使用者重現問題前先清掉舊 log，<b>寄來的 log 才乾淨、只含這次的足跡</b>，
+不會混入幾天前的雜訊讓除錯失焦。
+<h4>建議流程（UI 引導）</h4>
+<pre>
+重現問題標準步驟（顯示在分頁說明）：
+  1. 按「🗑 清除 log」      → 清空
+  2. 重做出問題的操作        → 只留這次
+  3. 按「📧 發送 log」       → 寄乾淨的 log
+</pre>
+<h4>行為</h4>
+<pre>
+def _clear_log(self):
+    with LOG.action("清除 log") as a:               # 清除本身也記一筆（諷刺但必要）
+        n = LOG.clear()                              # truncate action_log.jsonl
+        a.step("truncate action_log.jsonl", "ok", f"清除 {n} 行")
+    # 清除後第一筆就是這個「清除」action → 標記新一輪的起點
+    self.refresh()
+</pre>
+<ul>
+  <li>只清 <code>action_log.jsonl</code>（本機動作日誌）；<b>不碰</b>排程執行歷史（那在 GitHub，且非本機）。</li>
+  <li>清除前彈確認框（不可逆）。</li>
+  <li>清除動作<b>本身寫一筆 log</b>（含清掉幾行）→ 連「清空」都不靜默，且成為新一輪的時間起點。</li>
+  <li><b>可選的自動清理</b>：log 超過上限（如 5000 行 / 2 MB）時自動 rotate 保留尾段，避免無限長。</li>
+</ul>
+</div>
+
 <div class="box warn">
 <b>結果對話框新規則（取代「✅ 建立完成」）：</b>
 <pre>
@@ -331,7 +359,8 @@ AST 掃 <code>except</code> 子句，若 body 只有 <code>pass</code> 或只有
 <table>
   <tr><th>檔案</th><th>改動</th></tr>
   <tr><td><code>services/action_log.py</code>（新）</td><td>ActionLog 單例 + _ActionScope + JSONL + Qt signal</td></tr>
-  <tr><td><code>views/log_view.py</code></td><td>訂閱 ActionLog signal，依 aid 分群即時顯示步驟；<b>加「📧 發送 log」按鈕</b></td></tr>
+  <tr><td><code>views/log_view.py</code></td><td>訂閱 ActionLog signal，依 aid 分群即時顯示步驟；<b>加「📧 發送 log」+「🗑 清除 log」按鈕 + 重現步驟說明</b></td></tr>
+  <tr><td><code>services/action_log.py</code>（clear）</td><td><code>clear()</code> truncate jsonl 回行數；超限自動 rotate 保留尾段</td></tr>
   <tr><td><code>services/probes.py</code>（log mail）</td><td><code>send_log_to_dev()</code> SMTP 寄 log 給 itemhsu（收件人寫死）；<code>mask_secrets()</code></td></tr>
   <tr><td><code>views/wizard.py</code></td><td>_do_build_repob / _do_update_engine / gh 登入 等 handler 全包 action()</td></tr>
   <tr><td><code>views/overview_view.py</code></td><td>測試發信 / 設定 secret / dry-run / 儲存寄件人 全包</td></tr>
@@ -361,6 +390,10 @@ AST 掃 <code>except</code> 子句，若 body 只有 <code>pass</code> 或只有
   <tr><td>L-14</td><td>R6 密度：非 ok step 必有 detail</td><td>lint 對空 detail 的 fail/skip 紅燈</td><td><span class="tag t-test">CI</span></td></tr>
   <tr><td>L-15</td><td>R7：action 第一筆是 env 快照</td><td>含 app/os/gh/repo/pin 五項</td><td><span class="tag t-test">單元</span></td></tr>
   <tr><td>L-16</td><td>除錯充分性：模擬 404 抓檔</td><td>log 含 URL + rc + err 全文，足以定位（不需截圖）</td><td><span class="tag t-test">整合</span></td></tr>
+  <tr><td>L-17</td><td>🗑 清除 log 清空 jsonl</td><td>clear() 後 tail() 只剩「清除」這一筆 action</td><td><span class="tag t-test">單元</span></td></tr>
+  <tr><td>L-18</td><td>清除動作本身有 log（不靜默）</td><td>清除後第一筆即「清除 log」action + 清掉行數</td><td><span class="tag t-test">單元</span></td></tr>
+  <tr><td>L-19</td><td>清除只動本機 jsonl</td><td>不影響 GitHub 排程歷史 / 不誤刪其他檔</td><td><span class="tag t-test">單元</span></td></tr>
+  <tr><td>L-20</td><td>超限自動 rotate</td><td>>上限時保留尾段，不無限長</td><td><span class="tag t-test">單元</span></td></tr>
 </table>
 
 <hr style="border-color:#334155;margin-top:3rem">
