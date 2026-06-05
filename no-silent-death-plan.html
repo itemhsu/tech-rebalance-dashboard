@@ -85,6 +85,53 @@ probe_broker 對 list 呼叫 <code>.get</code> → 例外 → 被上層 <code>ex
 </ol>
 </div>
 
+<!-- ════════════════ 二點五、log 密度 ════════════════ -->
+<h2 id="density">二之二、log 密度標準：讀 log 就能除錯，不用截圖</h2>
+<div class="box bad">
+<b>反例（密度不足，等於沒寫）：</b>
+<pre>
+▶ 建立交易系統
+   · sync repo_b: warn
+   ⚠ 1/4 步有問題
+</pre>
+看不出：哪個檔？為什麼 warn？gh 回什麼？URL 是什麼？版本多少？→ 還是得問使用者截圖。
+</div>
+<div class="box good">
+<b>正例（足以遠端除錯）：</b>
+<pre>
+▶ 2026-06-05T12:03:11Z [a1b2c3d4] 建立/修復交易系統  ctx=item3hsu/tech-rebalance
+   · env: app=v0.4.2 os=macOS-14.5 gh_login=item3hsu engine_pin=v1.0.6
+   · gh repo create item3hsu/tech-rebalance: ok rc=0
+   · fetch templates/test_email.yml: <span class="ng">fail</span> rc=1 err="HTTP 404: Not Found
+     (repos/itemhsu/tech-rebalance-pub/contents/templates/test_email.yml)" url=...contents/templates/test_email.yml
+   · sync repo_b/.github/workflows/test_email.yml: <span class="ng">skip-no-template</span>（上一步抓檔失敗）
+   · sync repo_b/data/.gitkeep: created
+   ⚠ 1/5 步有問題：test_email.yml 未推（範本抓取 404）
+</pre>
+讀完直接知道：是 <code>templates/test_email.yml</code> 在 pub repo 不存在（或路徑錯）→ 不用任何截圖。
+</div>
+
+<h3>每筆 step 的「最低資訊量」契約</h3>
+<table>
+  <tr><th>動作類型</th><th>detail 必含</th></tr>
+  <tr><td>gh 呼叫</td><td>完整 args（金鑰除外）、<code>rc</code>、非零時 <code>stderr</code> 前 200 字</td></tr>
+  <tr><td>HTTP / 抓檔</td><td>method、URL、status/rc、失敗原因（SSL/404/timeout）</td></tr>
+  <tr><td>檔案 PUT</td><td>repo、path、bytes、是否帶 sha（新建/覆蓋）、rc</td></tr>
+  <tr><td>sync 每個 path</td><td>policy、action 結果、若 skip/fail <b>必附原因</b>（連到是哪一步失敗）</td></tr>
+  <tr><td>SMTP / 寄信</td><td>host、port、收件人、login 帳號（密碼除外）、例外類別</td></tr>
+  <tr><td>例外</td><td>例外型別 + 訊息 + <b>traceback 末 1500 字</b> + 當下關鍵變數值</td></tr>
+  <tr><td>每個 action 開頭</td><td><b>env 快照</b>：app 版本、OS、gh 登入名、repo slug、引擎 pin</td></tr>
+</table>
+
+<div class="box info">
+<b>三條密度硬規則：</b>
+<ol>
+  <li><b>每個 action 第一筆 step 必為 env 快照</b>（_ActionScope 自動補），讓每次操作都自帶環境。</li>
+  <li><b>任何 fail/skip/warn 的 detail 不得為空</b>——必含「是什麼、為什麼、相關值」。lint 檢查空 detail 的非 ok step。</li>
+  <li><b>gh / http 一律用包好的 logged 版</b>，回傳即記 rc + err，呼叫端不可裸呼。</li>
+</ol>
+</div>
+
 <!-- ════════════════ 三、架構 ════════════════ -->
 <h2 id="c">三、ActionLog 架構</h2>
 
@@ -220,6 +267,8 @@ test_email.yml 抓不到範本 → 對話框直接列「- repo_b/test_email.yml:
   <tr><td><span class="tag t-rule">R3</span> gh 非零必記</td><td>所有 _gh 呼叫經 <code>gh_logged</code> 或自行檢查 rc</td><td>—</td></tr>
   <tr><td><span class="tag t-rule">R4</span> 對話框不得假成功</td><td>顯示成功前必查 <code>problems()</code></td><td>—</td></tr>
   <tr><td><span class="tag t-rule">R5</span> 每個 clicked.connect 的 handler 都包 action()</td><td>introspection 測試掃描所有按鈕</td><td>純導覽（切分頁）可豁免</td></tr>
+  <tr><td><span class="tag t-rule">R6</span> 非 ok step 的 detail 不得為空</td><td>fail/skip/warn 必含「是什麼+為什麼+值」</td><td>—</td></tr>
+  <tr><td><span class="tag t-rule">R7</span> 每個 action 自帶 env 快照</td><td>第一筆 step 為 app/os/gh/repo/pin</td><td>—</td></tr>
 </table>
 
 <div class="box">
@@ -259,6 +308,9 @@ AST 掃 <code>except</code> 子句，若 body 只有 <code>pass</code> 或只有
   <tr><td>L-11</td><td>📧 發送 log 寄給 itemhsu</td><td>SMTP 收件人寫死 itemhsu@gmail.com，不可被覆寫</td><td><span class="tag t-test">單元</span></td></tr>
   <tr><td>L-12</td><td>log 寄送前遮罩金鑰</td><td>含 PAT/secret 的 log → 輸出為 <code>***</code></td><td><span class="tag t-test">單元</span></td></tr>
   <tr><td>L-13</td><td>無 EMAIL_PASSWORD 後援</td><td>改存桌面檔/mailto，且該動作本身有 log（不靜默）</td><td><span class="tag t-test">整合</span></td></tr>
+  <tr><td>L-14</td><td>R6 密度：非 ok step 必有 detail</td><td>lint 對空 detail 的 fail/skip 紅燈</td><td><span class="tag t-test">CI</span></td></tr>
+  <tr><td>L-15</td><td>R7：action 第一筆是 env 快照</td><td>含 app/os/gh/repo/pin 五項</td><td><span class="tag t-test">單元</span></td></tr>
+  <tr><td>L-16</td><td>除錯充分性：模擬 404 抓檔</td><td>log 含 URL + rc + err 全文，足以定位（不需截圖）</td><td><span class="tag t-test">整合</span></td></tr>
 </table>
 
 <hr style="border-color:#334155;margin-top:3rem">
