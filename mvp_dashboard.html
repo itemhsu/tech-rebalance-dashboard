@@ -276,6 +276,7 @@ async function main() {
     if (!res.ok) throw new Error(`${dataUrl.replace(BASE_URL,"")} HTTP ` + res.status);
     data = await res.json();
   } catch(e) {
+    if (String(e.message).includes("404")) { showPending(account); return; }
     showError("無法載入帳戶資料：" + e.message);
     return;
   }
@@ -906,6 +907,21 @@ function showError(msg) {
   document.getElementById("loading").style.display = "none";
   document.getElementById("error-banner").style.display = "block";
   document.getElementById("error-msg").textContent = msg;
+}
+
+function showPending(account) {
+  // 資料尚未發佈（剛建好帳戶 / 雲端產生中）→ 友善提示，不是紅色錯誤
+  document.getElementById("loading").style.display = "none";
+  document.getElementById("error-banner").style.display = "none";
+  var name = (account && (account.label || ("帳戶 #" + account.id))) || "你的帳戶";
+  var html = '<div style="max-width:680px;margin:60px auto;padding:32px;border-radius:14px;'
+    + 'background:#1e293b;color:#e2e8f0;text-align:center;line-height:1.9">'
+    + '<div style="font-size:44px">\u23f3</div>'
+    + '<h2 style="margin:12px 0;font-size:20px">\u300c' + name + '\u300d\u7684\u5831\u544a\u6b63\u5728\u7522\u751f\u4e2d</h2>'
+    + '<p style="color:#94a3b8">\u7cfb\u7d71\u525b\u9023\u4e0a\u4f60\u7684\u5e33\u6236\uff0c\u6301\u5009\u5831\u544a\u901a\u5e38\u6578\u5206\u9418\u5167\u5b8c\u6210\u3002<br>\u7a0d\u5019\u518d\u6309\u4e0b\u65b9\u91cd\u65b0\u6574\u7406\u5373\u53ef\u3002</p>'
+    + '<button onclick="location.reload()" style="margin-top:18px;padding:10px 26px;border:none;'
+    + 'border-radius:8px;background:#3b82f6;color:#fff;font-size:15px;cursor:pointer">\ud83d\udd04 \u91cd\u65b0\u6574\u7406</button></div>';
+  (document.querySelector("main") || document.body).insertAdjacentHTML("afterbegin", html);
 }
 
 // ══════════════════════════════════════════════════════════════════════════════
