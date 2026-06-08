@@ -33,7 +33,9 @@ body{background:#020617;color:#e2e8f0;font-family:'Segoe UI',system-ui,sans-seri
 .ctrl-bar{position:sticky;top:0;background:#0a0f1e;border-bottom:2px solid #1e3a5f;
           padding:12px 0;z-index:40;display:flex;align-items:center;gap:14px;flex-wrap:wrap;
           margin:0 -22px 18px;padding-left:22px;padding-right:22px;}
-.ctrl-bar .lbl{font-size:12px;font-weight:800;color:#3b82f6;}
+.ctrl-bar .range-group{display:flex;flex-direction:column;gap:6px;align-items:flex-start;flex:0 0 auto;}
+.ctrl-bar .range-row{display:flex;align-items:center;gap:8px;}
+.ctrl-bar .lbl{font-size:12px;font-weight:800;color:#3b82f6;white-space:nowrap;}
 .ctrl-bar select{background:#0f172a;border:1px solid #3b82f6;color:#e2e8f0;
    padding:7px 12px;border-radius:6px;font-size:13px;cursor:pointer;}
 .ctrl-bar .range-disp{background:#1e293b;padding:5px 14px;border-radius:14px;
@@ -109,16 +111,25 @@ details[open] .arr{transform:rotate(90deg);}
 
   <!-- Global control bar -->
   <div class="ctrl-bar">
-    <span class="lbl">🗓️ 回測區間</span>
-    <select id="range-select" onchange="onRangeChange(this.value)">
-      <option value="">全期</option>
-      <option value="5">最近 5 年</option>
-      <option value="10" selected>最近 10 年</option>
-      <option value="15">最近 15 年</option>
-      <option value="20">最近 20 年</option>
-      <option value="25">最近 25 年</option>
-    </select>
-    <span id="range-display" class="range-disp">載入中…</span>
+    <div class="range-group">
+      <div class="range-row">
+        <span class="lbl">🗓️ 回測區間</span>
+        <select id="range-select" onchange="onRangeChange(this.value)">
+          <option value="">全期</option>
+          <option value="m1">最近 1 個月</option>
+          <option value="m2">最近 2 個月</option>
+          <option value="m6">最近 6 個月</option>
+          <option value="1">最近 1 年</option>
+          <option value="2">最近 2 年</option>
+          <option value="5">最近 5 年</option>
+          <option value="10" selected>最近 10 年</option>
+          <option value="15">最近 15 年</option>
+          <option value="20">最近 20 年</option>
+          <option value="25">最近 25 年</option>
+        </select>
+      </div>
+      <span id="range-display" class="range-disp">載入中…</span>
+    </div>
     <div class="tags" id="active-tags"></div>
   </div>
 
@@ -358,9 +369,10 @@ function applyRangeFromSelect(val) {
   if (val === undefined) val = document.getElementById('range-select').value;
   if (!val) { CURRENT_X0 = null; CURRENT_X1 = null; }
   else {
-    const n = parseInt(val, 10);
     const end = new Date();
-    const start = new Date(end); start.setFullYear(start.getFullYear() - n);
+    const start = new Date(end);
+    if (val[0] === 'm') start.setMonth(start.getMonth() - parseInt(val.slice(1), 10));
+    else start.setFullYear(start.getFullYear() - parseInt(val, 10));
     CURRENT_X0 = start.toISOString().slice(0,10);
     CURRENT_X1 = end.toISOString().slice(0,10);
   }
@@ -368,8 +380,10 @@ function applyRangeFromSelect(val) {
 }
 function rangeLabel() {
   if (!CURRENT_X0) return '全期';
-  const yrs = ((new Date(CURRENT_X1)-new Date(CURRENT_X0))/(365.25*86400e3)).toFixed(1);
-  return `${CURRENT_X0.slice(0,7)} → ${CURRENT_X1.slice(0,7)}（${yrs} 年）`;
+  const days = (new Date(CURRENT_X1)-new Date(CURRENT_X0))/86400e3;
+  const span = days < 350 ? `${Math.round(days/30.44)} 個月`
+                          : `${(days/365.25).toFixed(1)} 年`;
+  return `${CURRENT_X0.slice(0,7)} → ${CURRENT_X1.slice(0,7)}（${span}）`;
 }
 
 // ────────────────────────────────────────────────
