@@ -266,8 +266,11 @@ async function loadAll() {
   );
   await Promise.all(fetches);
 
-  // 初始全域勾選 (全部開啟)
-  MANIFEST.strategies.forEach(s => SIDEBAR_ON[s.id] = true);
+  // 初始全域勾選：若網址帶 ?sel=a,b,c（以 manifest id 為準）只勾清單內的；
+  // 否則維持原本「全部開啟」。未知 id 自動忽略，不會出錯。
+  const _sel = new URLSearchParams(location.search).get('sel');
+  const _selSet = _sel ? new Set(_sel.split(',').map(x => x.trim()).filter(Boolean)) : null;
+  MANIFEST.strategies.forEach(s => SIDEBAR_ON[s.id] = _selSet ? _selSet.has(s.id) : true);
 
   buildSidebar();
   applyRangeFromSelect();
