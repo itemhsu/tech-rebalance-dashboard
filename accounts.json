@@ -1,1 +1,102 @@
-{"accounts": [{"id": "1", "label": "帳戶 #1 (TOP10 Daily)", "strategy": "top10", "enabled": true}, {"id": "2", "label": "帳戶 #2 (D2P2T6)", "strategy": "d2p2t6", "enabled": true}, {"id": "3", "label": "帳戶 #3 (MOM-6m-T20 月度動能 · LIVE 真錢)", "strategy": "mom_6m_t20", "enabled": true}, {"id": "4", "label": "帳戶 #4 (Weekly Top10)", "strategy": "weekly_top10", "enabled": false}, {"id": "5", "label": "帳戶 #5 (MOM-6m-T20 月度動能)", "strategy": "mom_6m_t20", "enabled": false}, {"id": "6", "label": "sini", "strategy": "mom_6m_t10", "enabled": true}]}
+{
+  "accounts": [
+    {
+      "id": "1",
+      "strategy": "top10",
+      "label": "帳戶 #1 (TOP10 Daily)",
+      "enabled": true,
+      "broker": "alpaca",
+      "environment": "paper",
+      "secret_prefix": "ACC1",
+      "alpaca_secret_prefix": "ACC1",
+      "data_dir": "data/1",
+      "email_recipients": [
+        "itemhsu@gmail.com"
+      ]
+    },
+    {
+      "id": "2",
+      "strategy": "d2p2t6",
+      "label": "帳戶 #2 (D2P2T6)",
+      "enabled": true,
+      "broker": "alpaca",
+      "environment": "paper",
+      "secret_prefix": "ACC2",
+      "alpaca_secret_prefix": "ACC2",
+      "data_dir": "d2p2t6/data/1",
+      "runner_sub_id": "1",
+      "email_recipients": [
+        "itemhsu@gmail.com"
+      ]
+    },
+    {
+      "id": "3",
+      "strategy": "mom_6m_t20",
+      "label": "帳戶 #3 (MOM-6m-T20 月度動能 · LIVE 真錢)",
+      "enabled": true,
+      "broker": "alpaca",
+      "environment": "live",
+      "secret_prefix": "ACC3",
+      "alpaca_secret_prefix": "ACC3",
+      "data_dir": "data/3",
+      "email_recipients": [
+        "itemhsu@gmail.com"
+      ],
+      "strategy_history": [
+        {
+          "strategy": "top9psq",
+          "label": "Top9 PSQ",
+          "data_dir": "top9psq/data/2"
+        },
+        {
+          "strategy": "mom_6m_t20",
+          "label": "MOM-6m-T20",
+          "data_dir": "data/3"
+        }
+      ]
+    },
+    {
+      "id": "4",
+      "strategy": "weekly_top10",
+      "label": "帳戶 #4 (Weekly Top10)",
+      "enabled": false,
+      "broker": "alpaca",
+      "environment": "paper",
+      "secret_prefix": "ACC4",
+      "alpaca_secret_prefix": "ACC4",
+      "data_dir": "weekly_top10/data/4",
+      "email_recipients": [
+        "itemhsu@gmail.com"
+      ],
+      "disabled_reason": "CT-ALIGN: 無 workflow 執行/未注入 ACC4 金鑰，上線前停用（fork-compat 計劃 §6.2）"
+    },
+    {
+      "id": "5",
+      "strategy": "mom_6m_t20",
+      "label": "帳戶 #5 (MOM-6m-T20 月度動能)",
+      "enabled": false,
+      "broker": "alpaca",
+      "environment": "paper",
+      "secret_prefix": "ACC5",
+      "alpaca_secret_prefix": "ACC5",
+      "data_dir": "data/5",
+      "email_recipients": [
+        "itemhsu@gmail.com"
+      ]
+    },
+    {
+      "id": "6",
+      "label": "sini",
+      "strategy": "mom_6m_t10",
+      "broker": "sinopac",
+      "environment": "paper",
+      "enabled": true,
+      "secret_prefix": "ACC6",
+      "data_dir": "data/6",
+      "use_new_runner": true,
+      "email_recipients": [
+        "itemhsu@gmail.com"
+      ]
+    }
+  ]
+}
