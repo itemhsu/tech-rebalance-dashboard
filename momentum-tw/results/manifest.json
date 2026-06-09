@@ -1,0 +1,42 @@
+{
+  "generated_at": "2026-06-09T04:03:06Z",
+  "source_dir": "/Users/miniaicar/Downloads/tradecopy/strategies_tw",
+  "strategies": [
+    {
+      "id": "tw_tech_top10",
+      "label": "台股科技TOP10",
+      "color": "#e11d48",
+      "group": "tw",
+      "file": "tw_tech_top10.json",
+      "enabled": true,
+      "order": 101
+    },
+    {
+      "id": "tw_tech_mom_6m_t10",
+      "label": "台股科技Mom6m-T10",
+      "color": "#f59e0b",
+      "group": "tw",
+      "file": "tw_tech_mom_6m_t10.json",
+      "enabled": true,
+      "order": 102
+    },
+    {
+      "id": "bench_0050",
+      "label": "0050",
+      "color": "#3b82f6",
+      "group": "benchmark",
+      "file": "bench_0050.json",
+      "enabled": true,
+      "order": 901
+    },
+    {
+      "id": "bench_taiex",
+      "label": "加權指數",
+      "color": "#94a3b8",
+      "group": "benchmark",
+      "file": "bench_taiex.json",
+      "enabled": true,
+      "order": 902
+    }
+  ]
+}
