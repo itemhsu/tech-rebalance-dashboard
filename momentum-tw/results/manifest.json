@@ -1,24 +1,24 @@
 {
-  "generated_at": "2026-06-09T04:03:06Z",
-  "source_dir": "/Users/miniaicar/Downloads/tradecopy/strategies_tw",
+  "generated_at": "2026-06-09T08:54:56Z",
+  "source_dir": "/Users/miniaicar/Downloads/tradecopy/strategies",
   "strategies": [
     {
-      "id": "tw_tech_top10",
-      "label": "台股科技TOP10",
-      "color": "#e11d48",
-      "group": "tw",
-      "file": "tw_tech_top10.json",
+      "id": "tech_top10",
+      "label": "科技TOP10(市值)",
+      "color": "#10b981",
+      "group": "diversified",
+      "file": "tech_top10.json",
       "enabled": true,
-      "order": 101
+      "order": 150
     },
     {
-      "id": "tw_tech_mom_6m_t10",
-      "label": "台股科技Mom6m-T10",
+      "id": "tech_mom_6m_t10",
+      "label": "科技Mom6m-T10",
       "color": "#f59e0b",
-      "group": "tw",
-      "file": "tw_tech_mom_6m_t10.json",
+      "group": "momentum",
+      "file": "tech_mom_6m_t10.json",
       "enabled": true,
-      "order": 102
+      "order": 151
     },
     {
       "id": "bench_0050",
