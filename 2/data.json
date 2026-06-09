@@ -4,7 +4,7 @@
     "strategy": "d2p2t6",
     "account_id": "2",
     "account_label": "帳戶 #2 (D2P2T6)",
-    "generated_at": "2026-06-09T01:16:07Z",
+    "generated_at": "2026-06-09T08:01:19Z",
     "trading_date": "2026-06-08",
     "dry_run": false,
     "strategy_status": "active",
@@ -963,7 +963,7 @@
       103118.04,
       103029.65,
       98723.02,
-      99568.7
+      99568.69
     ]
   }
 }

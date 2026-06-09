@@ -4,7 +4,7 @@
     "strategy": "top10",
     "account_id": "1",
     "account_label": "帳戶 #1 (TOP10 Daily)",
-    "generated_at": "2026-06-09T01:16:06Z",
+    "generated_at": "2026-06-09T08:01:18Z",
     "trading_date": "2026-06-08",
     "dry_run": false,
     "strategy_status": "active",
@@ -948,7 +948,7 @@
       106967.23,
       105929.14,
       101501.31,
-      102370.79
+      102370.78
     ]
   }
 }
