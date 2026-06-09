@@ -87,7 +87,7 @@
     {
       "id": "6",
       "label": "sini",
-      "strategy": "mom_6m_t10",
+      "strategy": "tech_top10",
       "broker": "sinopac",
       "environment": "paper",
       "enabled": true,
