@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-09T04:17:52Z",
+  "generated_at": "2026-06-10T03:29:05Z",
   "source_dir": "/home/runner/work/tech-rebalance/tech-rebalance/strategies",
   "strategies": [
     {
@@ -55,6 +55,24 @@
       "file": "mom_factor_monthly.json",
       "enabled": true,
       "order": 106
+    },
+    {
+      "id": "tech_top10",
+      "label": "科技TOP10(市值)",
+      "color": "#10b981",
+      "group": "diversified",
+      "file": "tech_top10.json",
+      "enabled": true,
+      "order": 150
+    },
+    {
+      "id": "tech_mom_6m_t10",
+      "label": "科技Mom6m-T10",
+      "color": "#f59e0b",
+      "group": "momentum",
+      "file": "tech_mom_6m_t10.json",
+      "enabled": true,
+      "order": 151
     },
     {
       "id": "top10",

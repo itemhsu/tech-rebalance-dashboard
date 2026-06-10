@@ -2,7 +2,7 @@
   "accounts": [
     {
       "id": "1",
-      "strategy": "top10",
+      "strategy": "tech_top10",
       "label": "帳戶 #1 (TOP10 Daily)",
       "enabled": true,
       "broker": "alpaca",
