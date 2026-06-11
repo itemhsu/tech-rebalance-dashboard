@@ -4,7 +4,7 @@
     "strategy": "tech_top10",
     "account_id": "6",
     "account_label": "sini",
-    "generated_at": "2026-06-11T07:57:40Z",
+    "generated_at": "2026-06-11T22:13:14Z",
     "trading_date": "2026-06-11",
     "dry_run": false,
     "strategy_status": "active",
@@ -146,6 +146,16 @@
     "dashboard_url": "https://itemhsu.github.io/tech-rebalance-dashboard/mvp_dashboard.html?a=6",
     "sections_rendered": [
       "kpi"
+    ]
+  },
+  "benchmark_nav": {
+    "sp500": [
+      4510.0,
+      4589.01
+    ],
+    "nasdaq": [
+      4510.0,
+      4624.71
     ]
   }
 }
