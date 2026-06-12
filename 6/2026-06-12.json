@@ -4,7 +4,7 @@
     "strategy": "tech_top10",
     "account_id": "6",
     "account_label": "sini",
-    "generated_at": "2026-06-12T07:53:14Z",
+    "generated_at": "2026-06-12T22:04:33Z",
     "trading_date": "2026-06-12",
     "dry_run": false,
     "strategy_status": "active",
@@ -167,12 +167,12 @@
     "sp500": [
       4510.0,
       4589.01,
-      4589.01
+      4612.07
     ],
     "nasdaq": [
       4510.0,
       4624.71,
-      4624.71
+      4638.9
     ]
   }
 }
