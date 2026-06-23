@@ -4,8 +4,7 @@
     "strategy": "tech_top10",
     "account_id": "1",
     "account_label": "帳戶 #1 (TOP10 Daily)",
-    "currency": "USD",
-    "generated_at": "2026-06-23T01:14:57Z",
+    "generated_at": "2026-06-23T07:29:45Z",
     "trading_date": "2026-06-22",
     "dry_run": false,
     "strategy_status": "active",
@@ -1195,5 +1194,6 @@
       104693.28,
       103306.23
     ]
-  }
+  },
+  "stale_warning": "⚠️ 今日未更新（資料停在 2026-06-22，其他帳戶已更新到 2026-06-23）。可能執行失敗或券商金鑰問題——請查當日 Actions 執行紀錄。"
 }
