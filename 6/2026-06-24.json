@@ -4,7 +4,8 @@
     "strategy": "tech_top10",
     "account_id": "6",
     "account_label": "sini",
-    "generated_at": "2026-06-24T07:25:35Z",
+    "currency": "TWD",
+    "generated_at": "2026-06-24T21:58:30Z",
     "trading_date": "2026-06-24",
     "dry_run": false,
     "strategy_status": "active",
@@ -277,7 +278,7 @@
   "events": [],
   "email": {
     "subject": "[TECH10 #6] 2026-06-24 NAV 4,780",
-    "preheader": "帳戶 #6 · 2026-06-24 · NAV $4,780",
+    "preheader": "帳戶 #6 · 2026-06-24 · NAV NT$4,780",
     "dashboard_url": "https://itemhsu.github.io/tech-rebalance-dashboard/mvp_dashboard.html?a=6",
     "sections_rendered": [
       "kpi"
@@ -295,7 +296,7 @@
       4654.97,
       4637.72,
       4571.11,
-      4571.11
+      4566.62
     ],
     "nasdaq": [
       4510.0,
@@ -308,7 +309,7 @@
       4751.62,
       4688.67,
       4584.82,
-      4584.82
+      4565.03
     ]
   }
 }
