@@ -5,7 +5,7 @@
     "account_id": "6",
     "account_label": "sini",
     "currency": "TWD",
-    "generated_at": "2026-06-29T21:58:12Z",
+    "generated_at": "2026-06-29T23:16:48Z",
     "trading_date": "2026-06-29",
     "dry_run": false,
     "strategy_status": "active",
@@ -322,11 +322,19 @@
   },
   "events": [],
   "email": {
-    "subject": "[TECH10 #6] 2026-06-29 NAV 4,740",
+    "subject": "[TECH10 #6] 2026-06-29 NAV 4,740 (+1.28%)",
     "preheader": "帳戶 #6 · 2026-06-29 · NAV NT$4,740",
     "dashboard_url": "https://itemhsu.github.io/tech-rebalance-dashboard/mvp_dashboard.html?a=6",
     "sections_rendered": [
-      "kpi"
+      "header",
+      "kpi",
+      "strategy_card",
+      "positions_table",
+      "rankings",
+      "trades",
+      "cta",
+      "strategy_history",
+      "footer"
     ]
   },
   "benchmark_nav": {
