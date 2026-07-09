@@ -5,7 +5,7 @@
     "account_id": "1",
     "account_label": "帳戶 #1 (TOP10 Daily)",
     "currency": "USD",
-    "generated_at": "2026-07-08T22:32:40Z",
+    "generated_at": "2026-07-09T04:16:25Z",
     "trading_date": "2026-07-08",
     "dry_run": false,
     "strategy_status": "active",
@@ -1684,7 +1684,7 @@
       101987.87,
       103126.83,
       101932.67,
-      102137.82
+      102137.81
     ]
   }
 }
