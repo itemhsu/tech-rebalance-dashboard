@@ -4,8 +4,7 @@
     "strategy": "d2p2t6",
     "account_id": "2",
     "account_label": "帳戶 #2 (D2P2T6)",
-    "currency": "USD",
-    "generated_at": "2026-07-21T03:41:32Z",
+    "generated_at": "2026-07-21T08:39:55Z",
     "trading_date": "2026-07-20",
     "dry_run": false,
     "strategy_status": "active",
@@ -1844,5 +1843,6 @@
       97996.54,
       97949.81
     ]
-  }
+  },
+  "stale_warning": "⚠️ 今日未更新（資料停在 2026-07-20，其他帳戶已更新到 2026-07-21）。可能執行失敗或券商金鑰問題——請查當日 Actions 執行紀錄。"
 }
