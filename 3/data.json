@@ -4,8 +4,7 @@
     "strategy": "mom_6m_t20",
     "account_id": "3",
     "account_label": "帳戶 #3 (MOM-6m-T20 月度動能 · LIVE 真錢)",
-    "currency": "USD",
-    "generated_at": "2026-07-24T03:39:54Z",
+    "generated_at": "2026-07-24T08:36:35Z",
     "trading_date": "2026-07-23",
     "dry_run": false,
     "strategy_status": "active",
@@ -1607,7 +1606,7 @@
       19377.74,
       19627.78,
       19516.63,
-      19096.38
+      19096.37
     ]
   },
   "strategy_history": [
@@ -1623,5 +1622,6 @@
       "from": "2026-06-02",
       "to": null
     }
-  ]
+  ],
+  "stale_warning": "⚠️ 今日未更新（資料停在 2026-07-23，其他帳戶已更新到 2026-07-24）。可能執行失敗或券商金鑰問題——請查當日 Actions 執行紀錄。"
 }
