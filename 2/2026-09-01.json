@@ -4,8 +4,7 @@
     "strategy": "d2p2t6",
     "account_id": "2",
     "account_label": "帳戶 #2 (D2P2T6)",
-    "currency": "USD",
-    "generated_at": "2026-09-01T05:02:44Z",
+    "generated_at": "2026-09-01T11:30:07Z",
     "trading_date": "2026-09-01",
     "dry_run": false,
     "strategy_status": "active",
@@ -2572,7 +2571,7 @@
       104224.83,
       104557.41,
       105288.9,
-      105288.9,
+      105026.99,
       104678.08
     ],
     "nasdaq": [
@@ -2647,7 +2646,7 @@
       99762.72,
       100419.78,
       101917.55,
-      101917.55,
+      null,
       101263.0
     ]
   }
