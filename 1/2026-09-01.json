@@ -4,7 +4,8 @@
     "strategy": "tech_top10",
     "account_id": "1",
     "account_label": "帳戶 #1 (TOP10 Daily)",
-    "generated_at": "2026-09-01T11:30:05Z",
+    "currency": "USD",
+    "generated_at": "2026-09-02T04:27:07Z",
     "trading_date": "2026-09-01",
     "dry_run": false,
     "strategy_status": "active",
@@ -2573,11 +2574,19 @@
   },
   "events": [],
   "email": {
-    "subject": "[TECH10 #1] 2026-09-01 NAV 105,369",
+    "subject": "[TECH10 #1] 2026-09-01 NAV 105,369 (-0.42%)",
     "preheader": "帳戶 #1 · 2026-09-01 · NAV $105,369",
     "dashboard_url": "https://itemhsu.github.io/tech-rebalance-dashboard/mvp_dashboard.html?a=1",
     "sections_rendered": [
-      "kpi"
+      "header",
+      "kpi",
+      "strategy_card",
+      "positions_table",
+      "rankings",
+      "trades",
+      "cta",
+      "strategy_history",
+      "footer"
     ]
   },
   "benchmark_nav": {
@@ -2658,8 +2667,8 @@
       105410.01,
       105746.37,
       106486.17,
-      106486.17,
-      105868.41
+      106221.29,
+      105115.39
     ],
     "nasdaq": [
       99988.04,
@@ -2738,8 +2747,8 @@
       102570.28,
       103245.83,
       104785.75,
-      104785.75,
-      104112.77
+      104237.25,
+      103042.38
     ]
   }
 }
