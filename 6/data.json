@@ -5,7 +5,7 @@
     "account_id": "6",
     "account_label": "sini",
     "currency": "TWD",
-    "generated_at": "2026-09-07T23:39:33Z",
+    "generated_at": "2026-09-08T00:07:23Z",
     "trading_date": "2026-09-07",
     "dry_run": false,
     "strategy_status": "active",
@@ -1220,5 +1220,6 @@
       4749.66,
       4749.66
     ]
-  }
+  },
+  "stale_warning": "⚠️ 今日未更新（資料停在 2026-09-07，其他帳戶已更新到 2026-09-08）。可能執行失敗或券商金鑰問題——請查當日 Actions 執行紀錄。"
 }
