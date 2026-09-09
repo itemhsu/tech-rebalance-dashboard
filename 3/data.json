@@ -4,7 +4,8 @@
     "strategy": "mom_6m_t20",
     "account_id": "3",
     "account_label": "帳戶 #3 (MOM-6m-T20 月度動能 · LIVE 真錢)",
-    "generated_at": "2026-09-08T11:02:43Z",
+    "currency": "USD",
+    "generated_at": "2026-09-09T04:36:49Z",
     "trading_date": "2026-09-08",
     "dry_run": false,
     "strategy_status": "active",
@@ -2396,7 +2397,7 @@
       20525.98,
       20743.14,
       20665.2,
-      20665.2
+      20544.51
     ],
     "nasdaq": [
       19820.37,
@@ -2470,7 +2471,7 @@
       19916.92,
       20195.14,
       20136.59,
-      20136.59
+      20071.58
     ]
   },
   "strategy_history": [
