@@ -4,7 +4,8 @@
     "strategy": "tech_top10",
     "account_id": "6",
     "account_label": "sini",
-    "generated_at": "2026-09-16T11:19:04Z",
+    "currency": "TWD",
+    "generated_at": "2026-09-17T00:16:06Z",
     "trading_date": "2026-09-16",
     "dry_run": false,
     "strategy_status": "active",
@@ -1176,11 +1177,19 @@
   },
   "events": [],
   "email": {
-    "subject": "[TECH10 #6] 2026-09-16 NAV 4,760",
-    "preheader": "帳戶 #6 · 2026-09-16 · NAV $4,760",
+    "subject": "[TECH10 #6] 2026-09-16 NAV 4,760 (-0.21%)",
+    "preheader": "帳戶 #6 · 2026-09-16 · NAV NT$4,760",
     "dashboard_url": "https://itemhsu.github.io/tech-rebalance-dashboard/mvp_dashboard.html?a=6",
     "sections_rendered": [
-      "kpi"
+      "header",
+      "kpi",
+      "strategy_card",
+      "positions_table",
+      "rankings",
+      "trades",
+      "cta",
+      "strategy_history",
+      "footer"
     ]
   },
   "benchmark_nav": {
@@ -1255,7 +1264,7 @@
       4752.03,
       4729.07,
       4707.81,
-      4707.81
+      4686.76
     ],
     "nasdaq": [
       4510.0,
@@ -1328,7 +1337,8 @@
       4718.49,
       4692.22,
       4655.51,
-      4655.51
+      4654.95
     ]
-  }
+  },
+  "stale_warning": "⚠️ 今日未更新（資料停在 2026-09-16，其他帳戶已更新到 2026-09-17）。可能執行失敗或券商金鑰問題——請查當日 Actions 執行紀錄。"
 }
