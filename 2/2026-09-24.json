@@ -5,7 +5,7 @@
     "account_id": "2",
     "account_label": "帳戶 #2 (D2P2T6)",
     "currency": "USD",
-    "generated_at": "2026-09-24T00:21:08Z",
+    "generated_at": "2026-09-24T04:43:37Z",
     "trading_date": "2026-09-24",
     "dry_run": false,
     "strategy_status": "active",
@@ -3093,8 +3093,8 @@
       101445.05,
       101845.32,
       104147.57,
-      103433.13,
-      103433.13
+      103433.14,
+      103433.14
     ]
   }
 }
