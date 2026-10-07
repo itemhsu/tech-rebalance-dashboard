@@ -142,10 +142,10 @@
       <div id="portfolio-badges"></div>
     </div>
 
-    <!-- NAV 折線圖 -->
+    <!-- TWR 累積報酬折線圖（入金/出金已剝離；與 S&P500 / NASDAQ 同基期比較） -->
     <div class="card">
       <div class="flex items-center justify-between mb-4">
-        <h2 class="text-sm font-semibold text-slate-400 uppercase tracking-wide">NAV 走勢</h2>
+        <h2 class="text-sm font-semibold text-slate-400 uppercase tracking-wide">TWR 累積報酬 vs S&amp;P500 / NASDAQ</h2>
         <div id="nav-toggles" class="flex gap-4 text-xs"></div>
       </div>
       <canvas id="nav-chart" height="120"></canvas>
@@ -348,7 +348,7 @@ function render(d, allAccounts, currentAccount, availableDates = [], selectedDat
   renderStrategyCard(d.strategy_card, accent);
 
   // Charts
-  renderNavChart(d.nav_history, d.benchmark_nav, accent);
+  renderTwrChart(d.nav_history, d.events, d.benchmark_nav, accent);
   renderDrawdownChart(d.drawdown, accent);
 
   // Positions
@@ -499,56 +499,79 @@ function renderPortfolioBadges(portfolio, accent) {
 }
 
 // ══════════════════════════════════════════════════════════════════════════════
-//  NAV Chart
+//  TWR Chart（時間加權累積報酬 %，入金/出金不算報酬）
 // ══════════════════════════════════════════════════════════════════════════════
-let navChartInst = null;
-function renderNavChart(history, benchmarkNav, accent) {
-  if (!history || history.length === 0) return;
-  const labels = history.map(p => p.date);
-  const navs   = history.map(p => p.nav);
+const BENCH_COLORS = { sp500: "#f59e0b", nasdaq: "#f472b6" };   // 與回撤圖共用
 
-  // 事件標記點（僅投組主線）
-  const pointRadii    = history.map(p => p.event ? 6 : 2);
+// 逐日串接日報酬；遇外部現金流，分母改為「前一點 NAV + 當筆金額」。
+// 配對規則與後端 engine/cashflow.flows_to_events 一致：事件日當天的點若 NAV 等於
+// 事件 nav_before → 視為入金前快照；否則取事件日之前最後一點。回傳每點累積報酬 %。
+function twrSeries(history, events) {
+  const n = history.length;
+  if (!n) return [];
+  const flowAfter = new Array(n).fill(0);
+  for (const e of (events || [])) {
+    if (e.type !== "deposit" && e.type !== "withdrawal") continue;
+    let idx = -1;
+    const same = history.findIndex(p => p.date === e.date);
+    if (same >= 0 && e.nav_before != null && Math.abs(history[same].nav - e.nav_before) < 0.01) {
+      idx = same;
+    } else {
+      for (let i = n - 1; i >= 0; i--) if (history[i].date < e.date) { idx = i; break; }
+    }
+    if (idx >= 0) flowAfter[idx] += Number(e.amount || 0);
+  }
+  const out = [0];
+  let acc = 1;
+  for (let i = 1; i < n; i++) {
+    const base = history[i - 1].nav + flowAfter[i - 1];
+    if (base > 0 && history[i].nav > 0) acc *= history[i].nav / base;
+    out.push((acc - 1) * 100);
+  }
+  return out;
+}
+
+function benchPct(series, base) {
+  if (!series || !(base > 0)) return null;
+  const out = series.map(v => (v == null ? null : (v / base - 1) * 100));
+  return out.some(v => v !== null) ? out : null;
+}
+
+const fmtSignedPct = v => (v == null ? "—" : (v >= 0 ? "+" : "") + v.toFixed(2) + "%");
+
+let navChartInst = null;
+function renderTwrChart(history, events, benchmarkNav, accent) {
+  if (!history || history.length === 0) return;
+  const labels  = history.map(p => p.date);
+  const twr     = twrSeries(history, events);
+  const base    = history[0].nav;
+  const sp500   = benchPct(benchmarkNav?.sp500,  base);
+  const nasdaq  = benchPct(benchmarkNav?.nasdaq, base);
+
+  // 事件標記點（僅投組主線）：入金/出金日放大、金色
+  const pointRadii    = history.map(p => p.event ? 6 : 0);
   const pointBgColors = history.map(p => p.event ? "#f59e0b" : accent);
 
   const datasets = [{
-    label: "投組 NAV",
-    data:  navs,
+    label: "投組 TWR",
+    data:  twr,
     borderColor:       accent,
     backgroundColor:   accent + "22",
-    fill:              true,
+    fill:              { target: { value: 0 } },
     tension:           0.3,
     borderWidth:       2,
     pointRadius:       pointRadii,
+    pointHoverRadius:  6,
     pointBackgroundColor: pointBgColors,
   }];
-
-  const hasSP500  = benchmarkNav?.sp500?.some(v => v !== null);
-  const hasNasdaq = benchmarkNav?.nasdaq?.some(v => v !== null);
-
-  if (hasSP500)
-    datasets.push({
-      label:       "S&P500",
-      data:        benchmarkNav.sp500,
-      borderColor: "#fb923c",
-      fill:        false,
-      tension:     0.3,
-      borderDash:  [5, 3],
-      borderWidth: 1.5,
-      pointRadius: 0,
-    });
-
-  if (hasNasdaq)
-    datasets.push({
-      label:       "NASDAQ",
-      data:        benchmarkNav.nasdaq,
-      borderColor: "#a78bfa",
-      fill:        false,
-      tension:     0.3,
-      borderDash:  [5, 3],
-      borderWidth: 1.5,
-      pointRadius: 0,
-    });
+  if (sp500)
+    datasets.push({ label: "S&P500", data: sp500, borderColor: BENCH_COLORS.sp500,
+                    fill: false, tension: 0.3, borderDash: [5, 3], borderWidth: 1.5,
+                    pointRadius: 0, pointHoverRadius: 4 });
+  if (nasdaq)
+    datasets.push({ label: "NASDAQ", data: nasdaq, borderColor: BENCH_COLORS.nasdaq,
+                    fill: false, tension: 0.3, borderDash: [5, 3], borderWidth: 1.5,
+                    pointRadius: 0, pointHoverRadius: 4 });
 
   const ctx = document.getElementById("nav-chart").getContext("2d");
   if (navChartInst) navChartInst.destroy();
@@ -557,22 +580,25 @@ function renderNavChart(history, benchmarkNav, accent) {
     data: { labels, datasets },
     options: {
       responsive: true,
+      interaction: { mode: "index", intersect: false },
       plugins: {
         legend: { display: false },
         tooltip: {
           callbacks: {
-            label: c => ` ${c.dataset.label}: ${CUR.sym}${c.parsed.y.toLocaleString("en-US", {minimumFractionDigits:0, maximumFractionDigits:0})}`,
+            label: c => ` ${c.dataset.label}: ${fmtSignedPct(c.parsed.y)}`,
             afterBody: c => {
-              const idx = c[0].dataIndex;
-              const evt = history[idx]?.event;
-              return evt ? ["⚡ " + evt.label] : [];
+              const evt = history[c[0].dataIndex]?.event;
+              return evt ? ["⚡ " + evt.label + "（已自報酬剝離）"] : [];
             }
           }
         }
       },
       scales: {
         x: { ticks: { color:"#64748b", maxTicksLimit:8 }, grid: { color:"#1e293b" } },
-        y: { ticks: { color:"#64748b", callback: v => CUR.sym + v.toLocaleString() }, grid: { color:"#334155" } }
+        y: {
+          ticks: { color:"#64748b", callback: v => (v >= 0 ? "+" : "") + v + "%" },
+          grid:  { color: c => (c.tick && c.tick.value === 0 ? "#64748b" : "#334155") }
+        }
       }
     }
   });
@@ -700,9 +726,9 @@ function renderDrawdownChart(dd, accent) {
     { label:"投組", data: dd.portfolio, borderColor: accent,    fill:true, backgroundColor: accent+"22", tension:0.3, borderWidth:2 },
   ];
   if (hasNasdaq)
-    datasets.push({ label:"NASDAQ", data: dd.nasdaq, borderColor:"#a78bfa", fill:false, tension:0.3, borderDash:[4,3], borderWidth:1.5 });
+    datasets.push({ label:"NASDAQ", data: dd.nasdaq, borderColor:BENCH_COLORS.nasdaq, fill:false, tension:0.3, borderDash:[4,3], borderWidth:1.5 });
   if (hasSP500)
-    datasets.push({ label:"S&P500", data: dd.sp500,  borderColor:"#fb923c", fill:false, tension:0.3, borderDash:[4,3], borderWidth:1.5 });
+    datasets.push({ label:"S&P500", data: dd.sp500,  borderColor:BENCH_COLORS.sp500, fill:false, tension:0.3, borderDash:[4,3], borderWidth:1.5 });
 
   ddChartInst = new Chart(ctx, {
     type: "line",
