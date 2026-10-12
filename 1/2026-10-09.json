@@ -5,7 +5,7 @@
     "account_id": "1",
     "account_label": "帳戶 #1 (TOP10 Daily)",
     "currency": "USD",
-    "generated_at": "2026-10-10T05:46:03Z",
+    "generated_at": "2026-10-12T15:06:51Z",
     "trading_date": "2026-10-09",
     "dry_run": false,
     "strategy_status": "active",
@@ -3457,5 +3457,6 @@
       107359.82,
       108042.15
     ]
-  }
+  },
+  "stale_warning": "⚠️ 今日未更新（資料停在 2026-10-09，其他帳戶已更新到 2026-10-12）。可能執行失敗或券商金鑰問題——請查當日 Actions 執行紀錄。"
 }
