@@ -5,8 +5,8 @@
     "account_id": "6",
     "account_label": "sini",
     "currency": "TWD",
-    "generated_at": "2026-10-14T04:48:07Z",
-    "trading_date": "2026-10-13",
+    "generated_at": "2026-10-14T11:36:37Z",
+    "trading_date": "2026-10-14",
     "dry_run": false,
     "strategy_status": "active",
     "strategy_start_date": "2026-06-10",
@@ -24,8 +24,8 @@
     "cash": 0.0,
     "initial_nav": 4510.0,
     "inception_date": "2026-06-10",
-    "today_change": -100.0,
-    "today_change_pct": -1.9685,
+    "today_change": 0.0,
+    "today_change_pct": 0.0,
     "total_return": 470.0,
     "total_return_pct": 10.4213,
     "total_return_pct_twr": 10.4213,
@@ -440,6 +440,10 @@
     {
       "date": "2026-10-13",
       "nav": 4980.0
+    },
+    {
+      "date": "2026-10-14",
+      "nav": 4980.0
     }
   ],
   "drawdown": {
@@ -533,7 +537,8 @@
       "2026-10-08",
       "2026-10-09",
       "2026-10-12",
-      "2026-10-13"
+      "2026-10-13",
+      "2026-10-14"
     ],
     "portfolio": [
       0.0,
@@ -625,6 +630,7 @@
       -1.354,
       -1.354,
       -1.7408,
+      -3.675,
       -3.675
     ],
     "nasdaq": [
@@ -717,6 +723,7 @@
       -1.4727,
       -0.8464,
       -1.2822,
+      -1.4326,
       -1.4326
     ],
     "sp500": [
@@ -809,17 +816,25 @@
       -0.685,
       -0.0944,
       -0.1494,
+      -0.1723,
       -0.1723
     ]
   },
   "trade_log": [
     {
-      "date": "2026-10-13",
+      "date": "2026-10-14",
       "nav": 4980.0,
       "trades_count": 0,
       "portfolio": [
         "2330.TW"
       ],
+      "orders": []
+    },
+    {
+      "date": "2026-10-13",
+      "nav": 4980.0,
+      "trades_count": 0,
+      "portfolio": [],
       "orders": []
     },
     {
@@ -1462,8 +1477,8 @@
   },
   "events": [],
   "email": {
-    "subject": "[TECH10 #6] 2026-10-13 NAV 4,980 (-1.97%)",
-    "preheader": "帳戶 #6 · 2026-10-13 · NAV NT$4,980",
+    "subject": "[TECH10 #6] 2026-10-14 NAV 4,980 (+0.00%)",
+    "preheader": "帳戶 #6 · 2026-10-14 · NAV NT$4,980",
     "dashboard_url": "https://itemhsu.github.io/tech-rebalance-dashboard/mvp_dashboard.html?a=6",
     "sections_rendered": [
       "header",
@@ -1568,6 +1583,7 @@
       4819.3,
       4847.96,
       4845.29,
+      4844.18,
       4844.18
     ],
     "nasdaq": [
@@ -1660,8 +1676,8 @@
       4872.64,
       4903.61,
       4882.06,
+      4874.62,
       4874.62
     ]
-  },
-  "stale_warning": "⚠️ 今日未更新（資料停在 2026-10-13，其他帳戶已更新到 2026-10-14）。可能執行失敗或券商金鑰問題——請查當日 Actions 執行紀錄。"
+  }
 }
