@@ -5,8 +5,8 @@
     "account_id": "6",
     "account_label": "sini",
     "currency": "TWD",
-    "generated_at": "2026-10-22T00:54:21Z",
-    "trading_date": "2026-10-21",
+    "generated_at": "2026-10-22T06:31:03Z",
+    "trading_date": "2026-10-22",
     "dry_run": false,
     "strategy_status": "active",
     "strategy_start_date": "2026-06-10",
@@ -20,21 +20,21 @@
     ]
   },
   "summary": {
-    "nav": 4840.0,
+    "nav": 4770.0,
     "cash": 0.0,
     "initial_nav": 4510.0,
     "inception_date": "2026-06-10",
-    "today_change": 30.0,
-    "today_change_pct": 0.6237,
-    "total_return": 330.0,
-    "total_return_pct": 7.3171,
-    "total_return_pct_twr": 7.3171,
+    "today_change": -70.0,
+    "today_change_pct": -1.4463,
+    "total_return": 260.0,
+    "total_return_pct": 5.765,
+    "total_return_pct_twr": 5.765,
     "net_contribution": 0.0,
     "total_deposited": 0.0,
     "total_withdrawn": 0.0,
-    "investment_gain": 330.0,
+    "investment_gain": 260.0,
     "ytd_return_pct": null,
-    "monthly_return_pct": -2.4194,
+    "monthly_return_pct": -3.8306,
     "max_drawdown_pct": -12.3506,
     "sharpe_ratio": null,
     "total_paused_days": 0,
@@ -72,9 +72,9 @@
       "symbol": "2330.TW",
       "qty": 2.0,
       "avg_entry_price": 2287.5,
-      "current_price": 2420.0,
-      "market_value": 4840.0,
-      "unrealized_pl": 245772.0,
+      "current_price": 2385.0,
+      "market_value": 4770.0,
+      "unrealized_pl": 176017.0,
       "unrealized_plpc": 0.0,
       "weight": 100.0,
       "in_portfolio": true
@@ -464,6 +464,10 @@
     {
       "date": "2026-10-21",
       "nav": 4840.0
+    },
+    {
+      "date": "2026-10-22",
+      "nav": 4770.0
     }
   ],
   "drawdown": {
@@ -563,7 +567,8 @@
       "2026-10-16",
       "2026-10-19",
       "2026-10-20",
-      "2026-10-21"
+      "2026-10-21",
+      "2026-10-22"
     ],
     "portfolio": [
       0.0,
@@ -661,7 +666,8 @@
       -6.383,
       -6.383,
       -6.9632,
-      -6.383
+      -6.383,
+      -7.7369
     ],
     "nasdaq": [
       0.0,
@@ -759,7 +765,8 @@
       -5.2891,
       -4.2352,
       -4.2572,
-      -3.2498
+      -3.2496,
+      -3.2496
     ],
     "sp500": [
       0.0,
@@ -857,17 +864,25 @@
       -2.0398,
       -1.6396,
       -1.3603,
+      -0.7899,
       -0.7899
     ]
   },
   "trade_log": [
     {
-      "date": "2026-10-21",
-      "nav": 4840.0,
+      "date": "2026-10-22",
+      "nav": 4770.0,
       "trades_count": 0,
       "portfolio": [
         "2330.TW"
       ],
+      "orders": []
+    },
+    {
+      "date": "2026-10-21",
+      "nav": 4840.0,
+      "trades_count": 0,
+      "portfolio": [],
       "orders": []
     },
     {
@@ -1543,8 +1558,8 @@
       {
         "rank": 1,
         "symbol": "2330.TW",
-        "price": 2420.0,
-        "change_pct": 5.79,
+        "price": 2385.0,
+        "change_pct": 4.26,
         "market_cap_b": 100.0,
         "in_portfolio": true
       }
@@ -1552,8 +1567,8 @@
   },
   "events": [],
   "email": {
-    "subject": "[TECH10 #6] 2026-10-21 NAV 4,840 (+0.62%)",
-    "preheader": "帳戶 #6 · 2026-10-21 · NAV NT$4,840",
+    "subject": "[TECH10 #6] 2026-10-22 NAV 4,770 (-1.45%)",
+    "preheader": "帳戶 #6 · 2026-10-22 · NAV NT$4,770",
     "dashboard_url": "https://itemhsu.github.io/tech-rebalance-dashboard/mvp_dashboard.html?a=6",
     "sections_rendered": [
       "header",
@@ -1664,6 +1679,7 @@
       4753.56,
       4772.98,
       4786.53,
+      4814.21,
       4814.21
     ],
     "nasdaq": [
@@ -1762,7 +1778,8 @@
       4683.9,
       4736.02,
       4734.93,
-      4784.75
+      4784.76,
+      4784.76
     ]
   }
 }
