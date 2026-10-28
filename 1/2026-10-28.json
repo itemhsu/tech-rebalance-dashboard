@@ -1,0 +1,3563 @@
+{
+  "meta": {
+    "schema_version": "1.0",
+    "strategy": "tech_top10",
+    "account_id": "1",
+    "account_label": "帳戶 #1 (TOP10 Daily)",
+    "currency": "USD",
+    "generated_at": "2026-10-28T21:35:16Z",
+    "trading_date": "2026-10-28",
+    "dry_run": false,
+    "strategy_status": "active",
+    "strategy_start_date": "2026-05-05",
+    "previous_strategy": null,
+    "accent_color": "#10b981",
+    "same_strategy_accounts": [
+      {
+        "id": "1",
+        "label": "帳戶 #1 (TOP10 Daily)"
+      }
+    ]
+  },
+  "summary": {
+    "nav": 108002.08,
+    "cash": 826.41,
+    "initial_nav": 99988.04,
+    "inception_date": "2026-05-05",
+    "today_change": -836.53,
+    "today_change_pct": -0.7686,
+    "total_return": 8014.04,
+    "total_return_pct": 8.015,
+    "total_return_pct_twr": -45.9957,
+    "net_contribution": 100000.0,
+    "total_deposited": 100000.0,
+    "total_withdrawn": 0.0,
+    "investment_gain": -91985.96,
+    "ytd_return_pct": null,
+    "monthly_return_pct": -3.3991,
+    "max_drawdown_pct": -9.7151,
+    "sharpe_ratio": null,
+    "total_paused_days": 0,
+    "is_paused": false,
+    "paused_since": null
+  },
+  "strategy_card": {
+    "name": "科技 TOP10（市值）",
+    "description": "科技股市值前 10、等權重。股池由市場決定：美股帳戶用美股科技、台股帳戶用台股科技。",
+    "tags": [
+      "科技",
+      "市值",
+      "top10",
+      "market-agnostic"
+    ],
+    "benchmark": "QQQ",
+    "universe_summary": "custom universe",
+    "selection_summary": "依市值排名前 10 檔，等權重",
+    "rebalancing_summary": "每月",
+    "risk_highlights": [
+      "單倉上限 30%"
+    ],
+    "ranking_factors": [],
+    "filter_summary": {}
+  },
+  "portfolio": {
+    "label": "前10名持股",
+    "symbols": [
+      "NVDA",
+      "AAPL",
+      "MSFT",
+      "AMZN",
+      "TSM",
+      "GOOGL",
+      "META",
+      "AVGO",
+      "AMD",
+      "V"
+    ],
+    "rebalance_count": 0
+  },
+  "positions": [
+    {
+      "symbol": "AMD",
+      "qty": 21.0,
+      "avg_entry_price": 372.638695,
+      "current_price": 564.3,
+      "market_value": 11850.3,
+      "unrealized_pl": 4024.89,
+      "unrealized_plpc": 51.434,
+      "weight": 10.9723,
+      "in_portfolio": true
+    },
+    {
+      "symbol": "AAPL",
+      "qty": 34.0,
+      "avg_entry_price": 289.230286,
+      "current_price": 345.75,
+      "market_value": 11755.5,
+      "unrealized_pl": 1921.67,
+      "unrealized_plpc": 19.541,
+      "weight": 10.8845,
+      "in_portfolio": true
+    },
+    {
+      "symbol": "MSFT",
+      "qty": 21.0,
+      "avg_entry_price": 416.633333,
+      "current_price": 550.25,
+      "market_value": 11555.25,
+      "unrealized_pl": 2805.95,
+      "unrealized_plpc": 32.071,
+      "weight": 10.6991,
+      "in_portfolio": true
+    },
+    {
+      "symbol": "TSM",
+      "qty": 27.0,
+      "avg_entry_price": 398.30963,
+      "current_price": 427.61,
+      "market_value": 11545.47,
+      "unrealized_pl": 791.11,
+      "unrealized_plpc": 7.356,
+      "weight": 10.69,
+      "in_portfolio": true
+    },
+    {
+      "symbol": "V",
+      "qty": 28.0,
+      "avg_entry_price": 362.637857,
+      "current_price": 403.0,
+      "market_value": 11284.0,
+      "unrealized_pl": 1130.14,
+      "unrealized_plpc": 11.13,
+      "weight": 10.4479,
+      "in_portfolio": true
+    },
+    {
+      "symbol": "AMZN",
+      "qty": 44.0,
+      "avg_entry_price": 272.781591,
+      "current_price": 252.4,
+      "market_value": 11105.6,
+      "unrealized_pl": -896.79,
+      "unrealized_plpc": -7.472,
+      "weight": 10.2828,
+      "in_portfolio": true
+    },
+    {
+      "symbol": "META",
+      "qty": 17.0,
+      "avg_entry_price": 602.977647,
+      "current_price": 618.82,
+      "market_value": 10519.94,
+      "unrealized_pl": 269.32,
+      "unrealized_plpc": 2.627,
+      "weight": 9.7405,
+      "in_portfolio": true
+    },
+    {
+      "symbol": "NVDA",
+      "qty": 48.0,
+      "avg_entry_price": 199.672917,
+      "current_price": 213.71,
+      "market_value": 10258.08,
+      "unrealized_pl": 673.78,
+      "unrealized_plpc": 7.03,
+      "weight": 9.498,
+      "in_portfolio": true
+    },
+    {
+      "symbol": "AVGO",
+      "qty": 26.0,
+      "avg_entry_price": 427.923077,
+      "current_price": 341.4352,
+      "market_value": 8877.32,
+      "unrealized_pl": -2248.68,
+      "unrealized_plpc": -20.211,
+      "weight": 8.2196,
+      "in_portfolio": true
+    },
+    {
+      "symbol": "GOOGL",
+      "qty": 29.0,
+      "avg_entry_price": 383.081034,
+      "current_price": 290.49,
+      "market_value": 8424.21,
+      "unrealized_pl": -2685.14,
+      "unrealized_plpc": -24.17,
+      "weight": 7.8,
+      "in_portfolio": true
+    }
+  ],
+  "nav_history": [
+    {
+      "date": "2026-05-05",
+      "nav": 99988.04
+    },
+    {
+      "date": "2026-05-06",
+      "nav": 102591.34
+    },
+    {
+      "date": "2026-05-07",
+      "nav": 102999.23
+    },
+    {
+      "date": "2026-05-08",
+      "nav": 104076.25
+    },
+    {
+      "date": "2026-05-11",
+      "nav": 104724.54
+    },
+    {
+      "date": "2026-05-12",
+      "nav": 103434.49
+    },
+    {
+      "date": "2026-05-13",
+      "nav": 103995.41
+    },
+    {
+      "date": "2026-05-14",
+      "nav": 105746.1
+    },
+    {
+      "date": "2026-05-15",
+      "nav": 103809.6
+    },
+    {
+      "date": "2026-05-19",
+      "nav": 102450.07
+    },
+    {
+      "date": "2026-05-20",
+      "nav": 103819.86
+    },
+    {
+      "date": "2026-05-21",
+      "nav": 104530.47
+    },
+    {
+      "date": "2026-05-22",
+      "nav": 104535.46
+    },
+    {
+      "date": "2026-05-26",
+      "nav": 105795.84
+    },
+    {
+      "date": "2026-05-27",
+      "nav": 106175.47
+    },
+    {
+      "date": "2026-05-28",
+      "nav": 107821.21
+    },
+    {
+      "date": "2026-05-29",
+      "nav": 108104.93
+    },
+    {
+      "date": "2026-06-01",
+      "nav": 107870.48
+    },
+    {
+      "date": "2026-06-02",
+      "nav": 107837.66
+    },
+    {
+      "date": "2026-06-04",
+      "nav": 106774.29
+    },
+    {
+      "date": "2026-06-05",
+      "nav": 101457.43
+    },
+    {
+      "date": "2026-06-08",
+      "nav": 102653.68
+    },
+    {
+      "date": "2026-06-09",
+      "nav": 101520.16
+    },
+    {
+      "date": "2026-06-10",
+      "nav": 98393.02
+    },
+    {
+      "date": "2026-06-11",
+      "nav": 101734.72
+    },
+    {
+      "date": "2026-06-12",
+      "nav": 101733.81
+    },
+    {
+      "date": "2026-06-15",
+      "nav": 105044.3
+    },
+    {
+      "date": "2026-06-16",
+      "nav": 103495.34
+    },
+    {
+      "date": "2026-06-17",
+      "nav": 102859.36
+    },
+    {
+      "date": "2026-06-18",
+      "nav": 105016.15
+    },
+    {
+      "date": "2026-06-22",
+      "nav": 103523.36
+    },
+    {
+      "date": "2026-06-23",
+      "nav": 100906.32
+    },
+    {
+      "date": "2026-06-24",
+      "nav": 101722.54
+    },
+    {
+      "date": "2026-06-25",
+      "nav": 98885.66
+    },
+    {
+      "date": "2026-06-26",
+      "nav": 98569.23
+    },
+    {
+      "date": "2026-06-29",
+      "nav": 101275.53
+    },
+    {
+      "date": "2026-06-30",
+      "nav": 104144.4
+    },
+    {
+      "date": "2026-07-01",
+      "nav": 103241.35
+    },
+    {
+      "date": "2026-07-02",
+      "nav": 101802.18
+    },
+    {
+      "date": "2026-07-06",
+      "nav": 104266.57
+    },
+    {
+      "date": "2026-07-07",
+      "nav": 102788.34
+    },
+    {
+      "date": "2026-07-08",
+      "nav": 103295.34
+    },
+    {
+      "date": "2026-07-09",
+      "nav": 105071.6
+    },
+    {
+      "date": "2026-07-10",
+      "nav": 106056.21
+    },
+    {
+      "date": "2026-07-13",
+      "nav": 104259.96
+    },
+    {
+      "date": "2026-07-14",
+      "nav": 105250.74
+    },
+    {
+      "date": "2026-07-15",
+      "nav": 106935.65
+    },
+    {
+      "date": "2026-07-16",
+      "nav": 104723.5
+    },
+    {
+      "date": "2026-07-17",
+      "nav": 102967.69
+    },
+    {
+      "date": "2026-07-20",
+      "nav": 103388.22
+    },
+    {
+      "date": "2026-07-21",
+      "nav": 105123.06
+    },
+    {
+      "date": "2026-07-22",
+      "nav": 104460.49
+    },
+    {
+      "date": "2026-07-23",
+      "nav": 103063.87
+    },
+    {
+      "date": "2026-07-24",
+      "nav": 101713.64
+    },
+    {
+      "date": "2026-07-27",
+      "nav": 100392.2
+    },
+    {
+      "date": "2026-07-28",
+      "nav": 99588.27
+    },
+    {
+      "date": "2026-07-29",
+      "nav": 97602.48
+    },
+    {
+      "date": "2026-07-30",
+      "nav": 101976.97
+    },
+    {
+      "date": "2026-07-31",
+      "nav": 102609.53
+    },
+    {
+      "date": "2026-08-03",
+      "nav": 105573.68
+    },
+    {
+      "date": "2026-08-04",
+      "nav": 107607.27
+    },
+    {
+      "date": "2026-08-05",
+      "nav": 107470.05
+    },
+    {
+      "date": "2026-08-07",
+      "nav": 107821.15
+    },
+    {
+      "date": "2026-08-10",
+      "nav": 107381.01
+    },
+    {
+      "date": "2026-08-11",
+      "nav": 106558.12
+    },
+    {
+      "date": "2026-08-12",
+      "nav": 106313.1
+    },
+    {
+      "date": "2026-08-13",
+      "nav": 107208.15
+    },
+    {
+      "date": "2026-08-14",
+      "nav": 106834.35
+    },
+    {
+      "date": "2026-08-17",
+      "nav": 105645.94
+    },
+    {
+      "date": "2026-08-18",
+      "nav": 103821.78
+    },
+    {
+      "date": "2026-08-19",
+      "nav": 103805.53
+    },
+    {
+      "date": "2026-08-20",
+      "nav": 103260.41
+    },
+    {
+      "date": "2026-08-21",
+      "nav": 103634.09
+    },
+    {
+      "date": "2026-08-24",
+      "nav": 103331.92
+    },
+    {
+      "date": "2026-08-25",
+      "nav": 104429.17
+    },
+    {
+      "date": "2026-08-27",
+      "nav": 104820.02
+    },
+    {
+      "date": "2026-08-28",
+      "nav": 105810.54
+    },
+    {
+      "date": "2026-09-01",
+      "nav": 105368.61
+    },
+    {
+      "date": "2026-09-02",
+      "nav": 105190.01
+    },
+    {
+      "date": "2026-09-03",
+      "nav": 106146.83
+    },
+    {
+      "date": "2026-09-04",
+      "nav": 106227.03
+    },
+    {
+      "date": "2026-09-08",
+      "nav": 106261.97
+    },
+    {
+      "date": "2026-09-09",
+      "nav": 106838.24
+    },
+    {
+      "date": "2026-09-10",
+      "nav": 106054.82
+    },
+    {
+      "date": "2026-09-11",
+      "nav": 107389.47
+    },
+    {
+      "date": "2026-09-14",
+      "nav": 106609.31
+    },
+    {
+      "date": "2026-09-15",
+      "nav": 106647.09
+    },
+    {
+      "date": "2026-09-16",
+      "nav": 106199.39
+    },
+    {
+      "date": "2026-09-17",
+      "nav": 106880.51
+    },
+    {
+      "date": "2026-09-18",
+      "nav": 108283.13
+    },
+    {
+      "date": "2026-09-22",
+      "nav": 113155.38
+    },
+    {
+      "date": "2026-09-23",
+      "nav": 112792.41
+    },
+    {
+      "date": "2026-09-24",
+      "nav": 111280.19
+    },
+    {
+      "date": "2026-09-25",
+      "nav": 112244.22
+    },
+    {
+      "date": "2026-09-29",
+      "nav": 111208.17
+    },
+    {
+      "date": "2026-09-30",
+      "nav": 111802.32
+    },
+    {
+      "date": "2026-10-01",
+      "nav": 111789.69
+    },
+    {
+      "date": "2026-10-02",
+      "nav": 111729.14
+    },
+    {
+      "date": "2026-10-06",
+      "nav": 114543.81
+    },
+    {
+      "date": "2026-10-07",
+      "nav": 115729.18
+    },
+    {
+      "date": "2026-10-08",
+      "nav": 115144.8
+    },
+    {
+      "date": "2026-10-09",
+      "nav": 113428.07
+    },
+    {
+      "date": "2026-10-13",
+      "nav": 112751.0
+    },
+    {
+      "date": "2026-10-14",
+      "nav": 114738.7
+    },
+    {
+      "date": "2026-10-15",
+      "nav": 110527.23
+    },
+    {
+      "date": "2026-10-16",
+      "nav": 109014.8
+    },
+    {
+      "date": "2026-10-19",
+      "nav": 110392.13
+    },
+    {
+      "date": "2026-10-20",
+      "nav": 110625.76
+    },
+    {
+      "date": "2026-10-21",
+      "nav": 111381.08
+    },
+    {
+      "date": "2026-10-22",
+      "nav": 107029.39
+    },
+    {
+      "date": "2026-10-23",
+      "nav": 106878.32
+    },
+    {
+      "date": "2026-10-26",
+      "nav": 107661.62
+    },
+    {
+      "date": "2026-10-27",
+      "nav": 108838.61
+    },
+    {
+      "date": "2026-10-28",
+      "nav": 108002.08
+    }
+  ],
+  "drawdown": {
+    "dates": [
+      "2026-05-05",
+      "2026-05-06",
+      "2026-05-07",
+      "2026-05-08",
+      "2026-05-11",
+      "2026-05-12",
+      "2026-05-13",
+      "2026-05-14",
+      "2026-05-15",
+      "2026-05-19",
+      "2026-05-20",
+      "2026-05-21",
+      "2026-05-22",
+      "2026-05-26",
+      "2026-05-27",
+      "2026-05-28",
+      "2026-05-29",
+      "2026-06-01",
+      "2026-06-02",
+      "2026-06-04",
+      "2026-06-05",
+      "2026-06-08",
+      "2026-06-09",
+      "2026-06-10",
+      "2026-06-11",
+      "2026-06-12",
+      "2026-06-15",
+      "2026-06-16",
+      "2026-06-17",
+      "2026-06-18",
+      "2026-06-22",
+      "2026-06-23",
+      "2026-06-24",
+      "2026-06-25",
+      "2026-06-26",
+      "2026-06-29",
+      "2026-06-30",
+      "2026-07-01",
+      "2026-07-02",
+      "2026-07-06",
+      "2026-07-07",
+      "2026-07-08",
+      "2026-07-09",
+      "2026-07-10",
+      "2026-07-13",
+      "2026-07-14",
+      "2026-07-15",
+      "2026-07-16",
+      "2026-07-17",
+      "2026-07-20",
+      "2026-07-21",
+      "2026-07-22",
+      "2026-07-23",
+      "2026-07-24",
+      "2026-07-27",
+      "2026-07-28",
+      "2026-07-29",
+      "2026-07-30",
+      "2026-07-31",
+      "2026-08-03",
+      "2026-08-04",
+      "2026-08-05",
+      "2026-08-07",
+      "2026-08-10",
+      "2026-08-11",
+      "2026-08-12",
+      "2026-08-13",
+      "2026-08-14",
+      "2026-08-17",
+      "2026-08-18",
+      "2026-08-19",
+      "2026-08-20",
+      "2026-08-21",
+      "2026-08-24",
+      "2026-08-25",
+      "2026-08-27",
+      "2026-08-28",
+      "2026-09-01",
+      "2026-09-02",
+      "2026-09-03",
+      "2026-09-04",
+      "2026-09-08",
+      "2026-09-09",
+      "2026-09-10",
+      "2026-09-11",
+      "2026-09-14",
+      "2026-09-15",
+      "2026-09-16",
+      "2026-09-17",
+      "2026-09-18",
+      "2026-09-22",
+      "2026-09-23",
+      "2026-09-24",
+      "2026-09-25",
+      "2026-09-29",
+      "2026-09-30",
+      "2026-10-01",
+      "2026-10-02",
+      "2026-10-06",
+      "2026-10-07",
+      "2026-10-08",
+      "2026-10-09",
+      "2026-10-13",
+      "2026-10-14",
+      "2026-10-15",
+      "2026-10-16",
+      "2026-10-19",
+      "2026-10-20",
+      "2026-10-21",
+      "2026-10-22",
+      "2026-10-23",
+      "2026-10-26",
+      "2026-10-27",
+      "2026-10-28"
+    ],
+    "portfolio": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      -1.2319,
+      -0.6962,
+      0.0,
+      -1.8313,
+      -3.1169,
+      -1.8216,
+      -1.1496,
+      -1.1449,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      -0.2169,
+      -0.2472,
+      -1.2309,
+      -6.1491,
+      -5.0426,
+      -6.0911,
+      -8.9838,
+      -5.8926,
+      -5.8935,
+      -2.8312,
+      -4.264,
+      -4.8523,
+      -2.8572,
+      -4.2381,
+      -6.6589,
+      -5.9039,
+      -8.5281,
+      -8.8208,
+      -6.3174,
+      -3.6636,
+      -4.4989,
+      -5.8302,
+      -3.5506,
+      -4.918,
+      -4.449,
+      -2.8059,
+      -1.8951,
+      -3.5567,
+      -2.6402,
+      -1.0816,
+      -3.1279,
+      -4.7521,
+      -4.3631,
+      -2.7583,
+      -3.3712,
+      -4.6631,
+      -5.9121,
+      -7.1345,
+      -7.8781,
+      -9.7151,
+      -5.6685,
+      -5.0834,
+      -2.3415,
+      -0.4603,
+      -0.5873,
+      -0.2625,
+      -0.6696,
+      -1.4308,
+      -1.6575,
+      -0.8295,
+      -1.1753,
+      -2.2746,
+      -3.962,
+      -3.9771,
+      -4.4813,
+      -4.1356,
+      -4.4152,
+      -3.4002,
+      -3.0386,
+      -2.1224,
+      -2.5312,
+      -2.6964,
+      -1.8113,
+      -1.7371,
+      -1.7048,
+      -1.1717,
+      -1.8964,
+      -0.6618,
+      -1.3835,
+      -1.3485,
+      -1.7627,
+      -1.1326,
+      0.0,
+      0.0,
+      -0.3208,
+      -1.6572,
+      -0.8052,
+      -1.7208,
+      -1.1958,
+      -1.2069,
+      -1.2604,
+      0.0,
+      0.0,
+      -0.505,
+      -1.9884,
+      -2.5734,
+      -0.8559,
+      -4.4949,
+      -5.8018,
+      -4.6117,
+      -4.4098,
+      -3.7571,
+      -7.5174,
+      -7.6479,
+      -6.9711,
+      -5.954,
+      -6.6769
+    ],
+    "nasdaq": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "sp500": [
+      0.0,
+      0.0,
+      -0.38,
+      0.0,
+      0.0,
+      -0.16,
+      0.0,
+      0.0,
+      -1.24,
+      -1.97,
+      -0.91,
+      -0.74,
+      -0.37,
+      0.0,
+      0.0,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ]
+  },
+  "trade_log": [
+    {
+      "date": "2026-10-28",
+      "nav": 108002.08,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "TSM",
+        "GOOGL",
+        "META",
+        "AVGO",
+        "AMD",
+        "V"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-10-27",
+      "nav": 108838.61,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "TSM",
+        "GOOGL",
+        "META",
+        "AVGO",
+        "AMD",
+        "V"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-10-26",
+      "nav": 107661.62,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "TSM",
+        "GOOGL",
+        "META",
+        "AVGO",
+        "AMD",
+        "V"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-10-23",
+      "nav": 106878.32,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "TSM",
+        "GOOGL",
+        "META",
+        "AVGO",
+        "AMD",
+        "V"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-10-22",
+      "nav": 107029.39,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "TSM",
+        "GOOGL",
+        "META",
+        "AVGO",
+        "AMD",
+        "V"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-10-21",
+      "nav": 111381.08,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "TSM",
+        "GOOGL",
+        "META",
+        "AVGO",
+        "AMD",
+        "V"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-10-20",
+      "nav": 110625.76,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "TSM",
+        "GOOGL",
+        "META",
+        "AVGO",
+        "AMD",
+        "V"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-10-19",
+      "nav": 110392.13,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "TSM",
+        "GOOGL",
+        "META",
+        "AVGO",
+        "AMD",
+        "V"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-10-16",
+      "nav": 109014.8,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "TSM",
+        "GOOGL",
+        "META",
+        "AVGO",
+        "AMD",
+        "V"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-10-15",
+      "nav": 110527.23,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "TSM",
+        "GOOGL",
+        "META",
+        "AVGO",
+        "AMD",
+        "V"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-10-14",
+      "nav": 114738.7,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "TSM",
+        "GOOGL",
+        "META",
+        "AVGO",
+        "AMD",
+        "V"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-10-13",
+      "nav": 112751.0,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "TSM",
+        "GOOGL",
+        "META",
+        "AVGO",
+        "AMD",
+        "V"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-10-09",
+      "nav": 113428.07,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "TSM",
+        "GOOGL",
+        "META",
+        "AVGO",
+        "AMD",
+        "V"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-10-08",
+      "nav": 115144.8,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "TSM",
+        "GOOGL",
+        "META",
+        "AVGO",
+        "AMD",
+        "V"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-10-07",
+      "nav": 115729.18,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "TSM",
+        "GOOGL",
+        "META",
+        "AVGO",
+        "AMD",
+        "V"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-10-06",
+      "nav": 114543.81,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "TSM",
+        "GOOGL",
+        "META",
+        "AVGO",
+        "AMD",
+        "V"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-10-02",
+      "nav": 111729.14,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "TSM",
+        "GOOGL",
+        "META",
+        "AVGO",
+        "AMD",
+        "V"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-10-01",
+      "nav": 111789.69,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "TSM",
+        "GOOGL",
+        "META",
+        "AVGO",
+        "AMD",
+        "V"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-09-30",
+      "nav": 111802.32,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "TSM",
+        "GOOGL",
+        "AVGO",
+        "META",
+        "V",
+        "AMD"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-09-29",
+      "nav": 111208.17,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "TSM",
+        "GOOGL",
+        "AVGO",
+        "META",
+        "V",
+        "AMD"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-09-25",
+      "nav": 112244.22,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "TSM",
+        "GOOGL",
+        "AVGO",
+        "META",
+        "V",
+        "AMD"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-09-24",
+      "nav": 111280.19,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "TSM",
+        "GOOGL",
+        "AVGO",
+        "META",
+        "V",
+        "AMD"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-09-23",
+      "nav": 112792.41,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "TSM",
+        "GOOGL",
+        "AVGO",
+        "META",
+        "V",
+        "AMD"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-09-22",
+      "nav": 113155.38,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "TSM",
+        "GOOGL",
+        "AVGO",
+        "META",
+        "V",
+        "AMD"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-09-18",
+      "nav": 108283.13,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "TSM",
+        "GOOGL",
+        "AVGO",
+        "META",
+        "V",
+        "AMD"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-09-17",
+      "nav": 106880.51,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "TSM",
+        "GOOGL",
+        "AVGO",
+        "META",
+        "V",
+        "AMD"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-09-16",
+      "nav": 106199.39,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "TSM",
+        "GOOGL",
+        "AVGO",
+        "META",
+        "V",
+        "AMD"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-09-15",
+      "nav": 106647.09,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "TSM",
+        "GOOGL",
+        "AVGO",
+        "META",
+        "V",
+        "AMD"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-09-14",
+      "nav": 106609.31,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "TSM",
+        "GOOGL",
+        "AVGO",
+        "META",
+        "V",
+        "AMD"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-09-11",
+      "nav": 107389.47,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "TSM",
+        "GOOGL",
+        "AVGO",
+        "META",
+        "V",
+        "AMD"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-09-10",
+      "nav": 106054.82,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "TSM",
+        "GOOGL",
+        "AVGO",
+        "META",
+        "V",
+        "AMD"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-09-09",
+      "nav": 106838.24,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "TSM",
+        "GOOGL",
+        "AVGO",
+        "META",
+        "V",
+        "AMD"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-09-08",
+      "nav": 106261.97,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "TSM",
+        "GOOGL",
+        "AVGO",
+        "META",
+        "V",
+        "AMD"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-09-04",
+      "nav": 106227.03,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "TSM",
+        "GOOGL",
+        "AVGO",
+        "META",
+        "V",
+        "AMD"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-09-03",
+      "nav": 106146.83,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "TSM",
+        "GOOGL",
+        "AVGO",
+        "META",
+        "V",
+        "AMD"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-09-02",
+      "nav": 105190.01,
+      "trades_count": 1,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "TSM",
+        "GOOGL",
+        "AVGO",
+        "META",
+        "V",
+        "AMD"
+      ],
+      "orders": [
+        {
+          "symbol": "GOOGL",
+          "side": "buy",
+          "qty": 1.0,
+          "price": 337.12
+        }
+      ]
+    },
+    {
+      "date": "2026-09-01",
+      "nav": 105368.61,
+      "trades_count": 3,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "TSM",
+        "GOOGL",
+        "AVGO",
+        "META",
+        "V",
+        "AMD"
+      ],
+      "orders": [
+        {
+          "symbol": "AAPL",
+          "side": "sell",
+          "qty": 9.0,
+          "price": 317.14
+        },
+        {
+          "symbol": "MSFT",
+          "side": "sell",
+          "qty": 6.0,
+          "price": 506.95
+        },
+        {
+          "symbol": "NVDA",
+          "side": "sell",
+          "qty": 12.0,
+          "price": 220.80000000000004
+        }
+      ]
+    },
+    {
+      "date": "2026-08-28",
+      "nav": 105810.54,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "GOOGL",
+        "TSM",
+        "AVGO",
+        "META",
+        "AMD",
+        "V"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-08-27",
+      "nav": 104820.02,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "GOOGL",
+        "TSM",
+        "AVGO",
+        "META",
+        "AMD",
+        "V"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-08-25",
+      "nav": 104429.17,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "GOOGL",
+        "TSM",
+        "AVGO",
+        "META",
+        "AMD",
+        "V"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-08-24",
+      "nav": 103331.92,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "GOOGL",
+        "TSM",
+        "AVGO",
+        "META",
+        "AMD",
+        "V"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-08-21",
+      "nav": 103634.09,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "GOOGL",
+        "TSM",
+        "AVGO",
+        "META",
+        "AMD",
+        "V"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-08-20",
+      "nav": 103260.41,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "GOOGL",
+        "TSM",
+        "AVGO",
+        "META",
+        "AMD",
+        "V"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-08-19",
+      "nav": 103805.53,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "GOOGL",
+        "TSM",
+        "AVGO",
+        "META",
+        "AMD",
+        "V"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-08-18",
+      "nav": 103821.78,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "GOOGL",
+        "TSM",
+        "AVGO",
+        "META",
+        "AMD",
+        "V"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-08-17",
+      "nav": 105645.94,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "GOOGL",
+        "TSM",
+        "AVGO",
+        "META",
+        "AMD",
+        "V"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-08-14",
+      "nav": 106834.35,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "GOOGL",
+        "TSM",
+        "AVGO",
+        "META",
+        "AMD",
+        "V"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-08-13",
+      "nav": 107208.15,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "GOOGL",
+        "TSM",
+        "AVGO",
+        "META",
+        "AMD",
+        "V"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-08-12",
+      "nav": 106313.1,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "GOOGL",
+        "TSM",
+        "AVGO",
+        "META",
+        "AMD",
+        "V"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-08-11",
+      "nav": 106558.12,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "GOOGL",
+        "TSM",
+        "AVGO",
+        "META",
+        "AMD",
+        "V"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-08-10",
+      "nav": 107381.01,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "GOOGL",
+        "TSM",
+        "AVGO",
+        "META",
+        "AMD",
+        "V"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-08-07",
+      "nav": 107821.15,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "GOOGL",
+        "TSM",
+        "AVGO",
+        "META",
+        "AMD",
+        "V"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-08-05",
+      "nav": 107470.05,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "GOOGL",
+        "TSM",
+        "AVGO",
+        "META",
+        "AMD",
+        "V"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-08-04",
+      "nav": 107607.27,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "GOOGL",
+        "TSM",
+        "AVGO",
+        "META",
+        "AMD",
+        "V"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-08-03",
+      "nav": 105573.68,
+      "trades_count": 11,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "GOOGL",
+        "TSM",
+        "AVGO",
+        "META",
+        "AMD",
+        "V"
+      ],
+      "orders": [
+        {
+          "symbol": "ASML",
+          "side": "sell",
+          "qty": 5.0,
+          "price": 1642.065
+        },
+        {
+          "symbol": "AAPL",
+          "side": "buy",
+          "qty": 3.0,
+          "price": 303.54
+        },
+        {
+          "symbol": "AMD",
+          "side": "buy",
+          "qty": 2.0,
+          "price": 484.0
+        },
+        {
+          "symbol": "AMZN",
+          "side": "buy",
+          "qty": 3.0,
+          "price": 284.125
+        },
+        {
+          "symbol": "AVGO",
+          "side": "buy",
+          "qty": 2.0,
+          "price": 392.32
+        },
+        {
+          "symbol": "GOOGL",
+          "side": "buy",
+          "qty": 2.0,
+          "price": 373.51
+        },
+        {
+          "symbol": "META",
+          "side": "buy",
+          "qty": 1.0,
+          "price": 590.15
+        },
+        {
+          "symbol": "MSFT",
+          "side": "buy",
+          "qty": 2.0,
+          "price": 487.575
+        },
+        {
+          "symbol": "NVDA",
+          "side": "buy",
+          "qty": 4.0,
+          "price": 206.72
+        },
+        {
+          "symbol": "TSM",
+          "side": "buy",
+          "qty": 2.0,
+          "price": 406.12
+        },
+        {
+          "symbol": "V",
+          "side": "buy",
+          "qty": 25.0,
+          "price": 365.64
+        }
+      ]
+    },
+    {
+      "date": "2026-07-31",
+      "nav": 102609.53,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "TSM",
+        "GOOGL",
+        "AVGO",
+        "META",
+        "AMD",
+        "ASML"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-07-30",
+      "nav": 101976.97,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "TSM",
+        "GOOGL",
+        "AVGO",
+        "META",
+        "AMD",
+        "ASML"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-07-29",
+      "nav": 97602.48,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "TSM",
+        "GOOGL",
+        "AVGO",
+        "META",
+        "AMD",
+        "ASML"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-07-28",
+      "nav": 99588.27,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "TSM",
+        "GOOGL",
+        "AVGO",
+        "META",
+        "AMD",
+        "ASML"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-07-27",
+      "nav": 100392.2,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "TSM",
+        "GOOGL",
+        "AVGO",
+        "META",
+        "AMD",
+        "ASML"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-07-24",
+      "nav": 101713.64,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "TSM",
+        "GOOGL",
+        "AVGO",
+        "META",
+        "AMD",
+        "ASML"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-07-23",
+      "nav": 103063.87,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "TSM",
+        "GOOGL",
+        "AVGO",
+        "META",
+        "AMD",
+        "ASML"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-07-22",
+      "nav": 104460.49,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "TSM",
+        "GOOGL",
+        "AVGO",
+        "META",
+        "AMD",
+        "ASML"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-07-21",
+      "nav": 105123.06,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "TSM",
+        "GOOGL",
+        "AVGO",
+        "META",
+        "AMD",
+        "ASML"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-07-20",
+      "nav": 103388.22,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "TSM",
+        "GOOGL",
+        "AVGO",
+        "META",
+        "AMD",
+        "ASML"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-07-17",
+      "nav": 102967.69,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "TSM",
+        "GOOGL",
+        "AVGO",
+        "META",
+        "AMD",
+        "ASML"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-07-16",
+      "nav": 104723.5,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "TSM",
+        "GOOGL",
+        "AVGO",
+        "META",
+        "AMD",
+        "ASML"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-07-15",
+      "nav": 106935.65,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "TSM",
+        "GOOGL",
+        "AVGO",
+        "META",
+        "AMD",
+        "ASML"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-07-14",
+      "nav": 105250.74,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "TSM",
+        "GOOGL",
+        "AVGO",
+        "META",
+        "AMD",
+        "ASML"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-07-13",
+      "nav": 104259.96,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "TSM",
+        "GOOGL",
+        "AVGO",
+        "META",
+        "AMD",
+        "ASML"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-07-10",
+      "nav": 106056.21,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "TSM",
+        "GOOGL",
+        "AVGO",
+        "META",
+        "AMD",
+        "ASML"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-07-09",
+      "nav": 105071.6,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "TSM",
+        "GOOGL",
+        "AVGO",
+        "META",
+        "AMD",
+        "ASML"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-07-08",
+      "nav": 103295.34,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "TSM",
+        "GOOGL",
+        "AVGO",
+        "META",
+        "AMD",
+        "ASML"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-07-07",
+      "nav": 102788.34,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "TSM",
+        "GOOGL",
+        "AVGO",
+        "META",
+        "AMD",
+        "ASML"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-07-06",
+      "nav": 104266.57,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "TSM",
+        "GOOGL",
+        "AVGO",
+        "META",
+        "AMD",
+        "ASML"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-07-02",
+      "nav": 101802.18,
+      "trades_count": 1,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "TSM",
+        "GOOGL",
+        "AVGO",
+        "META",
+        "AMD",
+        "ASML"
+      ],
+      "orders": [
+        {
+          "symbol": "V",
+          "side": "buy",
+          "qty": 3.0,
+          "price": 361.6499999999999
+        }
+      ]
+    },
+    {
+      "date": "2026-07-01",
+      "nav": 103241.35,
+      "trades_count": 6,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "TSM",
+        "GOOGL",
+        "AVGO",
+        "META",
+        "AMD",
+        "ASML"
+      ],
+      "orders": [
+        {
+          "symbol": "AAPL",
+          "side": "buy",
+          "qty": 1.0,
+          "price": 294.18
+        },
+        {
+          "symbol": "AMZN",
+          "side": "buy",
+          "qty": 1.0,
+          "price": 241.735
+        },
+        {
+          "symbol": "AVGO",
+          "side": "buy",
+          "qty": 1.0,
+          "price": 368.23
+        },
+        {
+          "symbol": "GOOGL",
+          "side": "buy",
+          "qty": 1.0,
+          "price": 361.195
+        },
+        {
+          "symbol": "MSFT",
+          "side": "buy",
+          "qty": 1.0,
+          "price": 383.4
+        },
+        {
+          "symbol": "NVDA",
+          "side": "buy",
+          "qty": 2.0,
+          "price": 197.16
+        }
+      ]
+    },
+    {
+      "date": "2026-06-30",
+      "nav": 104144.4,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "TSM",
+        "GOOGL",
+        "AVGO",
+        "META",
+        "AMD",
+        "V"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-06-29",
+      "nav": 101275.53,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "TSM",
+        "GOOGL",
+        "AVGO",
+        "META",
+        "AMD",
+        "V"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-06-26",
+      "nav": 98569.23,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "TSM",
+        "GOOGL",
+        "AVGO",
+        "META",
+        "AMD",
+        "V"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-06-25",
+      "nav": 98885.66,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "TSM",
+        "GOOGL",
+        "AVGO",
+        "META",
+        "AMD",
+        "V"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-06-24",
+      "nav": 101722.54,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "TSM",
+        "GOOGL",
+        "AVGO",
+        "META",
+        "AMD",
+        "V"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-06-23",
+      "nav": 100906.32,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "TSM",
+        "GOOGL",
+        "AVGO",
+        "META",
+        "AMD",
+        "V"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-06-22",
+      "nav": 103523.36,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "TSM",
+        "GOOGL",
+        "AVGO",
+        "META",
+        "AMD",
+        "V"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-06-18",
+      "nav": 105016.15,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "TSM",
+        "GOOGL",
+        "AVGO",
+        "META",
+        "AMD",
+        "V"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-06-17",
+      "nav": 102859.36,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "TSM",
+        "GOOGL",
+        "AVGO",
+        "META",
+        "AMD",
+        "V"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-06-16",
+      "nav": 103495.34,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "TSM",
+        "GOOGL",
+        "AVGO",
+        "META",
+        "AMD",
+        "V"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-06-15",
+      "nav": 105044.3,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "TSM",
+        "GOOGL",
+        "AVGO",
+        "META",
+        "AMD",
+        "V"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-06-12",
+      "nav": 101733.81,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "TSM",
+        "GOOGL",
+        "AVGO",
+        "META",
+        "AMD",
+        "V"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-06-11",
+      "nav": 101734.72,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "TSM",
+        "GOOGL",
+        "AVGO",
+        "META",
+        "AMD",
+        "V"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-06-10",
+      "nav": 98393.02,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "TSM",
+        "GOOGL",
+        "AVGO",
+        "META",
+        "AMD",
+        "V"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-06-09",
+      "nav": 101520.16,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "TSM",
+        "GOOGL",
+        "AVGO",
+        "META",
+        "AMD",
+        "V"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-06-08",
+      "nav": 102653.68,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "TSM",
+        "GOOGL",
+        "AVGO",
+        "META",
+        "AMD",
+        "V"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-06-05",
+      "nav": 101457.43,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "TSM",
+        "GOOGL",
+        "AVGO",
+        "META",
+        "AMD",
+        "V"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-06-04",
+      "nav": 106774.29,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "TSM",
+        "GOOGL",
+        "AVGO",
+        "META",
+        "AMD",
+        "V"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-06-02",
+      "nav": 107837.66,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "TSM",
+        "GOOGL",
+        "AVGO",
+        "META",
+        "AMD",
+        "V"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-06-01",
+      "nav": 107870.48,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "TSM",
+        "GOOGL",
+        "AVGO",
+        "META",
+        "AMD",
+        "V"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-05-29",
+      "nav": 108104.93,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "GOOGL",
+        "TSM",
+        "AVGO",
+        "META",
+        "AMD",
+        "V"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-05-28",
+      "nav": 107821.21,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "GOOGL",
+        "TSM",
+        "AVGO",
+        "META",
+        "AMD",
+        "V"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-05-27",
+      "nav": 106175.47,
+      "trades_count": 4,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "GOOGL",
+        "TSM",
+        "AVGO",
+        "META",
+        "AMD",
+        "V"
+      ],
+      "orders": [
+        {
+          "symbol": "AAPL",
+          "side": "buy",
+          "qty": 1.0,
+          "price": 307.98
+        },
+        {
+          "symbol": "AMZN",
+          "side": "buy",
+          "qty": 1.0,
+          "price": 264.81
+        },
+        {
+          "symbol": "NVDA",
+          "side": "buy",
+          "qty": 1.0,
+          "price": 214.98
+        },
+        {
+          "symbol": "V",
+          "side": "buy",
+          "qty": 1.0,
+          "price": 326.685
+        }
+      ]
+    },
+    {
+      "date": "2026-05-26",
+      "nav": 105795.84,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "GOOGL",
+        "TSM",
+        "AVGO",
+        "META",
+        "AMD",
+        "V"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-05-22",
+      "nav": 104535.46,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "GOOGL",
+        "TSM",
+        "AVGO",
+        "META",
+        "AMD",
+        "V"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-05-21",
+      "nav": 104530.47,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "GOOGL",
+        "TSM",
+        "AVGO",
+        "META",
+        "AMD",
+        "V"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-05-20",
+      "nav": 103819.86,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "GOOGL",
+        "TSM",
+        "AVGO",
+        "META",
+        "AMD",
+        "V"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-05-19",
+      "nav": 102450.07,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "GOOGL",
+        "TSM",
+        "AVGO",
+        "META",
+        "V",
+        "AMD"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-05-15",
+      "nav": 103809.6,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "GOOGL",
+        "TSM",
+        "AVGO",
+        "META",
+        "AMD",
+        "V"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-05-14",
+      "nav": 105746.1,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "GOOGL",
+        "TSM",
+        "AVGO",
+        "META",
+        "AMD",
+        "V"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-05-13",
+      "nav": 103995.41,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "GOOGL",
+        "TSM",
+        "AVGO",
+        "META",
+        "AMD",
+        "V"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-05-12",
+      "nav": 103434.49,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "GOOGL",
+        "TSM",
+        "AVGO",
+        "META",
+        "AMD",
+        "V"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-05-11",
+      "nav": 104724.54,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "GOOGL",
+        "TSM",
+        "AVGO",
+        "META",
+        "AMD",
+        "V"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-05-08",
+      "nav": 104076.25,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "GOOGL",
+        "TSM",
+        "AVGO",
+        "META",
+        "AMD",
+        "V"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-05-07",
+      "nav": 102999.23,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "GOOGL",
+        "TSM",
+        "AVGO",
+        "META",
+        "AMD",
+        "V"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-05-06",
+      "nav": 102591.34,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "GOOGL",
+        "TSM",
+        "AVGO",
+        "META",
+        "AMD",
+        "V"
+      ],
+      "orders": []
+    },
+    {
+      "date": "2026-05-05",
+      "nav": 99988.04,
+      "trades_count": 0,
+      "portfolio": [
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "GOOGL",
+        "TSM",
+        "AVGO",
+        "META",
+        "V",
+        "AMD"
+      ],
+      "orders": []
+    }
+  ],
+  "rankings": {
+    "type": "market_cap_list",
+    "label": "科技市值排名",
+    "items": [
+      {
+        "rank": 1,
+        "symbol": "NVDA",
+        "price": 228.96,
+        "change_pct": 0.0,
+        "market_cap_b": 5595.8,
+        "in_portfolio": true
+      },
+      {
+        "rank": 2,
+        "symbol": "AAPL",
+        "price": 333.05,
+        "change_pct": 0.0,
+        "market_cap_b": 5063.7,
+        "in_portfolio": true
+      },
+      {
+        "rank": 3,
+        "symbol": "MSFT",
+        "price": 512.91,
+        "change_pct": 0.0,
+        "market_cap_b": 3812.5,
+        "in_portfolio": true
+      },
+      {
+        "rank": 4,
+        "symbol": "AMZN",
+        "price": 249.17,
+        "change_pct": 0.0,
+        "market_cap_b": 2622.5,
+        "in_portfolio": true
+      },
+      {
+        "rank": 5,
+        "symbol": "TSM",
+        "price": 456.14,
+        "change_pct": 0.0,
+        "market_cap_b": 2362.8,
+        "in_portfolio": true
+      },
+      {
+        "rank": 6,
+        "symbol": "GOOGL",
+        "price": 348.92,
+        "change_pct": 0.0,
+        "market_cap_b": 2075.7,
+        "in_portfolio": true
+      },
+      {
+        "rank": 7,
+        "symbol": "META",
+        "price": 726.47,
+        "change_pct": 0.0,
+        "market_cap_b": 1859.8,
+        "in_portfolio": true
+      },
+      {
+        "rank": 8,
+        "symbol": "AVGO",
+        "price": 351.22,
+        "change_pct": 0.0,
+        "market_cap_b": 1643.7,
+        "in_portfolio": true
+      },
+      {
+        "rank": 9,
+        "symbol": "AMD",
+        "price": 612.24,
+        "change_pct": 0.0,
+        "market_cap_b": 990.0,
+        "in_portfolio": true
+      },
+      {
+        "rank": 10,
+        "symbol": "V",
+        "price": 359.58,
+        "change_pct": 0.0,
+        "market_cap_b": 740.7,
+        "in_portfolio": true
+      },
+      {
+        "rank": 11,
+        "symbol": "ASML",
+        "price": 1811.2,
+        "change_pct": 0.0,
+        "market_cap_b": 713.6,
+        "in_portfolio": false
+      },
+      {
+        "rank": 12,
+        "symbol": "INTC",
+        "price": 119.91,
+        "change_pct": 0.0,
+        "market_cap_b": 510.8,
+        "in_portfolio": false
+      },
+      {
+        "rank": 13,
+        "symbol": "MA",
+        "price": 551.5,
+        "change_pct": 0.0,
+        "market_cap_b": 509.6,
+        "in_portfolio": false
+      },
+      {
+        "rank": 14,
+        "symbol": "CSCO",
+        "price": 107.59,
+        "change_pct": 0.0,
+        "market_cap_b": 434.7,
+        "in_portfolio": false
+      },
+      {
+        "rank": 15,
+        "symbol": "PLTR",
+        "price": 187.16,
+        "change_pct": 0.0,
+        "market_cap_b": 393.0,
+        "in_portfolio": false
+      },
+      {
+        "rank": 16,
+        "symbol": "ORCL",
+        "price": 136.94,
+        "change_pct": 0.0,
+        "market_cap_b": 376.6,
+        "in_portfolio": false
+      },
+      {
+        "rank": 17,
+        "symbol": "TXN",
+        "price": 280.07,
+        "change_pct": 0.0,
+        "market_cap_b": 254.3,
+        "in_portfolio": false
+      },
+      {
+        "rank": 18,
+        "symbol": "CRM",
+        "price": 229.58,
+        "change_pct": 0.0,
+        "market_cap_b": 222.2,
+        "in_portfolio": false
+      },
+      {
+        "rank": 19,
+        "symbol": "QCOM",
+        "price": 184.11,
+        "change_pct": 0.0,
+        "market_cap_b": 206.2,
+        "in_portfolio": false
+      },
+      {
+        "rank": 20,
+        "symbol": "IBM",
+        "price": 219.94,
+        "change_pct": 0.0,
+        "market_cap_b": 199.3,
+        "in_portfolio": false
+      },
+      {
+        "rank": 21,
+        "symbol": "UBER",
+        "price": 68.52,
+        "change_pct": 0.0,
+        "market_cap_b": 146.6,
+        "in_portfolio": false
+      },
+      {
+        "rank": 22,
+        "symbol": "SNOW",
+        "price": 339.87,
+        "change_pct": 0.0,
+        "market_cap_b": 112.2,
+        "in_portfolio": false
+      },
+      {
+        "rank": 23,
+        "symbol": "ADBE",
+        "price": 239.98,
+        "change_pct": 0.0,
+        "market_cap_b": 104.4,
+        "in_portfolio": false
+      },
+      {
+        "rank": 24,
+        "symbol": "NFLX",
+        "price": 69.59,
+        "change_pct": 0.0,
+        "market_cap_b": 30.0,
+        "in_portfolio": false
+      },
+      {
+        "rank": 25,
+        "symbol": "NOW",
+        "price": 134.04,
+        "change_pct": 0.0,
+        "market_cap_b": 27.3,
+        "in_portfolio": false
+      }
+    ]
+  },
+  "events": [
+    {
+      "id": "evt_20260505_001",
+      "date": "2026-05-05",
+      "type": "deposit",
+      "nav_before": 99988.04,
+      "nav_after": 199988.04,
+      "amount": 100000.0
+    }
+  ],
+  "email": {
+    "subject": "[TECH10 #1] 2026-10-28 NAV 108,002 (-0.77%)",
+    "preheader": "帳戶 #1 · 2026-10-28 · NAV $108,002",
+    "dashboard_url": "https://itemhsu.github.io/tech-rebalance-dashboard/mvp_dashboard.html?a=1",
+    "sections_rendered": [
+      "header",
+      "kpi",
+      "strategy_card",
+      "positions_table",
+      "rankings",
+      "trades",
+      "cta",
+      "strategy_history",
+      "footer"
+    ]
+  }
+}
