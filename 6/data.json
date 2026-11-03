@@ -5,7 +5,7 @@
     "account_id": "6",
     "account_label": "sini",
     "currency": "TWD",
-    "generated_at": "2026-11-02T21:34:10Z",
+    "generated_at": "2026-11-03T00:36:44Z",
     "trading_date": "2026-11-02",
     "dry_run": false,
     "strategy_status": "active",
@@ -815,7 +815,7 @@
       -3.8041,
       -5.1271,
       -7.8363,
-      -8.8242
+      -8.824
     ],
     "sp500": [
       0.0,
@@ -1898,7 +1898,7 @@
       4757.34,
       4691.91,
       4557.93,
-      4509.07
+      4509.08
     ]
   }
 }
