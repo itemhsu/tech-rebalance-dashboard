@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-06-09T09:04:35Z",
-  "source_dir": "/Users/miniaicar/Downloads/tradecopy/strategies",
+  "generated_at": "2026-11-21T04:26:41Z",
+  "source_dir": "/home/runner/work/tech-rebalance/tech-rebalance/strategies",
   "strategies": [
     {
       "id": "tech_top10",
