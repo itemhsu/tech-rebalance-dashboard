@@ -5,8 +5,8 @@
     "account_id": "1",
     "account_label": "帳戶 #1 (TOP10 Daily)",
     "currency": "USD",
-    "generated_at": "2026-11-25T06:21:12Z",
-    "trading_date": "2026-11-24",
+    "generated_at": "2026-11-25T21:34:47Z",
+    "trading_date": "2026-11-25",
     "dry_run": false,
     "strategy_status": "active",
     "strategy_start_date": "2026-05-05",
@@ -20,21 +20,21 @@
     ]
   },
   "summary": {
-    "nav": 97536.36,
+    "nav": 96800.12,
     "cash": -1128.76,
     "initial_nav": 99988.04,
     "inception_date": "2026-05-05",
-    "today_change": -2094.34,
-    "today_change_pct": -2.1021,
-    "total_return": -2451.68,
-    "total_return_pct": -2.452,
-    "total_return_pct_twr": -51.2289,
+    "today_change": -736.24,
+    "today_change_pct": -0.7548,
+    "total_return": -3187.92,
+    "total_return_pct": -3.1883,
+    "total_return_pct_twr": -51.597,
     "net_contribution": 100000.0,
     "total_deposited": 100000.0,
     "total_withdrawn": 0.0,
-    "investment_gain": -102451.68,
+    "investment_gain": -103187.92,
     "ytd_return_pct": null,
-    "monthly_return_pct": -6.3305,
+    "monthly_return_pct": -7.0375,
     "max_drawdown_pct": -18.7528,
     "sharpe_ratio": null,
     "total_paused_days": 0,
@@ -81,110 +81,110 @@
       "symbol": "AAPL",
       "qty": 34.0,
       "avg_entry_price": 289.230286,
-      "current_price": 354.04,
-      "market_value": 12037.36,
-      "unrealized_pl": 2203.53,
-      "unrealized_plpc": 22.408,
-      "weight": 12.3414,
+      "current_price": 355.2047,
+      "market_value": 12076.96,
+      "unrealized_pl": 2243.13,
+      "unrealized_plpc": 22.81,
+      "weight": 12.4762,
       "in_portfolio": true
     },
     {
       "symbol": "V",
       "qty": 28.0,
       "avg_entry_price": 362.637857,
-      "current_price": 413.337,
-      "market_value": 11573.44,
-      "unrealized_pl": 1419.58,
-      "unrealized_plpc": 13.981,
-      "weight": 11.8658,
+      "current_price": 424.0,
+      "market_value": 11872.0,
+      "unrealized_pl": 1718.14,
+      "unrealized_plpc": 16.921,
+      "weight": 12.2644,
       "in_portfolio": true
     },
     {
       "symbol": "AMZN",
       "qty": 44.0,
       "avg_entry_price": 272.781591,
-      "current_price": 252.4,
-      "market_value": 11105.6,
-      "unrealized_pl": -896.79,
-      "unrealized_plpc": -7.472,
-      "weight": 11.3861,
-      "in_portfolio": true
-    },
-    {
-      "symbol": "MSFT",
-      "qty": 21.0,
-      "avg_entry_price": 416.633333,
-      "current_price": 497.0,
-      "market_value": 10437.0,
-      "unrealized_pl": 1687.7,
-      "unrealized_plpc": 19.29,
-      "weight": 10.7006,
-      "in_portfolio": true
-    },
-    {
-      "symbol": "GOOGL",
-      "qty": 36.0,
-      "avg_entry_price": 363.158056,
-      "current_price": 279.6122,
-      "market_value": 10066.04,
-      "unrealized_pl": -3007.65,
-      "unrealized_plpc": -23.005,
-      "weight": 10.3203,
+      "current_price": 244.66,
+      "market_value": 10765.04,
+      "unrealized_pl": -1237.35,
+      "unrealized_plpc": -10.309,
+      "weight": 11.1209,
       "in_portfolio": true
     },
     {
       "symbol": "META",
       "qty": 17.0,
       "avg_entry_price": 602.977647,
-      "current_price": 590.8,
-      "market_value": 10043.6,
-      "unrealized_pl": -207.02,
-      "unrealized_plpc": -2.02,
-      "weight": 10.2973,
+      "current_price": 608.28,
+      "market_value": 10340.76,
+      "unrealized_pl": 90.14,
+      "unrealized_plpc": 0.879,
+      "weight": 10.6826,
+      "in_portfolio": true
+    },
+    {
+      "symbol": "MSFT",
+      "qty": 21.0,
+      "avg_entry_price": 416.633333,
+      "current_price": 489.91,
+      "market_value": 10288.11,
+      "unrealized_pl": 1538.81,
+      "unrealized_plpc": 17.588,
+      "weight": 10.6282,
+      "in_portfolio": true
+    },
+    {
+      "symbol": "GOOGL",
+      "qty": 36.0,
+      "avg_entry_price": 363.158056,
+      "current_price": 273.45,
+      "market_value": 9844.2,
+      "unrealized_pl": -3229.49,
+      "unrealized_plpc": -24.702,
+      "weight": 10.1696,
       "in_portfolio": true
     },
     {
       "symbol": "TSM",
       "qty": 27.0,
       "avg_entry_price": 398.30963,
-      "current_price": 350.5381,
-      "market_value": 9464.53,
-      "unrealized_pl": -1289.83,
-      "unrealized_plpc": -11.994,
-      "weight": 9.7036,
+      "current_price": 342.8282,
+      "market_value": 9256.36,
+      "unrealized_pl": -1498.0,
+      "unrealized_plpc": -13.929,
+      "weight": 9.5623,
       "in_portfolio": true
     },
     {
       "symbol": "AMD",
       "qty": 21.0,
       "avg_entry_price": 372.638695,
-      "current_price": 413.32,
-      "market_value": 8679.72,
-      "unrealized_pl": 854.31,
-      "unrealized_plpc": 10.917,
-      "weight": 8.899,
+      "current_price": 406.26,
+      "market_value": 8531.46,
+      "unrealized_pl": 706.05,
+      "unrealized_plpc": 9.022,
+      "weight": 8.8135,
       "in_portfolio": true
     },
     {
       "symbol": "AVGO",
       "qty": 26.0,
       "avg_entry_price": 427.923077,
-      "current_price": 302.2,
-      "market_value": 7857.2,
-      "unrealized_pl": -3268.8,
-      "unrealized_plpc": -29.38,
-      "weight": 8.0557,
+      "current_price": 299.5226,
+      "market_value": 7787.59,
+      "unrealized_pl": -3338.41,
+      "unrealized_plpc": -30.006,
+      "weight": 8.045,
       "in_portfolio": true
     },
     {
       "symbol": "NVDA",
       "qty": 48.0,
       "avg_entry_price": 199.672917,
-      "current_price": 154.18,
-      "market_value": 7400.64,
-      "unrealized_pl": -2183.66,
-      "unrealized_plpc": -22.784,
-      "weight": 7.5876,
+      "current_price": 149.3,
+      "market_value": 7166.4,
+      "unrealized_pl": -2417.9,
+      "unrealized_plpc": -25.228,
+      "weight": 7.4033,
       "in_portfolio": true
     }
   ],
@@ -708,6 +708,10 @@
     {
       "date": "2026-11-24",
       "nav": 97536.36
+    },
+    {
+      "date": "2026-11-25",
+      "nav": 96800.12
     }
   ],
   "drawdown": {
@@ -841,7 +845,8 @@
       "2026-11-19",
       "2026-11-20",
       "2026-11-23",
-      "2026-11-24"
+      "2026-11-24",
+      "2026-11-25"
     ],
     "portfolio": [
       0.0,
@@ -973,7 +978,8 @@
       -14.3301,
       -18.7528,
       -13.9105,
-      -15.7202
+      -15.7202,
+      -16.3563
     ],
     "nasdaq": [
       0.0,
@@ -1105,7 +1111,8 @@
       -13.4805,
       -18.0511,
       -12.7183,
-      -14.0083
+      -14.0083,
+      -14.5435
     ],
     "sp500": [
       0.0,
@@ -1237,10 +1244,29 @@
       -8.2249,
       -11.6197,
       -7.4404,
-      -7.9018
+      -7.9018,
+      -8.136
     ]
   },
   "trade_log": [
+    {
+      "date": "2026-11-25",
+      "nav": 96800.12,
+      "trades_count": 0,
+      "portfolio": [
+        "AAPL",
+        "NVDA",
+        "MSFT",
+        "AMZN",
+        "TSM",
+        "GOOGL",
+        "META",
+        "AVGO",
+        "V",
+        "AMD"
+      ],
+      "orders": []
+    },
     {
       "date": "2026-11-24",
       "nav": 97536.36,
@@ -3968,8 +3994,8 @@
     }
   ],
   "email": {
-    "subject": "[TECH10 #1] 2026-11-24 NAV 97,536 (-2.10%)",
-    "preheader": "帳戶 #1 · 2026-11-24 · NAV $97,536",
+    "subject": "[TECH10 #1] 2026-11-25 NAV 96,800 (-0.75%)",
+    "preheader": "帳戶 #1 · 2026-11-25 · NAV $96,800",
     "dashboard_url": "https://itemhsu.github.io/tech-rebalance-dashboard/mvp_dashboard.html?a=1",
     "sections_rendered": [
       "header",
@@ -4114,7 +4140,8 @@
       98839.43,
       95183.28,
       99684.32,
-      99187.36
+      99187.36,
+      98935.15
     ],
     "nasdaq": [
       99988.04,
@@ -4246,8 +4273,8 @@
       94275.53,
       89295.22,
       95106.04,
-      93700.46
+      93700.46,
+      93117.19
     ]
-  },
-  "stale_warning": "⚠️ 今日未更新（資料停在 2026-11-24，其他帳戶已更新到 2026-11-25）。可能執行失敗或券商金鑰問題——請查當日 Actions 執行紀錄。"
+  }
 }
