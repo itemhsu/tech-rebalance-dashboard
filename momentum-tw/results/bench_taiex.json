@@ -5,7 +5,7 @@
     "label": "加權指數",
     "color": "#94a3b8",
     "group": "benchmark",
-    "generated_at": "2026-11-25T07:37:01Z",
+    "generated_at": "2026-11-25T11:10:44Z",
     "order": 902,
     "enabled": true,
     "description": "^TWII（台灣加權股價指數）buy & hold 基準"
